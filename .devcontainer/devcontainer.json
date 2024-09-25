@@ -1,0 +1,50 @@
+{
+  "name": "Library python-pipeline",
+  "dockerComposeFile": [
+    "../docker/local/docker-compose.yml"
+  ],
+  "service": "python",
+  "workspaceFolder": "/app",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "oderwat.indent-rainbow",
+        "ms-python.isort",
+        "ms-python.debugpy",
+        "ms-toolsai.jupyter",
+        "DavidAnson.vscode-markdownlint",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "mikestead.dotenv",
+        "ms-python.flake8",
+        "tamasfe.even-better-toml",
+        "github.vscode-github-actions"
+      ],
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "indentRainbow.indicatorStyle": "light",
+        "editor.formatOnSave": true,
+        "python.condaPath": "/opt/conda/bin/conda",
+        "python.defaultInterpreterPath": "/opt/conda/envs/venv/bin/python",
+        "python.analysis.autoImportCompletions": true,
+        "python.analysis.typeCheckingMode": "strict",
+        "python.analysis.diagnosticMode": "workspace",
+        "explorer.sortOrderLexicographicOptions": "upper",
+        "[toml]": {
+          "editor.defaultFormatter": "tamasfe.even-better-toml",
+          "editor.formatOnSave": true
+        },
+        "[markdown]": {
+          "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+        }
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  }
+}

@@ -1,0 +1,18 @@
+services:
+  python:
+    build:
+      context: ../../
+      dockerfile: ./docker/local/Dockerfile
+      args:
+        ENV_NAME: venv
+    volumes:
+      - ../..:/app
+      - conda:/opt/conda
+      - ./etc/bash_aliases:/root/.bash_aliases
+    working_dir: /app
+    env_file:
+      - ../../.env
+
+volumes:
+  conda:
+    driver: local
