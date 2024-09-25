@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Generic
+
 from ...core.pipeline.payload import TPayload
-from ...traits.with_stages.stage_interface import StageOrCallable
+from ...core.pipeline.pipeline_callable import PipelineCallable
 
 
 class ProcessorInterface(
@@ -11,7 +12,7 @@ class ProcessorInterface(
     @abstractmethod
     def process(
         self,
-        stages: list[StageOrCallable[TPayload]],
+        stages: list[PipelineCallable[TPayload]],
         payload: TPayload,
     ) -> TPayload:
         pass
