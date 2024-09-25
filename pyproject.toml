@@ -1,0 +1,66 @@
+[tool.black]
+line-length = 79
+
+[build-system]
+requires = ["setuptools>=68.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python-pipeline"
+version = "1.0.0"
+description = "This package provides a pipeline pattern implementation"
+readme = "README.md"
+authors = [{ name = "TheCodeCrate", email = "loureiro.rg@gmail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+keywords = [
+    "pipeline",
+    "python",
+    "library",
+    "python-pipeline",
+]
+dependencies = []
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+build = ["build", "twine"]
+dev = [
+    "black",
+    "bumpver",
+    "isort",
+    "flake8",
+    "pytest",
+    "pytest-cov",
+    "pytest-asyncio",
+]
+
+[project.urls]
+repository = "https://github.com/thecodecrate/python-pipeline"
+documentation = "https://github.com/thecodecrate/python-pipeline"
+
+[tool.bumpver]
+current_version = "1.0.0"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "bump version {old_version} -> {new_version}"
+tag_message = "{new_version}"
+tag_scope = "default"
+pre_commit_hook = ""
+post_commit_hook = ""
+commit = true
+tag = true
+push = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
+# "README.md" = ["{version}", "{pep440_version}"]
+"src/thecodecrate_pipeline/__init__.py" = ['{version}']
