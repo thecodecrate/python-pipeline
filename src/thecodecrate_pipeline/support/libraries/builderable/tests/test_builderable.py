@@ -72,6 +72,9 @@ async def test_immutability():
     assert builder.parts == [1, 2, 3]
     assert builder2.parts == [1, 2, 3, 4]
 
+    assert builder.build_parts(5) == "result is 11"
+    assert builder2.build_parts(5) == "result is 15"
+
 
 @pytest.mark.asyncio
 async def test_mutability():

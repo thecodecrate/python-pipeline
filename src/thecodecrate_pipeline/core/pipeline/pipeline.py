@@ -1,8 +1,10 @@
 from typing import Generic, Optional
-from ...modules.processors.chained_processor import ChainedProcessor
-from ...traits.with_processor.processor_interface import ProcessorInterface
+
+from .pipeline_callable import PipelineCallable
 from .payload import TPayload
 from .pipeline_interface import PipelineInterface
+from ...modules.processors.chained_processor import ChainedProcessor
+from ...traits.with_processor.processor_interface import ProcessorInterface
 
 
 class Pipeline(
@@ -14,7 +16,8 @@ class Pipeline(
     def __init__(
         self,
         processor: Optional[ProcessorInterface[TPayload]] = None,
+        stages: Optional[list[PipelineCallable[TPayload]]] = None,
     ) -> None:
-        self.parts = []
-
         self.processor = processor or self.get_processor()
+
+        self.parts = [*stages] if stages else []

@@ -9,20 +9,13 @@ class WithImmutability(
     Generic[TParentClass, TBuilderOutput, TBuilderPart],
     ABC,
 ):
-    def clone(self) -> TParentClass:
-        this = cast(TParentClass, self)
-
-        cloned = cast(TParentClass, self.__class__())
-
-        cloned.parts = copy.deepcopy(this.parts)
-
-        return cloned
-
     def add(
         self,
         part: TBuilderPart,
     ) -> TParentClass:
-        cloned = self.clone()
+        this = cast(TParentClass, self)
+
+        cloned = copy.deepcopy(this)
 
         cloned.parts.append(part)
 

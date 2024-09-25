@@ -1,8 +1,9 @@
 from abc import ABC
 from typing import Generic, Optional, cast
-from ...core.pipeline.payload import TPayload
-from .processor_interface import ProcessorInterface
+
 from .parent_class import TParentClass
+from .processor_interface import ProcessorInterface
+from ...core.pipeline.payload import TPayload
 
 
 class WithProcessor(
