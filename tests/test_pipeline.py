@@ -4,13 +4,13 @@ from thecodecrate_pipeline import (
     Pipeline,
     InterruptibleProcessor,
 )
-from tests.stubs.stub_int_stages import (
+from .stubs.stub_int_stages import (
     AddOneStage,
     TimesThreeStage,
     TimesTwoStage,
 )
-from tests.stubs.stub_stage import StubStage
-from tests.stubs.stub_processor import StubProcessor
+from .stubs.stub_stage import StubStage
+from .stubs.stub_processor import StubProcessor
 
 
 @pytest.mark.asyncio
