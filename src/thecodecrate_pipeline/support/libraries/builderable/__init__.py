@@ -8,7 +8,7 @@ from .traits.with_parts.with_parts import WithParts
 # This will be updated by `bumpver` command.
 # - Make sure to commit all changes first before running `bumpver`.
 # - Run `bumpver update --[minor|major|patch]`
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 # Expose the public API
 __all__ = [
