@@ -4,6 +4,12 @@ This package provides a pipeline pattern implementation.
 
 It is a port of the [PHP League Pipeline](https://github.com/thephpleague/pipeline) package.
 
+## Installation
+
+```bash
+pip install thecodecrate-pipeline
+```
+
 ## Pipeline Pattern
 
 The pipeline pattern allows you to easily compose sequential stages by
