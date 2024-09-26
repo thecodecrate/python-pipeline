@@ -57,6 +57,6 @@ push = false
 [tool.bumpver.file_patterns]
 "pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
 "src/thecodecrate_pipeline/__init__.py" = ['{version}']
-"src/thecodecrate_pipeline/support/libraries/builderable/__init__.py" = [
-    '{version}',
-]
+
+[tool.setuptools.package-data]
+"thecodecrate_pipeline" = ["py.typed"]
