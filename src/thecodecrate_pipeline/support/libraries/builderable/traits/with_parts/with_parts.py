@@ -8,17 +8,21 @@ class WithParts(
     Generic[TParentClass, TBuilderOutput, TBuilderPart],
     ABC,
 ):
-    parts: list[TBuilderPart] = []
+    _parts: list[TBuilderPart] = []
+
+    def get_parts(self) -> list[TBuilderPart]:
+        return self._parts
+
+    def set_parts(self, parts: list[TBuilderPart]) -> None:
+        self._parts = parts
 
     def add(
         self,
         part: TBuilderPart,
     ) -> TParentClass:
-        this = cast(TParentClass, self)
+        self.get_parts().append(part)
 
-        self.parts.append(part)
-
-        return this
+        return cast(TParentClass, self)
 
     @abstractmethod
     def build_parts(

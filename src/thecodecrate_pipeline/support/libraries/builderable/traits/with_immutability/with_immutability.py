@@ -17,6 +17,6 @@ class WithImmutability(
 
         cloned = copy.deepcopy(this)
 
-        cloned.parts.append(part)
+        cloned.get_parts().append(part)
 
         return cloned
