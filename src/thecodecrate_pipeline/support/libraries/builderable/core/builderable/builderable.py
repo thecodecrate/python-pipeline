@@ -14,4 +14,4 @@ class Builderable(
     ABC,
 ):
     def __init__(self) -> None:
-        self.parts = []
+        self.set_parts([])

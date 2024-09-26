@@ -20,4 +20,4 @@ class Pipeline(
     ) -> None:
         self.processor = processor or self.get_processor()
 
-        self.parts = [*stages] if stages else []
+        self.stages = [*stages] if stages else []
