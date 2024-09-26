@@ -1,10 +1,10 @@
 from abc import ABC
 from typing import Generic
-
-from .parent_class import TParentClass
-from ...support.libraries.builderable import (
+from thecodecrate_builderable import (
     WithImmutability as BuilderableWithImmutability,
 )
+
+from .parent_class import TParentClass
 from ...core.pipeline.payload import TPayload
 from ...core.pipeline.pipeline_callable import PipelineCallable
 

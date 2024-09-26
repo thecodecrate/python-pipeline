@@ -23,7 +23,7 @@ from .traits.with_stages.with_stages import WithStages
 # This will be updated by `bumpver` command.
 # - Make sure to commit all changes first before running `bumpver`.
 # - Run `bumpver update --[minor|major|patch]`
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 # Expose the public API
 __all__ = [
