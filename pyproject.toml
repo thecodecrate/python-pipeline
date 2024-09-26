@@ -23,12 +23,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
-keywords = [
-    "pipeline",
-    "python",
-    "library",
-    "python-pipeline",
-]
+keywords = ["pipeline", "python", "library", "python-pipeline"]
 dependencies = []
 requires-python = ">=3.9"
 
@@ -62,5 +57,7 @@ push = false
 
 [tool.bumpver.file_patterns]
 "pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
-# "README.md" = ["{version}", "{pep440_version}"]
 "src/thecodecrate_pipeline/__init__.py" = ['{version}']
+"src/thecodecrate_pipeline/support/libraries/builderable/__init__.py" = [
+    '{version}',
+]

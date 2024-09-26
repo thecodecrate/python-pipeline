@@ -71,7 +71,7 @@ pipeline.process(10)
 
 Class based stages are also possible. The `StageInterface[PayloadType]`
 can be implemented which ensures you have the correct method signature
-for the payload.
+for the `__call__` method.
 
 ```python
 class TimesTwoStage(StageInterface[int]):
