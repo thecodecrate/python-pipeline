@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, Optional
+from thecodecrate_builderable import Builderable
 
-from ...support.libraries.builderable import Builderable
 from ...traits.with_stages.with_stages import WithStages
 from ...traits.with_callable_pipeline.with_callable_pipeline import (
     WithCallablePipeline,
