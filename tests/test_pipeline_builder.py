@@ -3,7 +3,7 @@ import pytest
 from thecodecrate_pipeline import (
     PipelineBuilder,
 )
-from tests.stubs.stub_int_stages import (
+from .stubs.stub_int_stages import (
     AddOneStage,
     TimesThreeStage,
     TimesTwoStage,
