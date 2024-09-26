@@ -9,4 +9,4 @@ class PipelineBuilder(
     Generic[TPayload],
 ):
     def __init__(self) -> None:
-        self.parts = []
+        self.stages = []

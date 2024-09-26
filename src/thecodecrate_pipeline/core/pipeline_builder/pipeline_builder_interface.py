@@ -2,6 +2,7 @@ from abc import ABC
 from typing import Generic
 
 from ...support.libraries.builderable import Builderable
+from ...traits.with_stages.with_stages import WithStages
 from ...traits.with_pipeline_builder.with_pipeline_builder import (
     WithPipelineBuilder,
 )
@@ -11,6 +12,7 @@ from ..pipeline.payload import TPayload
 
 class PipelineBuilderInterface(
     WithPipelineBuilder["PipelineBuilderInterface[TPayload]", TPayload],
+    WithStages["PipelineBuilderInterface[TPayload]", TPayload],
     Builderable[TPayload, PipelineCallable[TPayload]],
     Generic[TPayload],
     ABC,

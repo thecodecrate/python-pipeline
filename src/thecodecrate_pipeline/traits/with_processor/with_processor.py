@@ -19,7 +19,7 @@ class WithProcessor(
     ) -> TPayload:
         this = cast(TParentClass, self)
 
-        return self.get_processor().process(this.parts, payload)
+        return self.get_processor().process(this.stages, payload)
 
     def get_processor(self) -> ProcessorInterface[TPayload]:
         if self.processor:
