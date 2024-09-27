@@ -17,13 +17,13 @@ class InterruptibleProcessor(
     ) -> None:
         self.check = check
 
-    def process(
+    async def process(
         self,
         stages: list[PipelineCallable[TPayload]],
         payload: TPayload,
     ) -> TPayload:
         for stage in stages:
-            payload = stage(payload)
+            payload = await self._call_stage(stage, payload)
 
             if not self.check(payload):
                 return payload

@@ -9,12 +9,12 @@ class ChainedProcessor(
     ProcessorInterface[TPayload],
     Generic[TPayload],
 ):
-    def process(
+    async def process(
         self,
         stages: list[PipelineCallable[TPayload]],
         payload: TPayload,
     ) -> TPayload:
         for stage in stages:
-            payload = stage(payload)
+            payload = await self._call_stage(stage, payload)
 
         return payload

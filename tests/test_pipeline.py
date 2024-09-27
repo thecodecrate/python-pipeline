@@ -22,8 +22,8 @@ async def test_lambda_stages():
         .pipe(lambda payload: payload + 1)
     )
 
-    assert pipeline.process(1) == 5
-    assert pipeline.process(2) == 7
+    assert await pipeline.process(1) == 5
+    assert await pipeline.process(2) == 7
 
 
 @pytest.mark.asyncio
@@ -35,7 +35,7 @@ async def test_classbased_stages():
         .pipe(TimesThreeStage())
     )
 
-    assert pipeline.process(5) == 33
+    assert await pipeline.process(5) == 33
 
 
 @pytest.mark.asyncio
@@ -61,14 +61,14 @@ async def test_pipeline_stages():
         .pipe(lambda payload: payload * 2)
     )
 
-    assert pipeline.process(10) == 736
+    assert await pipeline.process(10) == 736
 
 
 @pytest.mark.asyncio
 async def test_string_stage():
     pipeline = (Pipeline[str]()).pipe(StubStage())
 
-    assert pipeline.process("") == "stubbed response"
+    assert await pipeline.process("") == "stubbed response"
 
 
 @pytest.mark.asyncio
@@ -79,13 +79,12 @@ async def test_pipeline_immutability():
         .pipe(lambda payload: payload + 1)
     )
 
-    assert pipeline.process(1) == 3
+    assert await pipeline.process(1) == 3
 
     pipeline2 = pipeline.pipe(lambda payload: payload + 1)
 
-    assert pipeline.process(1) == 3
-
-    assert pipeline2.process(1) == 4
+    assert await pipeline.process(1) == 3
+    assert await pipeline2.process(1) == 4
 
 
 @pytest.mark.asyncio
@@ -98,7 +97,7 @@ async def test_custom_processor():
         .pipe(lambda payload: payload + 1)
     )
 
-    assert pipeline.process(1) == 30
+    assert await pipeline.process(1) == 30
 
 
 @pytest.mark.asyncio
@@ -111,6 +110,5 @@ async def test_interruptible_processor():
         .pipe(lambda payload: payload + 1)
     )
 
-    assert pipeline.process(3) == 7
-
-    assert pipeline.process(1) == 2
+    assert await pipeline.process(3) == 7
+    assert await pipeline.process(1) == 2
