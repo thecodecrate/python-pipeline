@@ -7,6 +7,7 @@ from .core.pipeline_builder.pipeline_builder import PipelineBuilderInterface
 from .core.pipeline.pipeline_callable import PipelineCallable
 from .modules.processors.chained_processor import ChainedProcessor
 from .modules.processors.interruptible_processor import InterruptibleProcessor
+from .traits.with_builderable.with_builderable import WithBuilderable
 from .traits.with_callable_pipeline.with_callable_pipeline import (
     WithCallablePipeline,
 )
@@ -40,6 +41,7 @@ __all__ = [
     "InterruptibleProcessor",
     # Traits
     "WithCallablePipeline",
+    "WithBuilderable",
     "WithImmutability",
     "WithPipe",
     "WithPipelineBuilder",

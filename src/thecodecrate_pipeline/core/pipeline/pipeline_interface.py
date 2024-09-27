@@ -1,8 +1,7 @@
-from abc import ABC, abstractmethod
-from typing import Generic, Optional
-from thecodecrate_builderable import Builderable
-
+from abc import abstractmethod
+from typing import Generic, Optional, Protocol
 from ...traits.with_stages.with_stages import WithStages
+from ...traits.with_builderable.with_builderable import WithBuilderable
 from ...traits.with_callable_pipeline.with_callable_pipeline import (
     WithCallablePipeline,
 )
@@ -15,14 +14,14 @@ from .payload import TPayload
 
 
 class PipelineInterface(
-    WithImmutability["PipelineInterface[TPayload]", TPayload],
-    WithCallablePipeline["PipelineInterface[TPayload]", TPayload],
-    WithProcessor["PipelineInterface[TPayload]", TPayload],
-    WithPipe["PipelineInterface[TPayload]", TPayload],
-    WithStages["PipelineInterface[TPayload]", TPayload],
-    Builderable[TPayload, PipelineCallable[TPayload]],
+    WithImmutability[TPayload],
+    WithCallablePipeline[TPayload],
+    WithProcessor[TPayload],
+    WithPipe[TPayload],
+    WithStages[TPayload],
+    WithBuilderable[TPayload],
     Generic[TPayload],
-    ABC,
+    Protocol,
 ):
     @abstractmethod
     def __init__(
