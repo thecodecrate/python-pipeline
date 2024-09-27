@@ -45,7 +45,7 @@ documentation = "https://github.com/thecodecrate/python-pipeline"
 [tool.bumpver]
 current_version = "1.2.0"
 version_pattern = "MAJOR.MINOR.PATCH"
-commit_message = "bump version {old_version} -> {new_version}"
+commit_message = "🚀 feat: bump version {old_version} -> {new_version}"
 tag_message = "{new_version}"
 tag_scope = "default"
 pre_commit_hook = ""
