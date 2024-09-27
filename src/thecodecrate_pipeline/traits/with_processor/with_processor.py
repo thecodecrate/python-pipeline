@@ -1,4 +1,4 @@
-from typing import Generic, Optional, Protocol
+from typing import Generic, Optional, Protocol, Self
 from .processor_interface import ProcessorInterface
 from ..with_builderable.with_builderable import WithBuilderable
 from ..with_stages.with_stages import WithStages
@@ -12,13 +12,14 @@ class WithProcessor(
     Protocol,
 ):
     processor_class: Optional[type[ProcessorInterface[TPayload]]] = None
+
     processor: Optional[ProcessorInterface[TPayload]] = None
 
     def process(
         self,
         payload: TPayload,
     ) -> TPayload:
-        return self.get_processor().process(self.stages, payload)
+        return self.get_processor().process(self.get_parts(), payload)
 
     def get_processor(self) -> ProcessorInterface[TPayload]:
         if self.processor:
@@ -31,3 +32,8 @@ class WithProcessor(
             self.processor = self.processor_class()
 
         return self.processor
+
+    def set_processor(self, processor: ProcessorInterface[TPayload]) -> Self:
+        self.processor = processor
+
+        return self
