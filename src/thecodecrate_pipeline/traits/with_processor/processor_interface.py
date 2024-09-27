@@ -1,12 +1,12 @@
-from abc import ABC, abstractmethod
-from typing import Generic
+from abc import abstractmethod
+from typing import Generic, Protocol
 from ...core.pipeline.payload import TPayload
 from ...core.pipeline.pipeline_callable import PipelineCallable
 
 
 class ProcessorInterface(
     Generic[TPayload],
-    ABC,
+    Protocol,
 ):
     @abstractmethod
     def process(
