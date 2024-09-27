@@ -56,7 +56,7 @@ type-hint. So closures and anything that's invokable is good.
 pipeline = Pipeline().pipe(lambda payload: payload * 10)
 
 # Returns 100
-pipeline.process(10)
+await pipeline.process(10)
 ```
 
 ## Type hinting
@@ -70,7 +70,7 @@ pipeline = (
 )
 
 # Returns 100
-pipeline.process(10)
+await pipeline.process(10)
 ```
 
 ## Class based stages
@@ -81,11 +81,11 @@ for the `__call__` method.
 
 ```python
 class TimesTwoStage(StageInterface[int]):
-    def __call__(self, payload: int) -> int:
+    async def __call__(self, payload: int) -> int:
         return payload * 2
 
 class AddOneStage(StageInterface[int]):
-    def __call__(self, payload: int) -> int:
+    async def __call__(self, payload: int) -> int:
         return payload + 1
 
 pipeline = (
@@ -95,7 +95,7 @@ pipeline = (
 )
 
 # Returns 21
-pipeline.process(10)
+await pipeline.process(10)
 ```
 
 ## Re-usable Pipelines
@@ -121,7 +121,7 @@ pipeline = (
     .pipe(ConvertToResponseDto())
 )
 
-pipeline.process(DeleteBlogPost(post_id))
+await pipeline.process(DeleteBlogPost(post_id))
 ```
 
 ## Pipeline Builders
@@ -155,7 +155,7 @@ pipeline processes a payload.
 pipeline = Pipeline().pipe(lambda payload: payload / 0)
 
 try:
-    pipeline.process(10)
+    await pipeline.process(10)
 except ValueError as e:
     # Handle the exception.
     pass

@@ -23,4 +23,4 @@ class WithPipelineBuilder(
         self,
         processor: Optional[ProcessorInterface[TPayload]] = None,
     ) -> Pipeline[TPayload]:
-        return Pipeline[TPayload](processor=processor, stages=self.stages)
+        return Pipeline[TPayload](processor=processor, stages=self.get_parts())

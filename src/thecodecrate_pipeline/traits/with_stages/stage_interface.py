@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Generic, Protocol
+from typing import Any, Generic, Protocol
 from ...core.pipeline.payload import TPayload
 
 
@@ -8,5 +8,10 @@ class StageInterface(
     Protocol,
 ):
     @abstractmethod
-    def __call__(self, payload: TPayload) -> TPayload:
+    async def __call__(
+        self,
+        payload: TPayload,
+        *args: Any,
+        **kwds: Any,
+    ) -> TPayload:
         pass
