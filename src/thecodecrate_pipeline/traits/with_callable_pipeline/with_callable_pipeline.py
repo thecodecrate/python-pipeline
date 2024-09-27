@@ -14,5 +14,5 @@ class WithCallablePipeline(
     Generic[TPayload],
     Protocol,
 ):
-    def __call__(self, payload: TPayload) -> TPayload:
-        return self.process(payload)
+    async def __call__(self, payload: TPayload) -> TPayload:
+        return await self.process(payload)

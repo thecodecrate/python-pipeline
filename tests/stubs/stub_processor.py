@@ -5,12 +5,12 @@ from thecodecrate_pipeline import (
 
 
 class StubProcessor(ProcessorInterface[int]):
-    def process(
+    async def process(
         self,
         stages: list[PipelineCallable[int]],
         payload: int,
     ) -> int:
         for stage in stages:
-            payload = stage(payload)
+            payload = await self._call_stage(stage, payload)
 
         return payload * 10

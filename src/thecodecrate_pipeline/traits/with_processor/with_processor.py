@@ -15,11 +15,11 @@ class WithProcessor(
 
     processor: Optional[ProcessorInterface[TPayload]] = None
 
-    def process(
+    async def process(
         self,
         payload: TPayload,
     ) -> TPayload:
-        return self.get_processor().process(self.get_parts(), payload)
+        return await self.get_processor().process(self.get_parts(), payload)
 
     def get_processor(self) -> ProcessorInterface[TPayload]:
         if self.processor:

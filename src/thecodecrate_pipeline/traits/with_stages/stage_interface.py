@@ -8,7 +8,7 @@ class StageInterface(
     Protocol,
 ):
     @abstractmethod
-    def __call__(
+    async def __call__(
         self,
         payload: TPayload,
         *args: Any,
