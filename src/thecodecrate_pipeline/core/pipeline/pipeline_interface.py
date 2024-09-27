@@ -29,4 +29,4 @@ class PipelineInterface(
     ) -> None:
         self.set_processor(processor or self.get_processor())
 
-        self.set_parts([*stages] if stages else [])
+        self.set_parts([*stages] if stages else self.get_parts())

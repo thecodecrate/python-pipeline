@@ -144,6 +144,30 @@ pipeline_builder = (
 pipeline = pipeline_builder.build()
 ```
 
+## Declarative Pipeline Stages
+
+You can define pipeline stages declaratively by specifying them as class-level attributes. This makes it easier to set up and reuse pipelines with predefined stages.
+
+Example:
+
+```python
+class MyPipeline(Pipeline[int]):
+    processor_class = ChainedProcessor
+    stages = [
+        TimesTwoStage(),
+        TimesThreeStage(),
+    ]
+
+# Process the payload through the pipeline with the declared stages
+result = await MyPipeline().process(5)
+
+# Returns 30
+```
+
+In this example, `MyPipeline` declares its stages (`TimesTwoStage` and `TimesThreeStage`) directly in the class definition, making the pipeline easier to set up and more readable.
+
+This declarative approach allows you to easily reuse pipelines across your project without needing to manually compose them every time.
+
 ## Exception handling
 
 This package is completely transparent when dealing with exceptions. In no case

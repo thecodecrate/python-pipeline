@@ -112,3 +112,26 @@ async def test_interruptible_processor():
 
     assert await pipeline.process(3) == 7
     assert await pipeline.process(1) == 2
+
+
+@pytest.mark.asyncio
+async def test_declarative_stages():
+    class MyPipeline(Pipeline[int]):
+        stages = [
+            TimesTwoStage(),
+            TimesThreeStage(),
+        ]
+
+    assert await MyPipeline().process(5) == 30
+
+
+@pytest.mark.asyncio
+async def test_declarative_stages_with_processor():
+    class MyPipeline(Pipeline[int]):
+        processor_class = StubProcessor
+        stages = [
+            TimesTwoStage(),
+            TimesThreeStage(),
+        ]
+
+    assert await MyPipeline().process(5) == 300
