@@ -3,6 +3,7 @@ alias wip='git add . && git commit -m '\''Work in progress'\'
 alias nope='git reset --hard && git clean -f -d && git checkout HEAD'
 
 # Alias for publishing the package to pypi
+alias clean_dist='rm -rf dist/*'
 alias bump='bumpver update --minor'
-alias build='python -m build'
+alias build='clean_dist && python -m build'
 alias publish='twine upload dist/*'

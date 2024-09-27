@@ -1,14 +1,13 @@
-from abc import ABC
-from typing import Generic
-
-from .parent_class import TParentClass
+from typing import Generic, Protocol
+from ..with_builderable.with_builderable import WithBuilderable
 from ...core.pipeline.pipeline_callable import PipelineCallable
 from ...core.pipeline.payload import TPayload
 
 
 class WithStages(
-    Generic[TParentClass, TPayload],
-    ABC,
+    WithBuilderable[TPayload],
+    Generic[TPayload],
+    Protocol,
 ):
     stages: list[PipelineCallable[TPayload]] = []
 

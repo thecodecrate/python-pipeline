@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import Generic
-
 from ...core.pipeline.payload import TPayload
 from ...core.pipeline.pipeline_callable import PipelineCallable
 

@@ -1,20 +1,17 @@
-from abc import ABC
-from typing import Generic
-from thecodecrate_builderable import Builderable
-
+from typing import Generic, Protocol
 from ...traits.with_stages.with_stages import WithStages
+from ...traits.with_builderable.with_builderable import WithBuilderable
 from ...traits.with_pipeline_builder.with_pipeline_builder import (
     WithPipelineBuilder,
 )
-from ..pipeline.pipeline_callable import PipelineCallable
 from ..pipeline.payload import TPayload
 
 
 class PipelineBuilderInterface(
-    WithPipelineBuilder["PipelineBuilderInterface[TPayload]", TPayload],
-    WithStages["PipelineBuilderInterface[TPayload]", TPayload],
-    Builderable[TPayload, PipelineCallable[TPayload]],
+    WithPipelineBuilder[TPayload],
+    WithStages[TPayload],
+    WithBuilderable[TPayload],
     Generic[TPayload],
-    ABC,
+    Protocol,
 ):
     pass

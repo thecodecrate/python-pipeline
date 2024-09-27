@@ -7,6 +7,7 @@ from .core.pipeline_builder.pipeline_builder import PipelineBuilderInterface
 from .core.pipeline.pipeline_callable import PipelineCallable
 from .modules.processors.chained_processor import ChainedProcessor
 from .modules.processors.interruptible_processor import InterruptibleProcessor
+from .traits.with_builderable.with_builderable import WithBuilderable
 from .traits.with_callable_pipeline.with_callable_pipeline import (
     WithCallablePipeline,
 )
@@ -23,7 +24,7 @@ from .traits.with_stages.with_stages import WithStages
 # This will be updated by `bumpver` command.
 # - Make sure to commit all changes first before running `bumpver`.
 # - Run `bumpver update --[minor|major|patch]`
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 
 # Expose the public API
 __all__ = [
@@ -40,6 +41,7 @@ __all__ = [
     "InterruptibleProcessor",
     # Traits
     "WithCallablePipeline",
+    "WithBuilderable",
     "WithImmutability",
     "WithPipe",
     "WithPipelineBuilder",

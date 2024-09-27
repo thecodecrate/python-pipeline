@@ -1,12 +1,11 @@
-from abc import ABC, abstractmethod
-from typing import Generic
-
+from abc import abstractmethod
+from typing import Generic, Protocol
 from ...core.pipeline.payload import TPayload
 
 
 class StageInterface(
     Generic[TPayload],
-    ABC,
+    Protocol,
 ):
     @abstractmethod
     def __call__(self, payload: TPayload) -> TPayload:
