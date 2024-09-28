@@ -8,5 +8,4 @@ class PipelineBuilder(
     PipelineBuilderInterface[TPayload],
     Generic[TPayload],
 ):
-    def __init__(self) -> None:
-        self.set_parts([])
+    pass
