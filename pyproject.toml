@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "thecodecrate-pipeline"
-version = "1.5.0"
+version = "1.6.0"
 description = "This package provides a pipeline pattern implementation"
 readme = "README.md"
 authors = [{ name = "TheCodeCrate", email = "loureiro.rg@gmail.com" }]
@@ -42,7 +42,7 @@ repository = "https://github.com/thecodecrate/python-pipeline"
 documentation = "https://github.com/thecodecrate/python-pipeline"
 
 [tool.bumpver]
-current_version = "1.5.0"
+current_version = "1.6.0"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message = "🚀 feat: bump version {old_version} -> {new_version}"
 tag_message = "{new_version}"
