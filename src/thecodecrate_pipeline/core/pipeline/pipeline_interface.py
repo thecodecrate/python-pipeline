@@ -1,4 +1,5 @@
-from typing import Generic, Optional, Protocol
+from typing import Optional, Protocol
+
 from ...traits.with_stages.with_stages import WithStages
 from ...traits.with_builderable.with_builderable import WithBuilderable
 from ...traits.with_callable_pipeline.with_callable_pipeline import (
@@ -19,13 +20,12 @@ class PipelineInterface(
     WithPipe[TPayload],
     WithStages[TPayload],
     WithBuilderable[TPayload],
-    Generic[TPayload],
-    Protocol,
+    Protocol[TPayload],
 ):
     def __init__(
         self,
         processor: Optional[ProcessorInterface[TPayload]] = None,
-        stages: Optional[list[PipelineCallable[TPayload]]] = None,
+        stages: Optional[list[PipelineCallable[TPayload, ...]]] = None,
     ) -> None:
         self.set_processor(processor or self.get_processor())
 

@@ -1,5 +1,9 @@
 import pytest
 
+from tests.stubs.stub_stage_with_custom_args import (
+    IndexedPipeline,
+    IndexedStageInterface,
+)
 from thecodecrate_pipeline import (
     Pipeline,
     InterruptibleProcessor,
@@ -135,3 +139,16 @@ async def test_declarative_stages_with_processor():
         ]
 
     assert await MyPipeline().process(5) == 300
+
+
+@pytest.mark.asyncio
+async def test_stages_with_custom_args():
+    class MyIndexedStage(IndexedStageInterface[str]):
+        async def __call__(self, payload: str, index: int) -> str:
+            return f"{payload}: {index}"
+
+    pipeline = (
+        (IndexedPipeline[str]()).pipe(MyIndexedStage()).pipe(MyIndexedStage())
+    )
+
+    assert await pipeline.process("test") == "test: 0: 1"

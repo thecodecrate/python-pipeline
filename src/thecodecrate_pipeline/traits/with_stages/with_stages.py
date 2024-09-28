@@ -1,4 +1,5 @@
-from typing import Generic, Protocol, Self
+from typing import Protocol, Self
+
 from ..with_builderable.with_builderable import WithBuilderable
 from ...core.pipeline.pipeline_callable import PipelineCallable
 from ...core.pipeline.payload import TPayload
@@ -6,15 +7,14 @@ from ...core.pipeline.payload import TPayload
 
 class WithStages(
     WithBuilderable[TPayload],
-    Generic[TPayload],
-    Protocol,
+    Protocol[TPayload],
 ):
-    stages: list[PipelineCallable[TPayload]] = []
+    stages: list[PipelineCallable[TPayload, ...]] = []
 
-    def get_parts(self) -> list[PipelineCallable[TPayload]]:
+    def get_parts(self) -> list[PipelineCallable[TPayload, ...]]:
         return self.stages
 
-    def set_parts(self, parts: list[PipelineCallable[TPayload]]) -> Self:
+    def set_parts(self, parts: list[PipelineCallable[TPayload, ...]]) -> Self:
         self.stages = parts
 
         return self

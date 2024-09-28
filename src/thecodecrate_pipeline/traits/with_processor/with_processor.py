@@ -1,4 +1,5 @@
-from typing import Generic, Optional, Protocol, Self
+from typing import Optional, Protocol, Self
+
 from .processor_interface import ProcessorInterface
 from ..with_builderable.with_builderable import WithBuilderable
 from ..with_stages.with_stages import WithStages
@@ -8,8 +9,7 @@ from ...core.pipeline.payload import TPayload
 class WithProcessor(
     WithStages[TPayload],
     WithBuilderable[TPayload],
-    Generic[TPayload],
-    Protocol,
+    Protocol[TPayload],
 ):
     processor_class: Optional[type[ProcessorInterface[TPayload]]] = None
 

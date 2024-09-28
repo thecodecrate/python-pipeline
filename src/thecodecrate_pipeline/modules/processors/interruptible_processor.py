@@ -9,17 +9,17 @@ class InterruptibleProcessor(
     ProcessorInterface[TPayload],
     Generic[TPayload],
 ):
-    check: PipelineCallable[TPayload]
+    check: PipelineCallable[TPayload, ...]
 
     def __init__(
         self,
-        check: PipelineCallable[TPayload],
+        check: PipelineCallable[TPayload, ...],
     ) -> None:
         self.check = check
 
     async def process(
         self,
-        stages: list[PipelineCallable[TPayload]],
+        stages: list[PipelineCallable[TPayload, ...]],
         payload: TPayload,
     ) -> TPayload:
         for stage in stages:

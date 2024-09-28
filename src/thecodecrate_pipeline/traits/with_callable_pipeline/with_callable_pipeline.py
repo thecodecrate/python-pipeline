@@ -1,4 +1,5 @@
-from typing import Generic, Protocol
+from typing import Protocol
+
 from ..with_builderable.with_builderable import WithBuilderable
 from ..with_processor.with_processor import WithProcessor
 from ..with_stages.with_stages import WithStages
@@ -11,8 +12,7 @@ class WithCallablePipeline(
     WithProcessor[TPayload],
     WithStages[TPayload],
     WithBuilderable[TPayload],
-    Generic[TPayload],
-    Protocol,
+    Protocol[TPayload],
 ):
     async def __call__(self, payload: TPayload) -> TPayload:
         return await self.process(payload)
