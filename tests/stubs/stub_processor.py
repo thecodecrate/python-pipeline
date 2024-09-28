@@ -7,7 +7,7 @@ from thecodecrate_pipeline import (
 class StubProcessor(ProcessorInterface[int]):
     async def process(
         self,
-        stages: list[PipelineCallable[int]],
+        stages: list[PipelineCallable[int, ...]],
         payload: int,
     ) -> int:
         for stage in stages:

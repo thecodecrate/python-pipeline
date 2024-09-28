@@ -11,7 +11,7 @@ class ChainedProcessor(
 ):
     async def process(
         self,
-        stages: list[PipelineCallable[TPayload]],
+        stages: list[PipelineCallable[TPayload, ...]],
         payload: TPayload,
     ) -> TPayload:
         for stage in stages:

@@ -1,4 +1,4 @@
-from typing import Generic, Optional, Protocol, Self
+from typing import Optional, Protocol, Self
 
 from ..with_builderable.with_builderable import WithBuilderable
 from ..with_processor.with_processor import WithProcessor
@@ -13,10 +13,9 @@ class WithPipelineBuilder(
     WithProcessor[TPayload],
     WithStages[TPayload],
     WithBuilderable[TPayload],
-    Generic[TPayload],
-    Protocol,
+    Protocol[TPayload],
 ):
-    def add(self, part: PipelineCallable[TPayload]) -> Self:
+    def add(self, part: PipelineCallable[TPayload, ...]) -> Self:
         return self.add_part(part)
 
     def build(
