@@ -8,7 +8,7 @@ from thecodecrate_pipeline import (
     Pipeline,
     InterruptibleProcessor,
 )
-from .stubs.stub_int_stages import (
+from .stubs.stub_stages_int import (
     AddOneStage,
     TimesThreeStage,
     TimesTwoStage,

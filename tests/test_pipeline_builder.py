@@ -3,7 +3,7 @@ import pytest
 from thecodecrate_pipeline import (
     PipelineBuilder,
 )
-from .stubs.stub_int_stages import (
+from .stubs.stub_stages_int import (
     AddOneStage,
     TimesThreeStage,
     TimesTwoStage,
@@ -39,6 +39,7 @@ async def test_immutability():
     assert await pipeline.process(1) == 5
 
     new_builder = pipeline_builder.add(TimesThreeStage())
+    new_pipeline = new_builder.build()
 
-    assert await new_builder.build().process(1) == 15
+    assert await new_pipeline.process(1) == 15
     assert await pipeline.process(1) == 5
