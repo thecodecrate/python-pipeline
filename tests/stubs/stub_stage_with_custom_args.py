@@ -2,11 +2,11 @@ from abc import abstractmethod
 from typing import Awaitable, Callable, Concatenate
 
 from thecodecrate_pipeline import (
-    PipelineInterface,
+    Pipeline,
     ProcessorInterface,
     StageInterface,
+    TPayload,
 )
-from thecodecrate_pipeline.core.pipeline.payload import TPayload
 
 
 class IndexedStageInterface(StageInterface[TPayload]):
@@ -29,15 +29,15 @@ IndexedPipelineCallable = (
 class IndexedProcessor(ProcessorInterface[TPayload]):
     async def process(
         self,
-        stages: list[IndexedPipelineCallable[TPayload]],
         payload: TPayload,
+        stages: list[IndexedPipelineCallable[TPayload]],
     ) -> TPayload:
         index = 0
 
         for stage in stages:
             payload = await self._call_stage(
-                stage=stage,
                 payload=payload,
+                stage=stage,
                 index=index,
             )
 
@@ -46,5 +46,5 @@ class IndexedProcessor(ProcessorInterface[TPayload]):
         return payload
 
 
-class IndexedPipeline(PipelineInterface[TPayload]):
+class IndexedPipeline(Pipeline[TPayload]):
     processor_class = IndexedProcessor

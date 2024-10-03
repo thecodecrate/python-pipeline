@@ -1,8 +1,8 @@
-# Python-Pipeline
+# TheCodeCrate's Pipeline
 
 This package provides a pipeline pattern implementation.
 
-It is a port of the [PHP League Pipeline](https://github.com/thephpleague/pipeline) package.
+The implementation is based on the excellent [PHP League Pipeline](https://github.com/thephpleague/pipeline) package.
 
 ## Installation
 
