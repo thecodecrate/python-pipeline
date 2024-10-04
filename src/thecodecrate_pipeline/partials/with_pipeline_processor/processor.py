@@ -6,7 +6,7 @@ from .processor_interface import (
     ProcessorInterface as ImplementsProcessorInterface,
 )
 from ..with_base.type_payload import TPayload
-from ..with_base.type_pipeline_item import PipelineItem
+from ..with_base.type_pipeline_callable import PipelineCallable
 
 
 class Processor(
@@ -17,7 +17,7 @@ class Processor(
     async def process(
         self,
         payload: TPayload,
-        stages: list[PipelineItem[TPayload, ...]],
+        stages: list[PipelineCallable[TPayload, ...]],
         *args: Any,
         **kwds: Any,
     ) -> TPayload:
@@ -26,7 +26,7 @@ class Processor(
     async def _call_stage(
         self,
         payload: TPayload,
-        stage: PipelineItem[TPayload, ...],
+        stage: PipelineCallable[TPayload, ...],
         *args: Any,
         **kwds: Any,
     ) -> TPayload:
