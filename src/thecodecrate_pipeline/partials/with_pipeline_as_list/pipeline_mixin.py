@@ -15,12 +15,12 @@ class PipelineMixin(
     ImplementsPipelineInterface[TPayload],
     Protocol[TPayload],
 ):
-    stages: list[PipelineCallable[TPayload, ...]] = []
+    stage_instances: list[PipelineCallable[TPayload, ...]] = []
 
     def get_items(self) -> list[PipelineCallable[TPayload, ...]]:
-        return self.stages
+        return self.stage_instances
 
     def set_items(self, items: list[PipelineCallable[TPayload, ...]]) -> Self:
-        self.stages = items
+        self.stage_instances = items
 
         return self
