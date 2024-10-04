@@ -17,5 +17,4 @@ class StageInterfaceMixin(
         payload: TPayload,
         *args: Any,
         **kwds: Any,
-    ) -> TPayload:
-        pass
+    ) -> TPayload: ...

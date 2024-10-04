@@ -1,20 +1,24 @@
 from typing import Any, Generic
 
-from ..partials.with_base.type_pipeline_item import PipelineItem
+from ..partials.with_base.type_pipeline_callable import PipelineCallable
 from ..partials.with_base.type_payload import TPayload
 from ..partials.with_pipeline_processor.processor_interface import (
-    ProcessorInterface,
+    ProcessorInterface as ImplementsProcessorInterface,
+)
+from ..partials.with_pipeline_processor.processor import (
+    Processor as WithProcessorConcern,
 )
 
 
 class ChainedProcessor(
-    ProcessorInterface[TPayload],
+    WithProcessorConcern[TPayload],
+    ImplementsProcessorInterface[TPayload],
     Generic[TPayload],
 ):
     async def process(
         self,
         payload: TPayload,
-        stages: list[PipelineItem[TPayload, ...]],
+        stages: list[PipelineCallable[TPayload, ...]],
         *args: Any,
         **kwds: Any,
     ) -> TPayload:

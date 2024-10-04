@@ -1,13 +1,13 @@
 from thecodecrate_pipeline import (
-    ProcessorInterface,
-    PipelineItem,
+    Processor,
+    PipelineCallable,
 )
 
 
-class StubProcessor(ProcessorInterface[int]):
+class StubProcessor(Processor[int]):
     async def process(
         self,
-        stages: list[PipelineItem[int, ...]],
+        stages: list[PipelineCallable[int, ...]],
         payload: int,
     ) -> int:
         for stage in stages:

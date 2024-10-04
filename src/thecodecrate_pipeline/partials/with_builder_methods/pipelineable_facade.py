@@ -1,6 +1,6 @@
 from typing import Any, Protocol, TypeVar
 
-from ..with_base.type_pipeline_item import TPayload
+from ..with_base.type_payload import TPayload
 from ..with_base.pipeline_interface import (
     PipelineInterface as WithPipelineBaseInterface,
 )

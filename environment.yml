@@ -6,8 +6,6 @@ dependencies:
   - python=3.11
   - pip
   - pip:
-    # project dependencies
-    - thecodecrate-builderable
     # jupyter
     - ipykernel
     # test suite: pytest

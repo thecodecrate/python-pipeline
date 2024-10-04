@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "thecodecrate-pipeline"
-version = "1.7.0"
+version = "1.8.0"
 description = "This package provides a pipeline pattern implementation"
 readme = "README.md"
 authors = [{ name = "TheCodeCrate", email = "loureiro.rg@gmail.com" }]
@@ -22,7 +22,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 keywords = ["pipeline", "python", "library", "python-pipeline"]
-dependencies = ["thecodecrate-builderable"]
+dependencies = []
 requires-python = ">=3.11"
 
 [project.optional-dependencies]
@@ -42,7 +42,7 @@ repository = "https://github.com/thecodecrate/python-pipeline"
 documentation = "https://github.com/thecodecrate/python-pipeline"
 
 [tool.bumpver]
-current_version = "1.7.0"
+current_version = "1.8.0"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message = "🚀 feat: bump version {old_version} -> {new_version}"
 tag_message = "{new_version}"

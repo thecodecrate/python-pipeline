@@ -1,8 +1,11 @@
-from typing import Generic
-
-from .pipeline_interface import PipelineInterface
-from ..partials.with_base.type_payload import TPayload
+from .pipeline_interface import (
+    PipelineInterface as ImplementsPipelineInterface,
+)
 from ..processors.chained_processor import ChainedProcessor
+from ..partials.with_base.type_payload import TPayload
+from ..partials.with_base.pipeline import (
+    Pipeline as WithPipelineBaseConcern,
+)
 from ..partials.with_pipeline_as_list.pipeline_mixin import (
     PipelineMixin as WithPipelineAsListConcern,
 )
@@ -26,7 +29,7 @@ class Pipeline(
     WithPipelineAsStageConcern[TPayload],
     WithPipelineProcessorConcern[TPayload],
     WithPipelineAsListConcern[TPayload],
-    PipelineInterface[TPayload],
-    Generic[TPayload],
+    WithPipelineBaseConcern,
+    ImplementsPipelineInterface[TPayload],
 ):
     processor_class = ChainedProcessor

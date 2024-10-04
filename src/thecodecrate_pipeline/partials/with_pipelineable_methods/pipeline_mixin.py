@@ -1,15 +1,15 @@
 from typing import Protocol, Self, Optional
 
 from ..with_pipeline_processor.processor_interface import ProcessorInterface
-from ..with_base.type_pipeline_item import PipelineItem
+from ..with_base.type_pipeline_callable import PipelineCallable
 from ..with_base.type_payload import TPayload
 from .pipeline_interface_mixin import (
-    PipelineInterfaceMixin as PipelineInterface,
+    PipelineInterfaceMixin as ImplementsPipelineInterface,
 )
 
 
 class PipelineMixin(
-    PipelineInterface[TPayload],
+    ImplementsPipelineInterface[TPayload],
     Protocol[TPayload],
 ):
     def __init__(
@@ -22,5 +22,5 @@ class PipelineMixin(
             processor or self.get_processor()
         )
 
-    def pipe(self, stage: PipelineItem[TPayload, ...]) -> Self:
+    def pipe(self, stage: PipelineCallable[TPayload, ...]) -> Self:
         return self.add_item(stage)

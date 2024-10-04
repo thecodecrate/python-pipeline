@@ -1,11 +1,16 @@
 from abc import abstractmethod
+import inspect
 from typing import Any, Protocol
 
+from .processor_interface import (
+    ProcessorInterface as ImplementsProcessorInterface,
+)
 from ..with_base.type_payload import TPayload
 from ..with_base.type_pipeline_callable import PipelineCallable
 
 
-class ProcessorInterface(
+class Processor(
+    ImplementsProcessorInterface[TPayload],
     Protocol[TPayload],
 ):
     @abstractmethod
@@ -15,7 +20,8 @@ class ProcessorInterface(
         stages: list[PipelineCallable[TPayload, ...]],
         *args: Any,
         **kwds: Any,
-    ) -> TPayload: ...
+    ) -> TPayload:
+        pass
 
     async def _call_stage(
         self,
@@ -23,4 +29,10 @@ class ProcessorInterface(
         stage: PipelineCallable[TPayload, ...],
         *args: Any,
         **kwds: Any,
-    ) -> TPayload: ...
+    ) -> TPayload:
+        result = stage(payload, *args, **kwds)
+
+        if inspect.isawaitable(result):
+            return await result
+
+        return result
