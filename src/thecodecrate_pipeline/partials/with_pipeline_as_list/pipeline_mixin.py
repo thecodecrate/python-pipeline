@@ -1,4 +1,4 @@
-from typing import Protocol, Self
+from typing import Self
 
 from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as ImplementsPipelineInterface,
@@ -13,7 +13,6 @@ from ...support.renamable_list.renamable_list import (
 class PipelineMixin(
     RenamableListConcern[PipelineCallable[TPayload, ...]],
     ImplementsPipelineInterface[TPayload],
-    Protocol[TPayload],
 ):
     stage_instances: list[PipelineCallable[TPayload, ...]] = []
 

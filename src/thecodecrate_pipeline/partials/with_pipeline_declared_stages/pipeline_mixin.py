@@ -1,9 +1,6 @@
-from typing import Any, Generic
+from typing import Any
 
-from thecodecrate_pipeline.partials.with_base.type_pipeline_callable import (
-    PipelineCallable,
-)
-
+from ..with_base.type_pipeline_callable import PipelineCallable
 from .stage_facade import StageFacade
 from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as ImplementsPipelineInterface,
@@ -19,7 +16,6 @@ PipelineCallableOrStage = (
 
 class PipelineMixin(
     ImplementsPipelineInterface[TPayload],
-    Generic[TPayload],
 ):
     stages: list[PipelineCallableOrStage[TPayload]] = []
 
@@ -33,7 +29,9 @@ class PipelineMixin(
         self._instantiate_stages()
 
     def _instantiate_stages(self) -> None:
-        self.stage_instances = [
+        instances = [
             stage() if isinstance(stage, type) else stage
             for stage in self.stages
         ]
+
+        self.set_items(instances)

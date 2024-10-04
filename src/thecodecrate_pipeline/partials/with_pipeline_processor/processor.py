@@ -1,6 +1,6 @@
 from abc import abstractmethod
 import inspect
-from typing import Any, Protocol
+from typing import Any
 
 from .processor_interface import (
     ProcessorInterface as ImplementsProcessorInterface,
@@ -11,7 +11,6 @@ from ..with_base.type_pipeline_callable import PipelineCallable
 
 class Processor(
     ImplementsProcessorInterface[TPayload],
-    Protocol[TPayload],
 ):
     @abstractmethod
     async def process(

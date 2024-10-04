@@ -1,4 +1,4 @@
-from typing import Optional, Protocol, Self
+from typing import Any, Generic, Optional, Self
 
 from .pipelineable_facade import TPipelineable
 from ..with_base.type_pipeline_callable import PipelineCallable
@@ -11,12 +11,16 @@ from ..with_pipeline_processor.processor_interface import ProcessorInterface
 
 class PipelineMixin(
     ImplementsPipelineInterface[TPayload],
-    Protocol[TPayload, TPipelineable],
+    Generic[TPayload, TPipelineable],
 ):
     pipelineable_class: type[TPipelineable]
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(
+        self,
+        *args: Any,
+        **kwds: Any,
+    ) -> None:
+        super().__init__(*args, **kwds)
 
         self.set_items(self.get_items() or [])
 

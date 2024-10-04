@@ -1,4 +1,4 @@
-from typing import Any, Generic
+from typing import Any
 
 from ..partials.with_base.type_pipeline_callable import PipelineCallable
 from ..partials.with_base.type_payload import TPayload
@@ -13,7 +13,6 @@ from ..partials.with_pipeline_processor.processor import (
 class ChainedProcessor(
     WithProcessorConcern[TPayload],
     ImplementsProcessorInterface[TPayload],
-    Generic[TPayload],
 ):
     async def process(
         self,
