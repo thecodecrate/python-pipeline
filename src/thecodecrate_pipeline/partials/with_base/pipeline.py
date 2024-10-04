@@ -1,5 +1,3 @@
-from typing import Protocol
-
 from .pipeline_interface import (
     PipelineInterface as ImplementsPipelineInterface,
 )
@@ -7,6 +5,5 @@ from .pipeline_interface import (
 
 class Pipeline(
     ImplementsPipelineInterface,
-    Protocol,
 ):
     pass

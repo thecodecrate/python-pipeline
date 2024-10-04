@@ -1,4 +1,4 @@
-from typing import Any, Protocol, Self, Optional
+from typing import Any, Self, Optional
 
 from ..with_pipeline_processor.processor_interface import ProcessorInterface
 from ..with_base.type_pipeline_callable import PipelineCallable
@@ -10,7 +10,6 @@ from .pipeline_interface_mixin import (
 
 class PipelineMixin(
     ImplementsPipelineInterface[TPayload],
-    Protocol[TPayload],
 ):
     def __init__(
         self,

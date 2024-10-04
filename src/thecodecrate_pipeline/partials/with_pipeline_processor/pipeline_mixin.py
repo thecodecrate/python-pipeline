@@ -1,4 +1,4 @@
-from typing import Optional, Protocol, Self
+from typing import Optional, Self
 
 from .processor_interface import ProcessorInterface
 from .pipeline_interface_mixin import (
@@ -9,10 +9,8 @@ from ..with_base.type_payload import TPayload
 
 class PipelineMixin(
     PipelineInterface[TPayload],
-    Protocol[TPayload],
 ):
     processor_class: Optional[type[ProcessorInterface[TPayload]]] = None
-
     processor: Optional[ProcessorInterface[TPayload]] = None
 
     async def process(

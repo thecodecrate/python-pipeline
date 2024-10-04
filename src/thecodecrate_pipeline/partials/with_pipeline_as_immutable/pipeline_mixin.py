@@ -1,5 +1,3 @@
-from typing import Protocol
-
 from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as ImplementsPipelineInterface,
 )
@@ -13,6 +11,5 @@ from ...support.renamable_list.traits.has_immutability import (
 class PipelineMixin(
     HasImmutabilityConcern[PipelineCallable[TPayload, ...]],
     ImplementsPipelineInterface[TPayload],
-    Protocol[TPayload],
 ):
     pass
