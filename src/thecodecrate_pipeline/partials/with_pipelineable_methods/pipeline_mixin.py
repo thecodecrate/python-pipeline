@@ -1,4 +1,4 @@
-from typing import Protocol, Self, Optional
+from typing import Any, Protocol, Self, Optional
 
 from ..with_pipeline_processor.processor_interface import ProcessorInterface
 from ..with_base.type_pipeline_callable import PipelineCallable
@@ -15,8 +15,10 @@ class PipelineMixin(
     def __init__(
         self,
         processor: Optional[ProcessorInterface[TPayload]] = None,
+        *args: Any,
+        **kwds: Any,
     ) -> None:
-        super().__init__()
+        super().__init__(*args, **kwds)
 
         self.set_items(self.get_items() or []).set_processor(
             processor or self.get_processor()
