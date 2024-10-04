@@ -7,6 +7,9 @@ from ..partials.with_base.pipeline_interface import (
 from ..partials.with_pipeline_as_list.pipeline_interface_mixin import (
     PipelineInterfaceMixin as WithPipelineAsListInterface,
 )
+from ..partials.with_pipeline_declared_stages.pipeline_interface_mixin import (
+    PipelineInterfaceMixin as WithPipelineDeclaredStagesInterface,
+)
 from ..partials.with_pipeline_processor.pipeline_interface_mixin import (
     PipelineInterfaceMixin as WithPipelineProcessorInterface,
 )
@@ -26,6 +29,7 @@ class PipelineInterface(
     WithPipelineAsImmutableInterface[TPayload],
     WithPipelineAsStageInterface[TPayload],
     WithPipelineProcessorInterface[TPayload],
+    WithPipelineDeclaredStagesInterface[TPayload],
     WithPipelineAsListInterface[TPayload],
     WithPipelineBaseInterface,
     Protocol[TPayload],

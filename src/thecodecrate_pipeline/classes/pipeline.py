@@ -9,6 +9,9 @@ from ..partials.with_base.pipeline import (
 from ..partials.with_pipeline_as_list.pipeline_mixin import (
     PipelineMixin as WithPipelineAsListConcern,
 )
+from ..partials.with_pipeline_declared_stages.pipeline_mixin import (
+    PipelineMixin as WithPipelineDeclaredStagesConcern,
+)
 from ..partials.with_pipeline_processor.pipeline_mixin import (
     PipelineMixin as WithPipelineProcessorConcern,
 )
@@ -28,6 +31,7 @@ class Pipeline(
     WithPipelineAsImmutableConcern[TPayload],
     WithPipelineAsStageConcern[TPayload],
     WithPipelineProcessorConcern[TPayload],
+    WithPipelineDeclaredStagesConcern[TPayload],
     WithPipelineAsListConcern[TPayload],
     WithPipelineBaseConcern,
     ImplementsPipelineInterface[TPayload],
