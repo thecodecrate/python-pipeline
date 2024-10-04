@@ -4,12 +4,12 @@ from ..with_pipeline_processor.processor_interface import ProcessorInterface
 from ..with_base.type_pipeline_item import PipelineItem
 from ..with_base.type_payload import TPayload
 from .pipeline_interface_mixin import (
-    PipelineInterfaceMixin as PipelineInterface,
+    PipelineInterfaceMixin as ImplementsPipelineInterface,
 )
 
 
 class PipelineMixin(
-    PipelineInterface[TPayload],
+    ImplementsPipelineInterface[TPayload],
     Protocol[TPayload],
 ):
     def __init__(

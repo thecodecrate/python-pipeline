@@ -3,12 +3,16 @@ from typing import Any, Generic
 from ..partials.with_base.type_pipeline_item import PipelineItem
 from ..partials.with_base.type_payload import TPayload
 from ..partials.with_pipeline_processor.processor_interface import (
-    ProcessorInterface,
+    ProcessorInterface as ImplementsProcessorInterface,
+)
+from ..partials.with_pipeline_processor.processor import (
+    Processor as WithProcessorConcern,
 )
 
 
 class ChainedProcessor(
-    ProcessorInterface[TPayload],
+    WithProcessorConcern[TPayload],
+    ImplementsProcessorInterface[TPayload],
     Generic[TPayload],
 ):
     async def process(

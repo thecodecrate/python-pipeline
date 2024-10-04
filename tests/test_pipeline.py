@@ -2,7 +2,7 @@ import pytest
 
 from tests.stubs.stub_stage_with_custom_args import (
     IndexedPipeline,
-    IndexedStageInterface,
+    IndexedStage,
 )
 from thecodecrate_pipeline import (
     Pipeline,
@@ -143,7 +143,7 @@ async def test_declarative_stages_with_processor():
 
 @pytest.mark.asyncio
 async def test_stages_with_custom_args():
-    class MyIndexedStage(IndexedStageInterface[str]):
+    class MyIndexedStage(IndexedStage[str]):
         async def __call__(self, payload: str, index: int) -> str:
             return f"{payload}: {index}"
 
