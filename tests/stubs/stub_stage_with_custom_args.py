@@ -1,50 +1,47 @@
 from abc import abstractmethod
-from typing import Awaitable, Callable, Concatenate
+from typing import Awaitable, Callable, Concatenate, cast
 
 from thecodecrate_pipeline import (
     Pipeline,
     Processor,
     Stage,
-    TPayload,
+    T_in,
+    T_out,
 )
 
 
-class IndexedStage(Stage[TPayload]):
+class IndexedStage(Stage[T_in, T_out]):
     @abstractmethod
     async def __call__(
         self,
-        payload: TPayload,
+        payload: T_in,
         tag: int,
-    ) -> TPayload:
+    ) -> T_out:
         pass
 
 
 IndexedPipelineCallable = (
-    IndexedStage[TPayload]
-    | Callable[Concatenate[TPayload, ...], Awaitable[TPayload]]
-    | Callable[Concatenate[TPayload, ...], TPayload]
+    IndexedStage[T_in, T_out]
+    | Callable[Concatenate[T_in, ...], Awaitable[T_out]]
+    | Callable[Concatenate[T_in, ...], T_out]
 )
 
 
-class IndexedProcessor(Processor[TPayload]):
+class IndexedProcessor(Processor[T_in, T_out]):
     async def process(
         self,
-        payload: TPayload,
-        stages: list[IndexedPipelineCallable[TPayload]],
-    ) -> TPayload:
+        payload: T_in,
+        stages: list[IndexedPipelineCallable],
+    ) -> T_out:
         index = 0
 
         for stage in stages:
-            payload = await self._call_stage(
-                payload=payload,
-                stage=stage,
-                index=index,
-            )
+            payload = await self._call_stage(payload, stage, index)
 
             index += 1
 
-        return payload
+        return cast(T_out, payload)
 
 
-class IndexedPipeline(Pipeline[TPayload]):
+class IndexedPipeline(Pipeline[T_in]):
     processor_class = IndexedProcessor

@@ -1,7 +1,8 @@
-from typing import Any
+import inspect
+from typing import Any, Awaitable, Callable, cast
 
-from ..partials.with_base.type_pipeline_callable import PipelineCallable
-from ..partials.with_base.type_payload import TPayload
+from ..partials.with_base.stage_callable import StageCallableType
+from ..partials.with_base.types import T_in, T_out
 from ..partials.with_pipeline_processor.processor_interface import (
     ProcessorInterface as ImplementsProcessorInterface,
 )
@@ -9,30 +10,39 @@ from ..partials.with_pipeline_processor.processor import (
     Processor as WithProcessorConcern,
 )
 
+CheckCallable = Callable[[T_in], bool | Awaitable[bool]]
+
 
 class InterruptibleProcessor(
-    WithProcessorConcern[TPayload],
-    ImplementsProcessorInterface[TPayload],
+    WithProcessorConcern[T_in, T_out],
+    ImplementsProcessorInterface[T_in, T_out],
 ):
-    check: PipelineCallable[TPayload, ...]
+    check: CheckCallable[T_in]
 
-    def __init__(
-        self,
-        check: PipelineCallable[TPayload, ...],
-    ) -> None:
+    def __init__(self, check: CheckCallable[T_in]) -> None:
         self.check = check
 
     async def process(
         self,
-        payload: TPayload,
-        stages: list[PipelineCallable[TPayload, ...]],
+        payload: T_in,
+        stages: list[StageCallableType],
         *args: Any,
         **kwds: Any,
-    ) -> TPayload:
+    ) -> T_out:
         for stage in stages:
-            payload = await self._call_stage(payload, stage, *args, **kwds)
+            payload = await self._call_stage(
+                payload=payload, stage=stage, *args, **kwds
+            )
 
-            if not self.check(payload):
-                return payload
+            if not await self._call_check(payload):
+                return cast(T_out, payload)
 
-        return payload
+        return cast(T_out, payload)
+
+    async def _call_check(self, payload: T_in) -> bool:
+        result = self.check(payload)
+
+        if inspect.isawaitable(result):
+            return await result
+
+        return result

@@ -8,8 +8,8 @@ from .classes.stage import Stage
 from .classes.stage_interface import StageInterface
 from .processors.chained_processor import ChainedProcessor
 from .processors.interruptible_processor import InterruptibleProcessor
-from .partials.with_base.type_payload import TPayload
-from .partials.with_base.type_pipeline_callable import PipelineCallable
+from .partials.with_base.types import T_in, T_out
+from .partials.with_base.stage_callable import StageCallable
 from .partials.with_base.pipeline import Pipeline as WithPipelineBase
 from .partials.with_base.pipeline_interface import (
     PipelineInterface as WithPipelineBaseInterface,
@@ -73,7 +73,7 @@ from .partials.with_stage_as_callable.stage_interface_mixin import (
 # This will be updated by `bumpver` command.
 # - Make sure to commit all changes first before running `bumpver`.
 # - Run `bumpver update --[minor|major|patch]`
-__version__ = "1.10.0"
+__version__ = "1.11.0"
 
 # Expose the public API
 __all__ = [
@@ -87,8 +87,9 @@ __all__ = [
     "PipelineBuilder",
     "PipelineBuilderInterface",
     # Types
-    "TPayload",
-    "PipelineCallable",
+    "T_in",
+    "T_out",
+    "StageCallable",
     # Processors
     "ChainedProcessor",
     "InterruptibleProcessor",

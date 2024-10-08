@@ -1,28 +1,30 @@
+from abc import ABC
 from typing import Optional, Self
 
 from .processor_interface import ProcessorInterface
 from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as PipelineInterface,
 )
-from ..with_base.type_payload import TPayload
+from ..with_base.types import T_in, T_out
 
 
 class PipelineMixin(
-    PipelineInterface[TPayload],
+    PipelineInterface[T_in, T_out],
+    ABC,
 ):
-    processor_class: Optional[type[ProcessorInterface[TPayload]]] = None
-    processor: Optional[ProcessorInterface[TPayload]] = None
+    processor_class: Optional[type[ProcessorInterface[T_in, T_out]]] = None
+    processor: Optional[ProcessorInterface[T_in, T_out]] = None
 
     async def process(
         self,
-        payload: TPayload,
-    ) -> TPayload:
+        payload: T_in,
+    ) -> T_out:
         return await self.get_processor().process(
             payload=payload,
             stages=self.get_items(),
         )
 
-    def get_processor(self) -> ProcessorInterface[TPayload]:
+    def get_processor(self) -> ProcessorInterface[T_in, T_out]:
         if self.processor:
             return self.processor
 
@@ -34,7 +36,9 @@ class PipelineMixin(
 
         return self.processor
 
-    def set_processor(self, processor: ProcessorInterface[TPayload]) -> Self:
+    def set_processor(
+        self, processor: ProcessorInterface[T_in, T_out]
+    ) -> Self:
         self.processor = processor
 
         return self

@@ -1,6 +1,5 @@
 from typing import Protocol
 
-from ..with_base.type_payload import TPayload
 from ..with_base.pipeline_interface import (
     PipelineInterface as WithPipelineBaseInterface,
 )
@@ -10,8 +9,8 @@ from ..with_pipeline_as_list.pipeline_interface_mixin import (
 
 
 class PipelineInterfaceMixin(
-    WithPipelineAsListInterface[TPayload],
+    WithPipelineAsListInterface,
     WithPipelineBaseInterface,
-    Protocol[TPayload],
+    Protocol,
 ):
     pass

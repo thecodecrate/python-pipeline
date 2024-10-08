@@ -1,7 +1,7 @@
 from typing import Protocol
 
 from .stage_facade import StageFacade as WithStageInterface
-from ..with_base.type_payload import TPayload
+from ..with_base.types import T_in, T_out
 from ..with_base.pipeline_interface import (
     PipelineInterface as WithPipelineBaseInterface,
 )
@@ -14,10 +14,10 @@ from ..with_pipeline_processor.pipeline_interface_mixin import (
 
 
 class PipelineInterfaceMixin(
-    WithStageInterface[TPayload],
-    WithPipelineProcessorInterface[TPayload],
-    WithPipelineAsListInterface[TPayload],
+    WithStageInterface[T_in, T_out],
+    WithPipelineProcessorInterface[T_in, T_out],
+    WithPipelineAsListInterface,
     WithPipelineBaseInterface,
-    Protocol[TPayload],
+    Protocol[T_in, T_out],
 ):
     pass

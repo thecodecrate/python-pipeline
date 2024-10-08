@@ -4,17 +4,18 @@ from typing import Any, Protocol
 from ..with_base.stage_interface import (
     StageInterface as WithStageBaseInterface,
 )
-from ..with_base.type_payload import TPayload
+from ..with_base.types import T_in, T_out
 
 
 class StageInterfaceMixin(
     WithStageBaseInterface,
-    Protocol[TPayload],
+    Protocol[T_in, T_out],
 ):
     @abstractmethod
     async def __call__(
         self,
-        payload: TPayload,
+        payload: T_in,
+        /,  # Make 'payload' a positional-only parameter
         *args: Any,
         **kwds: Any,
-    ) -> TPayload: ...
+    ) -> T_out: ...

@@ -2,7 +2,7 @@ from .pipeline_interface import (
     PipelineInterface as ImplementsPipelineInterface,
 )
 from ..processors.chained_processor import ChainedProcessor
-from ..partials.with_base.type_payload import TPayload
+from ..partials.with_base.types import T_in, T_out
 from ..partials.with_base.pipeline import (
     Pipeline as WithPipelineBaseConcern,
 )
@@ -27,13 +27,13 @@ from ..partials.with_pipelineable_methods.pipeline_mixin import (
 
 
 class Pipeline(
-    WithPipelineableMethodsConcern[TPayload],
-    WithPipelineAsImmutableConcern[TPayload],
-    WithPipelineAsStageConcern[TPayload],
-    WithPipelineProcessorConcern[TPayload],
-    WithPipelineDeclaredStagesConcern[TPayload],
-    WithPipelineAsListConcern[TPayload],
+    WithPipelineableMethodsConcern[T_in, T_out],
+    WithPipelineAsImmutableConcern,
+    WithPipelineAsStageConcern[T_in, T_out],
+    WithPipelineProcessorConcern[T_in, T_out],
+    WithPipelineDeclaredStagesConcern,
+    WithPipelineAsListConcern,
     WithPipelineBaseConcern,
-    ImplementsPipelineInterface[TPayload],
+    ImplementsPipelineInterface[T_in, T_out],
 ):
     processor_class = ChainedProcessor

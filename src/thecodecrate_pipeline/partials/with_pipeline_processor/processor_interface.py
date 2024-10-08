@@ -1,26 +1,26 @@
 from abc import abstractmethod
 from typing import Any, Protocol
 
-from ..with_base.type_payload import TPayload
-from ..with_base.type_pipeline_callable import PipelineCallable
+from ..with_base.types import T_in, T_out
+from ..with_base.stage_callable import StageCallableType
 
 
 class ProcessorInterface(
-    Protocol[TPayload],
+    Protocol[T_in, T_out],
 ):
     @abstractmethod
     async def process(
         self,
-        payload: TPayload,
-        stages: list[PipelineCallable[TPayload, ...]],
+        payload: T_in,
+        stages: list[StageCallableType],
         *args: Any,
         **kwds: Any,
-    ) -> TPayload: ...
+    ) -> T_out: ...
 
     async def _call_stage(
         self,
-        payload: TPayload,
-        stage: PipelineCallable[TPayload, ...],
+        payload: T_in,
+        stage: StageCallableType,
         *args: Any,
         **kwds: Any,
-    ) -> TPayload: ...
+    ) -> T_in: ...

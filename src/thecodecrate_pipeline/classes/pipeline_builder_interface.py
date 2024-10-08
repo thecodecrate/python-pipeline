@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from ..partials.with_base.type_payload import TPayload
+from ..partials.with_base.types import T_in, T_out
 from ..partials.with_base.pipeline_interface import (
     PipelineInterface as WithPipelineBaseInterface,
 )
@@ -13,9 +13,9 @@ from ..partials.with_builder_methods.pipeline_interface_mixin import (
 
 
 class PipelineBuilderInterface(
-    WithBuilderMethodsInterface[TPayload],
-    WithPipelineAsListInterface[TPayload],
+    WithBuilderMethodsInterface[T_in, T_out],
+    WithPipelineAsListInterface,
     WithPipelineBaseInterface,
-    Protocol[TPayload],
+    Protocol[T_in, T_out],
 ):
     pass

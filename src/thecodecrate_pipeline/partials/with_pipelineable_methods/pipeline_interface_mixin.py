@@ -1,7 +1,7 @@
 from typing import Protocol, Self
 
-from ..with_base.type_pipeline_callable import PipelineCallable
-from ..with_base.type_payload import TPayload
+from ..with_base.types import T_in, T_out
+from ..with_base.stage_callable import StageCallableType
 from ..with_base.pipeline_interface import (
     PipelineInterface as WithPipelineBaseInterface,
 )
@@ -14,9 +14,9 @@ from ..with_pipeline_processor.pipeline_interface_mixin import (
 
 
 class PipelineInterfaceMixin(
-    WithPipelineProcessorInterface[TPayload],
-    WithPipelineAsListInterface[TPayload],
+    WithPipelineProcessorInterface[T_in, T_out],
+    WithPipelineAsListInterface,
     WithPipelineBaseInterface,
-    Protocol[TPayload],
+    Protocol[T_in, T_out],
 ):
-    def pipe(self, stage: PipelineCallable[TPayload, ...]) -> Self: ...
+    def pipe(self, stage: StageCallableType) -> Self: ...

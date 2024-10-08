@@ -1,8 +1,9 @@
+from abc import ABC
 from typing import Any, Generic, Optional, Self
 
+from ..with_base.types import T_in, T_out
 from .pipelineable_facade import TPipelineable
-from ..with_base.type_pipeline_callable import PipelineCallable
-from ..with_base.type_payload import TPayload
+from ..with_base.stage_callable import StageCallableType
 from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as ImplementsPipelineInterface,
 )
@@ -10,8 +11,9 @@ from ..with_pipeline_processor.processor_interface import ProcessorInterface
 
 
 class PipelineMixin(
-    ImplementsPipelineInterface[TPayload],
-    Generic[TPayload, TPipelineable],
+    ImplementsPipelineInterface[T_in, T_out],
+    Generic[TPipelineable, T_in, T_out],
+    ABC,
 ):
     pipelineable_class: type[TPipelineable]
 
@@ -24,12 +26,12 @@ class PipelineMixin(
 
         self.set_items(self.get_items() or [])
 
-    def add(self, item: PipelineCallable[TPayload, ...]) -> Self:
+    def add(self, item: StageCallableType) -> Self:
         return self.add_item(item)
 
     def build(
         self,
-        processor: Optional[ProcessorInterface[TPayload]] = None,
+        processor: Optional[ProcessorInterface[T_in, T_out]] = None,
     ) -> TPipelineable:
         pipelineable = self.pipelineable_class()
 
