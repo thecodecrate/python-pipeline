@@ -1,36 +1,35 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 import inspect
-from typing import Any, Callable
+from typing import Any
 
 from .processor_interface import (
     ProcessorInterface as ImplementsProcessorInterface,
 )
-from ..with_base.payload_type import TPayload
-from ..with_base.stage_callable import StageCallable
-
-CallableAsyncOrSync = Callable[..., Any]
+from ..with_base.types import T_in, T_out
+from ..with_base.stage_callable import StageCallableType
 
 
 class Processor(
-    ImplementsProcessorInterface[TPayload],
+    ImplementsProcessorInterface[T_in, T_out],
+    ABC,
 ):
     @abstractmethod
     async def process(
         self,
-        payload: TPayload,
-        stages: list[StageCallable[TPayload]],
+        payload: T_in,
+        stages: list[StageCallableType],
         *args: Any,
         **kwds: Any,
-    ) -> TPayload:
+    ) -> T_out:
         pass
 
     async def _call_stage(
         self,
-        payload: TPayload,
-        stage: StageCallable[TPayload],
+        payload: T_in,
+        stage: StageCallableType,
         *args: Any,
         **kwds: Any,
-    ) -> TPayload:
+    ) -> T_in:
         result = stage(payload, *args, **kwds)
 
         if inspect.isawaitable(result):

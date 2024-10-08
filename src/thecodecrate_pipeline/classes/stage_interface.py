@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from ..partials.with_base.payload_type import TPayload
+from ..partials.with_base.types import T_in, T_out
 from ..partials.with_base.stage_interface import (
     StageInterface as WithStageBaseInterface,
 )
@@ -10,8 +10,8 @@ from ..partials.with_stage_as_callable.stage_interface_mixin import (
 
 
 class StageInterface(
-    WithStageAsCallableInterface[TPayload],
+    WithStageAsCallableInterface[T_in, T_out],
     WithStageBaseInterface,
-    Protocol[TPayload],
+    Protocol[T_in, T_out],
 ):
     pass

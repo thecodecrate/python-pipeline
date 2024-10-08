@@ -1,13 +1,16 @@
 from typing import Any, Awaitable, Protocol
 
-from .payload_type import TPayload
+from .types import T_in, T_out
 
 
-class StageCallable(Protocol[TPayload]):
+class StageCallable(Protocol[T_in, T_out]):
     def __call__(
         self,
-        payload: TPayload,
+        payload: T_in,
         /,  # Make 'payload' a positional-only parameter
         *args: Any,
         **kwds: Any,
-    ) -> TPayload | Awaitable[TPayload]: ...
+    ) -> T_out | Awaitable[T_out]: ...
+
+
+StageCallableType = StageCallable[Any, Any]

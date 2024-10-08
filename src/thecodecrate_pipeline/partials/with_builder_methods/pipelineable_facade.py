@@ -1,6 +1,6 @@
 from typing import Any, Protocol, TypeVar
 
-from ..with_base.payload_type import TPayload
+from ..with_base.types import T_in, T_out
 from ..with_base.pipeline_interface import (
     PipelineInterface as WithPipelineBaseInterface,
 )
@@ -13,12 +13,12 @@ from ..with_pipeline_processor.pipeline_interface_mixin import (
 
 
 class PipelineableFacade(
-    WithPipelineProcessorInterface[TPayload],
-    WithPipelineAsListInterface[TPayload],
+    WithPipelineProcessorInterface[T_in, T_out],
+    WithPipelineAsListInterface,
     WithPipelineBaseInterface,
-    Protocol[TPayload],
+    Protocol[T_in, T_out],
 ):
     pass
 
 
-TPipelineable = TypeVar("TPipelineable", bound=PipelineableFacade[Any])
+TPipelineable = TypeVar("TPipelineable", bound=PipelineableFacade[Any, Any])

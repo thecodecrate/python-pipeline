@@ -1,8 +1,8 @@
 import inspect
-from typing import Any
+from typing import Any, Awaitable, Callable, cast
 
-from ..partials.with_base.stage_callable import StageCallable
-from ..partials.with_base.payload_type import TPayload
+from ..partials.with_base.stage_callable import StageCallableType
+from ..partials.with_base.types import T_in, T_out
 from ..partials.with_pipeline_processor.processor_interface import (
     ProcessorInterface as ImplementsProcessorInterface,
 )
@@ -10,35 +10,36 @@ from ..partials.with_pipeline_processor.processor import (
     Processor as WithProcessorConcern,
 )
 
+CheckCallable = Callable[[T_in], bool | Awaitable[bool]]
+
 
 class InterruptibleProcessor(
-    WithProcessorConcern[TPayload],
-    ImplementsProcessorInterface[TPayload],
+    WithProcessorConcern[T_in, T_out],
+    ImplementsProcessorInterface[T_in, T_out],
 ):
-    check: StageCallable[TPayload]
+    check: CheckCallable[T_in]
 
-    def __init__(
-        self,
-        check: StageCallable[TPayload],
-    ) -> None:
+    def __init__(self, check: CheckCallable[T_in]) -> None:
         self.check = check
 
     async def process(
         self,
-        payload: TPayload,
-        stages: list[StageCallable[TPayload]],
+        payload: T_in,
+        stages: list[StageCallableType],
         *args: Any,
         **kwds: Any,
-    ) -> TPayload:
+    ) -> T_out:
         for stage in stages:
-            payload = await self._call_stage(payload, stage, *args, **kwds)
+            payload = await self._call_stage(
+                payload=payload, stage=stage, *args, **kwds
+            )
 
             if not await self._call_check(payload):
-                return payload
+                return cast(T_out, payload)
 
-        return payload
+        return cast(T_out, payload)
 
-    async def _call_check(self, payload: TPayload) -> TPayload:
+    async def _call_check(self, payload: T_in) -> bool:
         result = self.check(payload)
 
         if inspect.isawaitable(result):
