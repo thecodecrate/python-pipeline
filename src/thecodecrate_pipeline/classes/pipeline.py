@@ -2,7 +2,7 @@ from .pipeline_interface import (
     PipelineInterface as ImplementsPipelineInterface,
 )
 from ..processors.chained_processor import ChainedProcessor
-from ..partials.with_base.type_payload import TPayload
+from ..partials.with_base.payload_type import TPayload
 from ..partials.with_base.pipeline import (
     Pipeline as WithPipelineBaseConcern,
 )

@@ -1,23 +1,19 @@
 from typing import Any
 
-from ..with_base.type_pipeline_callable import PipelineCallable
+from ..with_base.stage_callable import StageCallable
 from .stage_facade import StageFacade
 from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as ImplementsPipelineInterface,
 )
-from ..with_base.type_payload import TPayload
+from ..with_base.payload_type import TPayload
 
-PipelineCallableOrStage = (
-    type[StageFacade[TPayload]]
-    | StageFacade[TPayload]
-    | PipelineCallable[TPayload, ...]
-)
+StageClassOrInstance = type[StageFacade[TPayload]] | StageCallable[TPayload]
 
 
 class PipelineMixin(
     ImplementsPipelineInterface[TPayload],
 ):
-    stages: list[PipelineCallableOrStage[TPayload]] = []
+    stages: list[StageClassOrInstance[TPayload]] = []
 
     def __init__(
         self,

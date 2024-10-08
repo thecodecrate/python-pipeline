@@ -1,5 +1,5 @@
 from .stage_interface import StageInterface as ImplementsStageInterface
-from ..partials.with_base.type_payload import TPayload
+from ..partials.with_base.payload_type import TPayload
 from ..partials.with_base.stage import (
     Stage as WithStageBaseConcern,
 )

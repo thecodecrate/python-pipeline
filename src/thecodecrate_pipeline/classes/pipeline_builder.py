@@ -2,7 +2,7 @@ from .pipeline import Pipeline
 from .pipeline_builder_interface import (
     PipelineBuilderInterface as ImplementsPipelineBuilderInterface,
 )
-from ..partials.with_base.type_payload import TPayload
+from ..partials.with_base.payload_type import TPayload
 from ..partials.with_base.pipeline import (
     Pipeline as WithPipelineBaseConcern,
 )

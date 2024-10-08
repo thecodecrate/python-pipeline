@@ -1,8 +1,8 @@
 from typing import Any, Self, Optional
 
 from ..with_pipeline_processor.processor_interface import ProcessorInterface
-from ..with_base.type_pipeline_callable import PipelineCallable
-from ..with_base.type_payload import TPayload
+from ..with_base.stage_callable import StageCallable
+from ..with_base.payload_type import TPayload
 from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as ImplementsPipelineInterface,
 )
@@ -23,5 +23,5 @@ class PipelineMixin(
             processor or self.get_processor()
         )
 
-    def pipe(self, stage: PipelineCallable[TPayload, ...]) -> Self:
+    def pipe(self, stage: StageCallable[TPayload]) -> Self:
         return self.add_item(stage)

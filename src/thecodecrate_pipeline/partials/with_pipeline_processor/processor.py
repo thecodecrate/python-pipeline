@@ -1,12 +1,14 @@
 from abc import abstractmethod
 import inspect
-from typing import Any
+from typing import Any, Callable
 
 from .processor_interface import (
     ProcessorInterface as ImplementsProcessorInterface,
 )
-from ..with_base.type_payload import TPayload
-from ..with_base.type_pipeline_callable import PipelineCallable
+from ..with_base.payload_type import TPayload
+from ..with_base.stage_callable import StageCallable
+
+CallableAsyncOrSync = Callable[..., Any]
 
 
 class Processor(
@@ -16,7 +18,7 @@ class Processor(
     async def process(
         self,
         payload: TPayload,
-        stages: list[PipelineCallable[TPayload, ...]],
+        stages: list[StageCallable[TPayload]],
         *args: Any,
         **kwds: Any,
     ) -> TPayload:
@@ -25,7 +27,7 @@ class Processor(
     async def _call_stage(
         self,
         payload: TPayload,
-        stage: PipelineCallable[TPayload, ...],
+        stage: StageCallable[TPayload],
         *args: Any,
         **kwds: Any,
     ) -> TPayload:

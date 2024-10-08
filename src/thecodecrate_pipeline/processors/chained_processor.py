@@ -1,7 +1,7 @@
 from typing import Any
 
-from ..partials.with_base.type_pipeline_callable import PipelineCallable
-from ..partials.with_base.type_payload import TPayload
+from ..partials.with_base.stage_callable import StageCallable
+from ..partials.with_base.payload_type import TPayload
 from ..partials.with_pipeline_processor.processor_interface import (
     ProcessorInterface as ImplementsProcessorInterface,
 )
@@ -17,7 +17,7 @@ class ChainedProcessor(
     async def process(
         self,
         payload: TPayload,
-        stages: list[PipelineCallable[TPayload, ...]],
+        stages: list[StageCallable[TPayload]],
         *args: Any,
         **kwds: Any,
     ) -> TPayload:

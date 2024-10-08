@@ -1,7 +1,7 @@
 from typing import Protocol
 
 from .stage_facade import StageFacade as WithStageInterface
-from ..with_base.type_payload import TPayload
+from ..with_base.payload_type import TPayload
 from ..with_base.pipeline_interface import (
     PipelineInterface as WithPipelineBaseInterface,
 )

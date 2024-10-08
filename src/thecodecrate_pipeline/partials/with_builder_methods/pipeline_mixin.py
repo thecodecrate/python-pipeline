@@ -1,8 +1,8 @@
 from typing import Any, Generic, Optional, Self
 
 from .pipelineable_facade import TPipelineable
-from ..with_base.type_pipeline_callable import PipelineCallable
-from ..with_base.type_payload import TPayload
+from ..with_base.stage_callable import StageCallable
+from ..with_base.payload_type import TPayload
 from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as ImplementsPipelineInterface,
 )
@@ -24,7 +24,7 @@ class PipelineMixin(
 
         self.set_items(self.get_items() or [])
 
-    def add(self, item: PipelineCallable[TPayload, ...]) -> Self:
+    def add(self, item: StageCallable[TPayload]) -> Self:
         return self.add_item(item)
 
     def build(

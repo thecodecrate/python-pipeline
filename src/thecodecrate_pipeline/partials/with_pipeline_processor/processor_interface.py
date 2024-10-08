@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from typing import Any, Protocol
 
-from ..with_base.type_payload import TPayload
-from ..with_base.type_pipeline_callable import PipelineCallable
+from ..with_base.payload_type import TPayload
+from ..with_base.stage_callable import StageCallable
 
 
 class ProcessorInterface(
@@ -12,7 +12,7 @@ class ProcessorInterface(
     async def process(
         self,
         payload: TPayload,
-        stages: list[PipelineCallable[TPayload, ...]],
+        stages: list[StageCallable[TPayload]],
         *args: Any,
         **kwds: Any,
     ) -> TPayload: ...
@@ -20,7 +20,7 @@ class ProcessorInterface(
     async def _call_stage(
         self,
         payload: TPayload,
-        stage: PipelineCallable[TPayload, ...],
+        stage: StageCallable[TPayload],
         *args: Any,
         **kwds: Any,
     ) -> TPayload: ...

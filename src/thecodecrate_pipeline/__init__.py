@@ -8,8 +8,8 @@ from .classes.stage import Stage
 from .classes.stage_interface import StageInterface
 from .processors.chained_processor import ChainedProcessor
 from .processors.interruptible_processor import InterruptibleProcessor
-from .partials.with_base.type_payload import TPayload
-from .partials.with_base.type_pipeline_callable import PipelineCallable
+from .partials.with_base.payload_type import TPayload
+from .partials.with_base.stage_callable import StageCallable
 from .partials.with_base.pipeline import Pipeline as WithPipelineBase
 from .partials.with_base.pipeline_interface import (
     PipelineInterface as WithPipelineBaseInterface,
@@ -88,7 +88,7 @@ __all__ = [
     "PipelineBuilderInterface",
     # Types
     "TPayload",
-    "PipelineCallable",
+    "StageCallable",
     # Processors
     "ChainedProcessor",
     "InterruptibleProcessor",

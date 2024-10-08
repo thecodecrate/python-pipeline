@@ -4,7 +4,7 @@ from typing import Any
 from .stage_interface_mixin import (
     StageInterfaceMixin as ImplementsStageInterface,
 )
-from ..with_base.type_payload import TPayload
+from ..with_base.payload_type import TPayload
 
 
 class StageMixin(

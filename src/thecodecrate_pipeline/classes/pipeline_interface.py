@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from ..partials.with_base.type_payload import TPayload
+from ..partials.with_base.payload_type import TPayload
 from ..partials.with_base.pipeline_interface import (
     PipelineInterface as WithPipelineBaseInterface,
 )

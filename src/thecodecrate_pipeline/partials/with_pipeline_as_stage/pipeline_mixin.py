@@ -3,7 +3,7 @@ from typing import Any
 from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as ImplementsPipelineInterface,
 )
-from ..with_base.type_payload import TPayload
+from ..with_base.payload_type import TPayload
 
 
 class PipelineMixin(
