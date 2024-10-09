@@ -4,13 +4,11 @@ from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as ImplementsPipelineInterface,
 )
 from ..with_base.stage_callable import StageCallableType
-from ...support.renamable_list.traits.has_immutability import (
-    HasImmutability as HasImmutabilityConcern,
-)
+from ...support.act_as_list import HasListImmutability
 
 
 class PipelineMixin(
-    HasImmutabilityConcern[StageCallableType],
+    HasListImmutability[StageCallableType],
     ImplementsPipelineInterface,
     ABC,
 ):

@@ -1,9 +1,9 @@
 from typing import Protocol, Self
 
-from .item_type import TItem
+from .item import TItem
 
 
-class RenamableListInterface(
+class ActAsListInterface(
     Protocol[TItem],
 ):
     def get_items(self) -> list[TItem]: ...
