@@ -5,13 +5,11 @@ from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as ImplementsPipelineInterface,
 )
 from ..with_base.stage_callable import StageCallableType
-from ...support.renamable_list.renamable_list import (
-    RenamableList as RenamableListConcern,
-)
+from ...support.act_as_list import ActAsList
 
 
 class PipelineMixin(
-    RenamableListConcern[StageCallableType],
+    ActAsList[StageCallableType],
     ImplementsPipelineInterface,
     ABC,
 ):

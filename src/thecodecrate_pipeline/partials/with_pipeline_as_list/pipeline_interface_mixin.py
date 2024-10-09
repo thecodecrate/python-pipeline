@@ -4,13 +4,13 @@ from ..with_base.stage_callable import StageCallableType
 from ..with_base.pipeline_interface import (
     PipelineInterface as WithPipelineBaseInterface,
 )
-from ...support.renamable_list.renamable_list_interface import (
-    RenamableListInterface,
+from ...support.act_as_list.act_as_list_interface import (
+    ActAsListInterface,
 )
 
 
 class PipelineInterfaceMixin(
-    RenamableListInterface[StageCallableType],
+    ActAsListInterface[StageCallableType],
     WithPipelineBaseInterface,
     Protocol,
 ):

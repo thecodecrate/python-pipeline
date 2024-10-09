@@ -1,11 +1,11 @@
 from abc import abstractmethod
 from typing import Protocol, Self
-from .item_type import TItem
-from .renamable_list_interface import RenamableListInterface
+from .item import TItem
+from .act_as_list_interface import ActAsListInterface
 
 
-class RenamableList(
-    RenamableListInterface[TItem],
+class ActAsList(
+    ActAsListInterface[TItem],
     Protocol[TItem],
 ):
     @abstractmethod
