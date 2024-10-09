@@ -192,6 +192,10 @@ The pipeline can also process streams in real-time, allowing you to handle async
 from typing import AsyncIterator
 import asyncio
 
+async def input_stream() -> AsyncIterator[int]:
+    for i in range(5):
+        yield i
+
 async def stage1(stream: AsyncIterator[int]) -> AsyncIterator[int]:
     async for item in stream:
         yield item * 2
@@ -201,24 +205,21 @@ async def stage2(stream: AsyncIterator[int]) -> AsyncIterator[str]:
     async for item in stream:
         yield f"Number: {item}"
 
-pipeline = (
-    Pipeline[AsyncIterator[int], AsyncIterator[str]]()
-    .pipe(stage1)
-    .pipe(stage2)
-)
-
-async def input_stream() -> AsyncIterator[int]:
-    for i in range(5):
-        yield i
 
 async def main():
+    pipeline = (
+        Pipeline[AsyncIterator[int], AsyncIterator[str]]()
+        .pipe(stage1)
+        .pipe(stage2)
+    )
+
     stream = await pipeline.process(input_stream())
 
     async for result in stream:
         print(result)
 
 # Run the async main function
-asyncio.run(main())
+await main()
 ```
 
 This allows you to process data in a streaming fashion, where each stage can yield results that are immediately consumed by the next stage.
