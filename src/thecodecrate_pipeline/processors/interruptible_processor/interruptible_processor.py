@@ -1,22 +1,14 @@
 import inspect
 from typing import Any, Awaitable, Callable, cast
 
-from ..partials.with_base.stage_callable import StageCallableType
-from ..partials.with_base.types import T_in, T_out
-from ..partials.with_pipeline_processor.processor_interface import (
-    ProcessorInterface as ImplementsProcessorInterface,
-)
-from ..partials.with_pipeline_processor.processor import (
-    Processor as WithProcessorConcern,
-)
+from ...classes.stage_callable import StageCallable
+from ...classes.types import T_in, T_out
+from ...classes.processor import Processor
 
 CheckCallable = Callable[[T_in], bool | Awaitable[bool]]
 
 
-class InterruptibleProcessor(
-    WithProcessorConcern[T_in, T_out],
-    ImplementsProcessorInterface[T_in, T_out],
-):
+class InterruptibleProcessor(Processor[T_in, T_out]):
     check: CheckCallable[T_in]
 
     def __init__(self, check: CheckCallable[T_in]) -> None:
@@ -25,7 +17,7 @@ class InterruptibleProcessor(
     async def process(
         self,
         payload: T_in,
-        stages: list[StageCallableType],
+        stages: list[StageCallable],
         *args: Any,
         **kwds: Any,
     ) -> T_out:
