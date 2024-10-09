@@ -10,14 +10,14 @@ async def stage1(stream: AsyncIterator[int]) -> AsyncIterator[int]:
     async for item in stream:
         # Multiply each item by 2
         yield item * 2
-        await asyncio.sleep(0.1)  # Simulate processing delay
+        await asyncio.sleep(0.01)  # Simulate processing delay
 
 
 async def stage2(stream: AsyncIterator[int]) -> AsyncIterator[str]:
     async for item in stream:
         # Convert each item to a formatted string
         yield f"Number: {item}"
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.01)
 
 
 # Create the pipeline
@@ -32,7 +32,7 @@ pipeline = (
 async def input_stream() -> AsyncIterator[int]:
     for i in range(5):
         yield i
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.01)
 
 
 @pytest.mark.asyncio
