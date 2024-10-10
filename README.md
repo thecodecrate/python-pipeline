@@ -139,10 +139,9 @@ class MyCustomProcessor(Processor[T_in, T_out]):
         stages: list[StageInterface[T_in, T_out]],
     ) -> T_out:
         # Custom processing logic
-        result = payload
         for stage in stages:
-            result = await stage(result)
-        return result
+            payload = await stage(payload)
+        return payload
 ```
 
 And use it in your pipeline:
@@ -165,25 +164,16 @@ class StatefulChainedProcessor(Processor[T_in, T_out]):
 
 class StatefulChainedCommand(Command[T_in, T_out]):
     async def execute(self) -> T_out:
+        # Custom processing logic
         for stage in self.stages:
-            self.payload = await self._call_stage(
-                stage=stage,
-                payload=self.payload,
-            )
+            self.payload = await stage(self.payload)
         return self.payload
 ```
 
 You can then use this processor in your pipeline:
 
 ```python
-pipeline = (
-    Pipeline[int, int](processor=StatefulChainedProcessor())
-    .pipe(TimesTwoStage())
-    .pipe(AddFiveStage())
-)
-
-# Returns 25 ((10 * 2) + 5)
-await pipeline.process(10)
+pipeline = Pipeline[int, int](processor=StatefulChainedProcessor()).pipe(lambda x: x * 2)
 ```
 
 ### When to Use Command-Based Processors
