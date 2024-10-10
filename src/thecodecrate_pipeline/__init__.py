@@ -6,9 +6,24 @@ from .classes.processor import Processor
 from .classes.processor_interface import ProcessorInterface
 from .classes.stage import Stage
 from .classes.stage_interface import StageInterface
-from .processors.chained_processor import ChainedProcessor
-from .processors.interruptible_processor import InterruptibleProcessor
-from .partials.with_base.types import T_in, T_out
+from .classes.types import T_in, T_out
+from .processors.chained_processor.chained_pipeline import ChainedPipeline
+from .processors.chained_processor.chained_processor import ChainedProcessor
+from .processors.interruptible_processor.interruptible_processor import (
+    InterruptibleProcessor,
+)
+from .processors.interruptible_processor.interruptible_pipeline import (
+    InterruptiblePipeline,
+)
+from .processors.stateful_chained_processor.stateful_chained_command import (
+    StatefulChainedCommand,
+)
+from .processors.stateful_chained_processor.stateful_chained_processor import (
+    StatefulChainedProcessor,
+)
+from .processors.stateful_chained_processor.stateful_chained_pipeline import (
+    StatefulChainedPipeline,
+)
 from .partials.with_base.stage_callable import StageCallable
 from .partials.with_base.pipeline import Pipeline as WithPipelineBase
 from .partials.with_base.pipeline_interface import (
@@ -73,7 +88,7 @@ from .partials.with_stage_as_callable.stage_interface_mixin import (
 # This will be updated by `bumpver` command.
 # - Make sure to commit all changes first before running `bumpver`.
 # - Run `bumpver update --[minor|major|patch]`
-__version__ = "1.12.0"
+__version__ = "1.13.0"
 
 # Expose the public API
 __all__ = [
@@ -92,7 +107,12 @@ __all__ = [
     "StageCallable",
     # Processors
     "ChainedProcessor",
+    "ChainedPipeline",
     "InterruptibleProcessor",
+    "InterruptiblePipeline",
+    "StatefulChainedProcessor",
+    "StatefulChainedPipeline",
+    "StatefulChainedCommand",
     # Partials
     "WithPipelineBase",
     "WithPipelineBaseInterface",

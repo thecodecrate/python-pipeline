@@ -1,7 +1,7 @@
 from .pipeline_interface import (
     PipelineInterface as ImplementsPipelineInterface,
 )
-from ..processors.chained_processor import ChainedProcessor
+from ..processors.chained_processor.chained_processor import ChainedProcessor
 from ..partials.with_base.types import T_in, T_out
 from ..partials.with_base.pipeline import (
     Pipeline as WithPipelineBaseConcern,

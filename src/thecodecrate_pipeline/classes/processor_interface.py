@@ -4,9 +4,13 @@ from ..partials.with_base.types import T_in, T_out
 from ..partials.with_pipeline_processor.processor_interface import (
     ProcessorInterface as WithProcessorBaseInterface,
 )
+from ..partials.with_processor_commands.processor_interface_mixin import (
+    ProcessorInterfaceMixin as WithProcessorCommandsInterface,
+)
 
 
 class ProcessorInterface(
+    WithProcessorCommandsInterface[T_in, T_out],
     WithProcessorBaseInterface[T_in, T_out],
     Protocol[T_in, T_out],
 ):
