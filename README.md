@@ -44,7 +44,7 @@ Pipelines are implemented as immutable stage chains. When you pipe a new stage, 
 
 ## Usage
 
-Operations in a pipeline, stages, can be anything that satisfies the Callable type hint. So functions and anything that's callable is acceptable.
+Operations in a pipeline, stages, can be anything that satisfies the `Callable` type hint. So functions and anything that's callable is acceptable.
 
 ```python
 pipeline = Pipeline().pipe(lambda payload: payload * 10)
@@ -137,8 +137,6 @@ class MyCustomProcessor(Processor[T_in, T_out]):
         self,
         payload: T_in,
         stages: list[StageInterface[T_in, T_out]],
-        *args: Any,
-        **kwargs: Any,
     ) -> T_out:
         # Custom processing logic
         result = payload
@@ -152,6 +150,45 @@ And use it in your pipeline:
 ```python
 pipeline = Pipeline[int, int](processor=MyCustomProcessor()).pipe(lambda x: x * 2)
 ```
+
+## Command-Based Processors
+
+In addition to the standard processors, this package supports command-based processors, which utilize the Command Pattern to encapsulate processing logic within a command object. This approach provides better encapsulation and isolation of state for each processing request.
+
+### Using Command-Based Processors
+
+You can create a command-based processor by specifying a `command_class` in your processor. The command class should inherit from `Command[T_in, T_out]` and implement the `execute` method.
+
+```python
+class StatefulChainedProcessor(Processor[T_in, T_out]):
+    command_class = StatefulChainedCommand
+
+class StatefulChainedCommand(Command[T_in, T_out]):
+    async def execute(self) -> T_out:
+        for stage in self.stages:
+            self.payload = await self._call_stage(
+                stage=stage,
+                payload=self.payload,
+            )
+        return self.payload
+```
+
+You can then use this processor in your pipeline:
+
+```python
+pipeline = (
+    Pipeline[int, int](processor=StatefulChainedProcessor())
+    .pipe(TimesTwoStage())
+    .pipe(AddFiveStage())
+)
+
+# Returns 25 ((10 * 2) + 5)
+await pipeline.process(10)
+```
+
+### When to Use Command-Based Processors
+
+Command-based processors are useful when you need to maintain state within the processing of each payload or prefer an object-oriented approach that aligns with the Command Pattern.
 
 ## Declarative Stages
 
