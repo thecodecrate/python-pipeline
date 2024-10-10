@@ -4,6 +4,8 @@ from thecodecrate_pipeline import (
     ChainedProcessor,
     InterruptiblePipeline,
     InterruptibleProcessor,
+    StatefulChainedPipeline,
+    StatefulChainedProcessor,
 )
 
 
@@ -71,3 +73,35 @@ async def test_interruptible_processor():
         ],
     )
     assert result == 7
+
+
+@pytest.mark.asyncio
+async def test_stateful_chained_pipeline():
+    pipeline = (
+        StatefulChainedPipeline[int]()
+        .pipe(lambda payload: payload + 1)
+        .pipe(lambda payload: payload * 2)
+    )
+    assert await pipeline.process(5) == 12
+
+
+@pytest.mark.asyncio
+async def test_stateful_chained_processor():
+    processor = StatefulChainedProcessor[int]()
+
+    result = await processor.process(
+        payload=5,
+        stages=[
+            lambda payload: payload + 1,
+            lambda payload: payload * 2,
+        ],
+    )
+    assert result == 12
+
+    result = await processor.process(
+        payload=5,
+        stages=[
+            lambda payload: payload + 1,
+        ],
+    )
+    assert result == 6
