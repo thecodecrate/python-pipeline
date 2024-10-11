@@ -43,3 +43,6 @@ async def test_immutability():
 
     assert await new_pipeline.process(1) == 15
     assert await pipeline.process(1) == 5
+
+    pipeline.add_item(TimesThreeStage())
+    assert await pipeline.process(1) == 5

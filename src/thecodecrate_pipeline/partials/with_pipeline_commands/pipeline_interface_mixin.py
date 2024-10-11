@@ -1,6 +1,7 @@
-from typing import Any, Protocol, Self
+from typing import Protocol
 
 from .command_facade import TCommand
+from .processor_facade import ProcessorFacade
 from ..with_base.types import T_in, T_out
 from ..with_base.pipeline_interface import (
     PipelineInterface as WithPipelineBaseInterface,
@@ -19,15 +20,6 @@ class PipelineInterfaceMixin(
     WithPipelineBaseInterface,
     Protocol[TCommand, T_in, T_out],
 ):
-    def set_command_class(self, command_class: type[TCommand]) -> Self: ...
+    def _should_make_command_processor(self) -> bool: ...
 
-    def get_command_class(
-        self,
-    ) -> type[TCommand] | None: ...
-
-    async def process(
-        self,
-        payload: T_in,
-        *args: Any,
-        **kwds: Any,
-    ) -> T_out: ...
+    def _make_command_processor(self) -> ProcessorFacade: ...

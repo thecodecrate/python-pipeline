@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any, Generic, Optional, Self, cast
+from typing import Any, Generic, Optional
 
 from .command_facade import TCommand
 from .processor_facade import ProcessorFacade
@@ -14,46 +14,23 @@ class PipelineMixin(
     Generic[TCommand, T_in, T_out],
     ABC,
 ):
+    base_processor_class: Optional[type[ProcessorFacade]] = None
     command_class: Optional[type[TCommand]] = None
 
-    def set_command_class(self, command_class: type[TCommand]) -> Self:
-        self.command_class = command_class
+    def __init__(self, *args: Any, **kwds: Any) -> None:
+        super().__init__(*args, **kwds)  # type: ignore
 
-        return self
+        if self._should_make_command_processor():
+            self.processor = self._make_command_processor()
 
-    def get_command_class(self) -> type[TCommand] | None:
-        return self.command_class
+    def _should_make_command_processor(self) -> bool:
+        return (
+            self.command_class is not None
+            and self.base_processor_class is not None
+        )
 
-    def make_command_processor(self) -> ProcessorFacade:
-        if self.command_class is None:
-            raise ValueError("Command class not set")
+    def _make_command_processor(self) -> ProcessorFacade:
+        if self.base_processor_class is None:
+            raise ValueError("Base processor class not set")
 
-        processor_class = self.get_base_processor_class()
-
-        processor = cast(ProcessorFacade, processor_class())
-
-        processor.set_command_class(self.command_class)
-
-        return processor
-
-    def ensure_command_processor_is_set(self) -> ProcessorFacade:
-        processor = cast(ProcessorFacade, self.get_processor())
-
-        if processor.get_command_class() != self.command_class:
-            processor = self.make_command_processor()
-
-            self.set_processor(processor)
-
-        return processor
-
-    async def process(
-        self,
-        payload: T_in,
-        *args: Any,
-        **kwds: Any,
-    ) -> T_out:
-        if self.command_class is not None:
-            self.ensure_command_processor_is_set()
-
-        # ignoring linter error, on runtime "super()" is implemented
-        return await super().process(payload, *args, **kwds)  # type: ignore
+        return self.base_processor_class(command_class=self.command_class)

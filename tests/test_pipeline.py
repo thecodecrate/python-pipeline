@@ -7,6 +7,8 @@ from tests.stubs.stub_stage_with_custom_args import (
 from thecodecrate_pipeline import (
     Pipeline,
     InterruptibleProcessor,
+    Command,
+    StageCallable,
 )
 from .stubs.stub_stages_int import (
     AddOneStage,
@@ -73,6 +75,23 @@ async def test_string_stage():
     pipeline = (Pipeline[str]()).pipe(StubStage())
 
     assert await pipeline.process("") == "stubbed response"
+
+
+@pytest.mark.asyncio
+async def test_process_repeat():
+    # it happened that the pipeline was not reset, so the second process call
+    # would not work as expected
+    for _ in range(3):
+        pipeline = (
+            (Pipeline[int]())
+            .pipe(lambda payload: payload + 1)
+            .pipe(lambda payload: payload * 2)
+            .pipe(lambda payload: payload + 1)
+        )
+
+        for __ in range(3):
+            assert await pipeline.process(1) == 5
+            assert await pipeline.process(2) == 7
 
 
 @pytest.mark.asyncio
@@ -153,6 +172,19 @@ async def test_declarative_stages_with_processor():
 
 
 @pytest.mark.asyncio
+async def test_declarative_stages_dont_override_constructor_stages():
+    class MyPipeline(Pipeline[int]):
+        stages = [
+            TimesTwoStage,
+            TimesThreeStage,
+        ]
+
+    stage_instances: list[StageCallable] = [AddOneStage(), TimesTwoStage()]
+
+    assert await MyPipeline(stage_instances=stage_instances).process(5) == 12
+
+
+@pytest.mark.asyncio
 async def test_stages_with_custom_args():
     class MyIndexedStage(IndexedStage[str]):
         async def __call__(self, payload: str, index: int) -> str:
@@ -163,3 +195,30 @@ async def test_stages_with_custom_args():
     )
 
     assert await pipeline.process("test") == "test: 0: 1"
+
+
+@pytest.mark.asyncio
+async def test_pipeline_command_class():
+    class MyCommand(Command[int, int]):
+        async def execute(self) -> int:
+            for stage in self.stages:
+                self.payload = await self._call_stage(
+                    payload=self.payload,
+                    stage=stage,
+                    *self.extra_args,
+                    **self.extra_kwds,
+                )
+
+            return self.payload * 10
+
+    class MyPipeline(Pipeline[int, int]):
+        command_class = MyCommand
+
+    pipeline = (
+        MyPipeline()
+        .pipe(lambda payload: payload + 1)
+        .pipe(lambda payload: payload * 2)
+        .pipe(lambda payload: payload * 3)
+    )
+
+    assert await pipeline.process(5) == 360

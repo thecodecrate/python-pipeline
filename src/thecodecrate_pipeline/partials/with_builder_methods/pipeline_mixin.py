@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any, Generic, Optional, Self
+from typing import Generic, Optional, Self
 
 from ..with_base.types import T_in, T_out
 from .pipelineable_facade import TPipelineable
@@ -17,15 +17,6 @@ class PipelineMixin(
 ):
     pipelineable_class: type[TPipelineable]
 
-    def __init__(
-        self,
-        *args: Any,
-        **kwds: Any,
-    ) -> None:
-        super().__init__(*args, **kwds)
-
-        self.set_items(self.get_items() or [])
-
     def add(self, item: StageCallableType) -> Self:
         return self.add_item(item)
 
@@ -33,10 +24,7 @@ class PipelineMixin(
         self,
         processor: Optional[ProcessorInterface[T_in, T_out]] = None,
     ) -> TPipelineable:
-        pipelineable = self.pipelineable_class()
-
-        return pipelineable.set_items(
-            [*self.get_items()],
-        ).set_processor(
-            processor or pipelineable.ensure_processor(),
+        return self.pipelineable_class(
+            stage_instances=self.get_items(),
+            processor=processor,
         )

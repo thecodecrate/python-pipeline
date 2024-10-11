@@ -1,4 +1,4 @@
-from typing import Any, Protocol, Self
+from typing import Any, Optional, Protocol
 
 from .command_interface import CommandInterface
 from ..with_base.types import T_in, T_out
@@ -12,26 +12,17 @@ class ProcessorInterfaceMixin(
     WithProcessorBaseInterface[T_in, T_out],
     Protocol[T_in, T_out],
 ):
-    def set_command_class(
-        self, command_class: type[CommandInterface[T_in, T_out]]
-    ) -> Self: ...
-
-    def get_command_class(
+    def __init__(
         self,
-    ) -> type[CommandInterface[T_in, T_out]] | None: ...
+        command_class: Optional[type[CommandInterface[T_in, T_out]]] = None,
+        *args: Any,
+        **kwds: Any,
+    ) -> None: ...
 
-    def make_command(
+    def _make_command(
         self,
         payload: T_in,
         stages: list[StageCallableType],
         *args: Any,
         **kwds: Any,
     ) -> CommandInterface[T_in, T_out]: ...
-
-    async def process(
-        self,
-        payload: T_in,
-        stages: list[StageCallableType],
-        *args: Any,
-        **kwds: Any,
-    ) -> T_out: ...

@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any, Optional, Self
+from typing import Any, Optional
 
 from .processor_interface import ProcessorInterface
 from .pipeline_interface_mixin import (
@@ -12,52 +12,29 @@ class PipelineMixin(
     PipelineInterface[T_in, T_out],
     ABC,
 ):
-    base_processor_class: type[ProcessorInterface[T_in, T_out]] | None = None
     processor_class: Optional[type[ProcessorInterface[T_in, T_out]]] = None
     processor: Optional[ProcessorInterface[T_in, T_out]] = None
 
-    async def process(
+    def __init__(
         self,
-        payload: T_in,
+        processor: Optional[ProcessorInterface[T_in, T_out]] = None,
         *args: Any,
         **kwds: Any,
-    ) -> T_out:
-        return await self.ensure_processor().process(
-            payload=payload,
-            stages=self.get_items(),
-            *args,
-            **kwds,
-        )
+    ) -> None:
+        super().__init__(*args, **kwds)  # type: ignore
 
-    def make_processor(self) -> ProcessorInterface[T_in, T_out]:
+        self.processor = processor or self._make_processor()
+
+    def _make_processor(self) -> ProcessorInterface[T_in, T_out]:
         if self.processor_class is None:
             raise ValueError("Processor class not set")
 
         return self.processor_class()
 
-    def ensure_processor(self) -> ProcessorInterface[T_in, T_out]:
-        if self.processor:
-            return self.processor
-
+    async def process(self, payload: T_in, *args: Any, **kwds: Any) -> T_out:
         if self.processor is None:
-            self.processor = self.make_processor()
+            raise ValueError("Processor not set")
 
-        return self.processor
-
-    def get_processor(self) -> ProcessorInterface[T_in, T_out] | None:
-        return self.processor
-
-    def set_processor(
-        self, processor: ProcessorInterface[T_in, T_out]
-    ) -> Self:
-        self.processor = processor
-
-        return self
-
-    def get_base_processor_class(
-        self,
-    ) -> type[ProcessorInterface[T_in, T_out]]:
-        if self.base_processor_class is None:
-            raise ValueError("Base processor class not set")
-
-        return self.base_processor_class
+        return await self.processor.process(
+            payload=payload, stages=self.get_items(), *args, **kwds
+        )

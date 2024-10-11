@@ -1,3 +1,4 @@
+from typing import Any
 from .pipeline_interface import (
     PipelineInterface as ImplementsPipelineInterface,
 )
@@ -6,4 +7,5 @@ from .pipeline_interface import (
 class Pipeline(
     ImplementsPipelineInterface,
 ):
-    pass
+    def __init__(self, *args: Any, **kwds: Any) -> None:
+        pass
