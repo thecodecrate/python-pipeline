@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from typing import Any, Protocol, Self
 
 from .processor_interface import ProcessorInterface
@@ -16,7 +15,6 @@ class PipelineInterfaceMixin(
     WithPipelineBaseInterface,
     Protocol[T_in, T_out],
 ):
-    @abstractmethod
     async def process(
         self,
         payload: T_in,
@@ -24,11 +22,21 @@ class PipelineInterfaceMixin(
         **kwds: Any,
     ) -> T_out: ...
 
-    def get_processor(
+    def make_processor(self) -> ProcessorInterface[T_in, T_out]: ...
+
+    def ensure_processor(
         self,
     ) -> ProcessorInterface[T_in, T_out]: ...
+
+    def get_processor(
+        self,
+    ) -> ProcessorInterface[T_in, T_out] | None: ...
 
     def set_processor(
         self,
         processor: ProcessorInterface[T_in, T_out],
     ) -> Self: ...
+
+    def get_base_processor_class(
+        self,
+    ) -> type[ProcessorInterface[T_in, T_out]]: ...

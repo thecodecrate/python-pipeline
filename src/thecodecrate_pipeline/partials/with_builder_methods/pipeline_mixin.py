@@ -38,5 +38,5 @@ class PipelineMixin(
         return pipelineable.set_items(
             [*self.get_items()],
         ).set_processor(
-            processor or pipelineable.get_processor(),
+            processor or pipelineable.ensure_processor(),
         )

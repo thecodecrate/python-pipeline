@@ -22,7 +22,7 @@ class PipelineMixin(
         super().__init__(*args, **kwds)
 
         self.set_items(self.get_items() or []).set_processor(
-            processor or self.get_processor()
+            processor or self.ensure_processor()
         )
 
     def pipe(self, stage: StageCallableType) -> Self:

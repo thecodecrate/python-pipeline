@@ -1,3 +1,5 @@
+from .classes.command import Command
+from .classes.command_interface import CommandInterface
 from .classes.pipeline_builder import PipelineBuilder
 from .classes.pipeline_builder_interface import PipelineBuilderInterface
 from .classes.pipeline import Pipeline
@@ -38,6 +40,12 @@ from .partials.with_builder_methods.pipeline_mixin import (
 )
 from .partials.with_builder_methods.pipeline_interface_mixin import (
     PipelineInterfaceMixin as WithBuilderMethodsInterface,
+)
+from .partials.with_pipeline_commands.pipeline_mixin import (
+    PipelineMixin as WithPipelineCommands,
+)
+from .partials.with_pipeline_commands.pipeline_interface_mixin import (
+    PipelineInterfaceMixin as WithPipelineCommandsInterface,
 )
 from .partials.with_pipeline_as_list.pipeline_mixin import (
     PipelineMixin as WithPipelineAsList,
@@ -93,6 +101,8 @@ __version__ = "1.13.0"
 # Expose the public API
 __all__ = [
     # Core
+    "Command",
+    "CommandInterface",
     "Pipeline",
     "PipelineInterface",
     "Stage",
@@ -116,6 +126,8 @@ __all__ = [
     # Partials
     "WithPipelineBase",
     "WithPipelineBaseInterface",
+    "WithPipelineCommands",
+    "WithPipelineCommandsInterface",
     "WithStageBase",
     "WithStageBaseInterface",
     "WithBuilderMethods",
