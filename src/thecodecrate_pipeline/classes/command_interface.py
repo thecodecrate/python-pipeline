@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Any, Protocol, TypeVar
 
 from ..partials.with_base.types import T_in, T_out
 from ..partials.with_processor_commands.command_interface import (
@@ -11,3 +11,8 @@ class CommandInterface(
     Protocol[T_in, T_out],
 ):
     pass
+
+
+TCommand = TypeVar(
+    "TCommand", bound=CommandInterface[Any, Any], infer_variance=True
+)

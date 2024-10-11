@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any, Generic, Optional, Self
+from typing import Any, Generic, Optional
 
 from .command_interface import CommandInterface
 from .processor_interface_mixin import (
@@ -16,17 +16,17 @@ class ProcessorMixin(
 ):
     command_class: Optional[type[CommandInterface[T_in, T_out]]] = None
 
-    def set_command_class(
-        self, command_class: type[CommandInterface[T_in, T_out]]
-    ) -> Self:
-        self.command_class = command_class
+    def __init__(
+        self,
+        command_class: Optional[type[CommandInterface[T_in, T_out]]] = None,
+        *args: Any,
+        **kwds: Any,
+    ) -> None:
+        super().__init__(*args, **kwds)  # type: ignore
 
-        return self
+        self.command_class = command_class or self.command_class
 
-    def get_command_class(self) -> type[CommandInterface[T_in, T_out]] | None:
-        return self.command_class
-
-    def make_command(
+    def _make_command(
         self,
         payload: T_in,
         stages: list[StageCallableType],
@@ -37,11 +37,7 @@ class ProcessorMixin(
             raise ValueError("Command class not set")
 
         return self.command_class(
-            processor=self,
-            payload=payload,
-            stages=stages,
-            *args,
-            **kwds,
+            processor=self, payload=payload, stages=stages, *args, **kwds
         )
 
     async def process(
@@ -51,6 +47,6 @@ class ProcessorMixin(
         *args: Any,
         **kwds: Any,
     ) -> T_out:
-        command = self.make_command(payload, stages, *args, **kwds)
+        command = self._make_command(payload, stages, *args, **kwds)
 
         return await command.execute()

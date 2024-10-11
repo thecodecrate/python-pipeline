@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Optional, Self
+from typing import Any, Optional
 
 from .processor_interface import ProcessorInterface
 from .pipeline_interface_mixin import (
@@ -15,30 +15,26 @@ class PipelineMixin(
     processor_class: Optional[type[ProcessorInterface[T_in, T_out]]] = None
     processor: Optional[ProcessorInterface[T_in, T_out]] = None
 
-    async def process(
+    def __init__(
         self,
-        payload: T_in,
-    ) -> T_out:
-        return await self.get_processor().process(
-            payload=payload,
-            stages=self.get_items(),
-        )
+        processor: Optional[ProcessorInterface[T_in, T_out]] = None,
+        *args: Any,
+        **kwds: Any,
+    ) -> None:
+        super().__init__(*args, **kwds)  # type: ignore
 
-    def get_processor(self) -> ProcessorInterface[T_in, T_out]:
-        if self.processor:
-            return self.processor
+        self.processor = processor or self._make_processor()
 
+    def _make_processor(self) -> ProcessorInterface[T_in, T_out]:
         if self.processor_class is None:
-            raise ValueError("No processor set")
+            raise ValueError("Processor class not set")
 
+        return self.processor_class()
+
+    async def process(self, payload: T_in, *args: Any, **kwds: Any) -> T_out:
         if self.processor is None:
-            self.processor = self.processor_class()
+            raise ValueError("Processor not set")
 
-        return self.processor
-
-    def set_processor(
-        self, processor: ProcessorInterface[T_in, T_out]
-    ) -> Self:
-        self.processor = processor
-
-        return self
+        return await self.processor.process(
+            payload=payload, stages=self.get_items(), *args, **kwds
+        )

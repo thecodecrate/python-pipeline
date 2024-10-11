@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Self
+from typing import Any, Self
 
 from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as ImplementsPipelineInterface,
@@ -13,7 +13,17 @@ class PipelineMixin(
     ImplementsPipelineInterface,
     ABC,
 ):
-    stage_instances: list[StageCallableType] = []
+    stage_instances: list[StageCallableType]
+
+    def __init__(
+        self,
+        stage_instances: list[StageCallableType] = [],
+        *args: Any,
+        **kwds: Any,
+    ) -> None:
+        super().__init__(*args, **kwds)  # type: ignore
+
+        self.stage_instances = [*stage_instances]
 
     def get_items(self) -> list[StageCallableType]:
         return self.stage_instances

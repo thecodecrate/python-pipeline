@@ -11,10 +11,5 @@ class PipelineMixin(
     ImplementsPipelineInterface[T_in, T_out],
     ABC,
 ):
-    async def __call__(
-        self,
-        payload: T_in,
-        *args: Any,
-        **kwds: Any,
-    ) -> T_out:
+    async def __call__(self, payload: T_in, *args: Any, **kwds: Any) -> T_out:
         return await self.process(payload, *args, **kwds)

@@ -22,9 +22,5 @@ class CommandInterface(
     async def execute(self) -> T_out: ...
 
     async def _call_stage(
-        self,
-        payload: T_in,
-        stage: StageCallableType,
-        *args: Any,
-        **kwds: Any,
+        self, payload: T_in, stage: StageCallableType, *args: Any, **kwds: Any
     ) -> T_in: ...

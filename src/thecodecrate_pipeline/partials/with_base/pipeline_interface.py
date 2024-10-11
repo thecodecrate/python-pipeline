@@ -1,7 +1,7 @@
-from typing import Protocol
+from typing import Any, Protocol
 
 
 class PipelineInterface(
     Protocol,
 ):
-    pass
+    def __init__(self, *args: Any, **kwds: Any) -> None: ...

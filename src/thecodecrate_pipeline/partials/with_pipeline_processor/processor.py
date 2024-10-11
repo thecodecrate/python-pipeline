@@ -24,11 +24,7 @@ class Processor(
         pass
 
     async def _call_stage(
-        self,
-        payload: T_in,
-        stage: StageCallableType,
-        *args: Any,
-        **kwds: Any,
+        self, payload: T_in, stage: StageCallableType, *args: Any, **kwds: Any
     ) -> T_in:
         result = stage(payload, *args, **kwds)
 

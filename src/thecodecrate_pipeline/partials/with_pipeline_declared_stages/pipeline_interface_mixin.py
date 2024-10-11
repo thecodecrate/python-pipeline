@@ -13,4 +13,6 @@ class PipelineInterfaceMixin(
     WithPipelineBaseInterface,
     Protocol,
 ):
+    def _should_instantiate_stages(self) -> bool: ...
+
     def _instantiate_stages(self) -> None: ...
