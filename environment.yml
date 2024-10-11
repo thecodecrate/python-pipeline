@@ -8,6 +8,7 @@ dependencies:
   - pip:
     # jupyter
     - ipykernel
+    - debugpy
     # test suite: pytest
     - pytest
     - pytest-asyncio
