@@ -23,25 +23,20 @@ from ..partials.with_pipeline_as_stage.pipeline_mixin import (
 from ..partials.with_pipeline_as_immutable.pipeline_mixin import (
     PipelineMixin as WithPipelineAsImmutableConcern,
 )
-from ..partials.with_pipelineable_methods.pipeline_mixin import (
-    PipelineMixin as WithPipelineableMethodsConcern,
-)
 from ..partials.with_pipeline_commands.pipeline_mixin import (
     PipelineMixin as WithPipelineCommandsConcern,
 )
 
 
 class Pipeline(
-    WithPipelineableMethodsConcern[T_in, T_out],
     WithPipelineAsImmutableConcern,
     WithPipelineAsStageConcern[T_in, T_out],
-    WithPipelineCommandsConcern[CommandInterface[T_in, T_out], T_in, T_out],
+    WithPipelineCommandsConcern[CommandInterface, T_in, T_out],
     WithPipelineProcessorConcern[T_in, T_out],
     WithPipelineDeclaredStagesConcern,
     WithPipelineAsListConcern,
     WithPipelineBaseConcern,
-    ImplementsPipelineInterface[CommandInterface, T_in, T_out],
+    ImplementsPipelineInterface[T_in, T_out],
 ):
     base_processor_class = Processor
-
     processor_class = ChainedProcessor

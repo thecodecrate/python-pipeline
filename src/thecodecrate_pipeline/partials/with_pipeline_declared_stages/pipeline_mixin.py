@@ -14,8 +14,13 @@ class PipelineMixin(
 ):
     stages: list[StageClassOrInstance] = []
 
-    def __init__(self, *args: Any, **kwds: Any) -> None:
+    def __init__(
+        self, stages: list[StageClassOrInstance] = [], *args: Any, **kwds: Any
+    ) -> None:
         super().__init__(*args, **kwds)  # type: ignore
+
+        if len(stages) > 0:
+            self.stages = [*stages]
 
         if self._should_instantiate_stages():
             self._instantiate_stages()

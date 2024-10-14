@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Protocol, Self
 
 from ..with_base.stage_callable import StageCallableType
 from ..with_base.pipeline_interface import (
@@ -14,4 +14,4 @@ class PipelineInterfaceMixin(
     WithPipelineBaseInterface,
     Protocol,
 ):
-    pass
+    def pipe(self, stage: StageCallableType) -> Self: ...

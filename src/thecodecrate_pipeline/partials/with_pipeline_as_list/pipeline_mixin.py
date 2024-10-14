@@ -32,3 +32,6 @@ class PipelineMixin(
         self.stage_instances = items
 
         return self
+
+    def pipe(self, stage: StageCallableType) -> Self:
+        return self._add_item(stage)
