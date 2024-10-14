@@ -1,4 +1,4 @@
-from typing import Any, Optional, Protocol
+from typing import Any, Protocol
 
 from .processor_interface import ProcessorInterface
 from ..with_base.types import T_in, T_out
@@ -15,14 +15,7 @@ class PipelineInterfaceMixin(
     WithPipelineBaseInterface,
     Protocol[T_in, T_out],
 ):
-    def __init__(
-        self,
-        processor: Optional[ProcessorInterface[T_in, T_out]] = None,
-        *args: Any,
-        **kwds: Any,
-    ) -> None: ...
-
-    def _make_processor(self) -> ProcessorInterface[T_in, T_out]: ...
+    def _make_processor(self) -> ProcessorInterface: ...
 
     async def process(
         self, payload: T_in, *args: Any, **kwds: Any

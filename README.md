@@ -2,7 +2,7 @@
 
 This package provides a pipeline pattern implementation.
 
-The implementation is based on the excellent [PHP League Pipeline](https://github.com/thephpleague/pipeline) package.
+The implementation is inspired by the excellent [PHP League Pipeline](https://github.com/thephpleague/pipeline) package.
 
 ## Installation
 
@@ -251,22 +251,20 @@ await main()
 
 This allows you to process data in a streaming fashion, where each stage can yield results that are immediately consumed by the next stage.
 
-## Pipeline Builders
+## Pipeline Factory
 
-Because pipelines themselves are immutable, pipeline builders are introduced to facilitate distributed composition of a pipeline.
+Because pipelines themselves are immutable, pipeline factory is introduced to facilitate distributed composition of a pipeline.
 
-The `PipelineBuilder[InputType, OutputType]` collects stages and allows you to create a pipeline at any given time.
+The `PipelineFactory[InputType, OutputType]` collects stages and allows you to create a pipeline at any given time.
 
 ```python
-pipeline_builder = (
-    PipelineBuilder()
-    .add(LogicalStage())
-    .add(AnotherStage())
-    .add(LastStage())
-)
+pipeline_factory = PipelineFactory().with_stages([LogicalStage(), AddOneStage()])
+
+# Additional stages can be added later
+pipeline_factory.add_stage(LastStage()).with_processor(MyCustomProcessor())
 
 # Build the pipeline
-pipeline = pipeline_builder.build()
+pipeline = pipeline_factory.build()
 ```
 
 ## Exception Handling

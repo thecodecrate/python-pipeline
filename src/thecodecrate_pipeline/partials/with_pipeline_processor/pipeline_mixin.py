@@ -12,20 +12,28 @@ class PipelineMixin(
     PipelineInterface[T_in, T_out],
     ABC,
 ):
-    processor_class: Optional[type[ProcessorInterface[T_in, T_out]]] = None
-    processor: Optional[ProcessorInterface[T_in, T_out]] = None
+    processor_class: Optional[type[ProcessorInterface]] = None
+    processor: Optional[ProcessorInterface] = None
 
     def __init__(
         self,
-        processor: Optional[ProcessorInterface[T_in, T_out]] = None,
+        processor_class: Optional[type[ProcessorInterface]] = None,
+        processor: Optional[ProcessorInterface] = None,
         *args: Any,
         **kwds: Any,
     ) -> None:
         super().__init__(*args, **kwds)  # type: ignore
 
-        self.processor = processor or self._make_processor()
+        if processor_class:
+            self.processor_class = processor_class
 
-    def _make_processor(self) -> ProcessorInterface[T_in, T_out]:
+        if processor:
+            self.processor = processor
+
+        if not self.processor:
+            self.processor = self._make_processor()
+
+    def _make_processor(self) -> ProcessorInterface:
         if self.processor_class is None:
             raise ValueError("Processor class not set")
 
@@ -36,5 +44,5 @@ class PipelineMixin(
             raise ValueError("Processor not set")
 
         return await self.processor.process(
-            payload=payload, stages=self.get_items(), *args, **kwds
+            payload=payload, stages=self._get_items(), *args, **kwds
         )

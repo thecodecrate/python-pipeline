@@ -1,4 +1,4 @@
-from typing import Any, Protocol, TypeVar
+from typing import Protocol
 
 from ..with_base.types import T_in, T_out
 from ..with_pipeline_processor.processor_interface import (
@@ -15,6 +15,3 @@ class ProcessorFacade(
     Protocol[T_in, T_out],
 ):
     pass
-
-
-TProcessor = TypeVar("TProcessor", bound=ProcessorFacade[Any, Any])

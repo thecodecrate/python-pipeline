@@ -9,14 +9,14 @@ class ActAsList(
     Protocol[TItem],
 ):
     @abstractmethod
-    def get_items(self) -> list[TItem]:
+    def _get_items(self) -> list[TItem]:
         pass
 
     @abstractmethod
-    def set_items(self, items: list[TItem]) -> Self:
+    def _set_items(self, items: list[TItem]) -> Self:
         pass
 
-    def add_item(self, item: TItem) -> Self:
-        self.get_items().append(item)
+    def _add_item(self, item: TItem) -> Self:
+        self._get_items().append(item)
 
         return self

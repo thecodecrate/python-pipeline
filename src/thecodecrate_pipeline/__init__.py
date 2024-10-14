@@ -1,7 +1,7 @@
 from .classes.command import Command
 from .classes.command_interface import CommandInterface
-from .classes.pipeline_builder import PipelineBuilder
-from .classes.pipeline_builder_interface import PipelineBuilderInterface
+from .classes.pipeline_factory import PipelineFactory
+from .classes.pipeline_factory_interface import PipelineFactoryInterface
 from .classes.pipeline import Pipeline
 from .classes.pipeline_interface import PipelineInterface
 from .classes.processor import Processor
@@ -34,12 +34,6 @@ from .partials.with_base.pipeline_interface import (
 from .partials.with_base.stage import Stage as WithStageBase
 from .partials.with_base.stage_interface import (
     StageInterface as WithStageBaseInterface,
-)
-from .partials.with_builder_methods.pipeline_mixin import (
-    PipelineMixin as WithBuilderMethods,
-)
-from .partials.with_builder_methods.pipeline_interface_mixin import (
-    PipelineInterfaceMixin as WithBuilderMethodsInterface,
 )
 from .partials.with_pipeline_commands.pipeline_mixin import (
     PipelineMixin as WithPipelineCommands,
@@ -77,12 +71,6 @@ from .partials.with_pipeline_as_immutable.pipeline_mixin import (
 from .partials.with_pipeline_as_immutable.pipeline_interface_mixin import (
     PipelineInterfaceMixin as WithPipelineAsImmutableInterface,
 )
-from .partials.with_pipelineable_methods.pipeline_mixin import (
-    PipelineMixin as WithPipelineableMethods,
-)
-from .partials.with_pipelineable_methods.pipeline_interface_mixin import (
-    PipelineInterfaceMixin as WithPipelineableMethodsInterface,
-)
 from .partials.with_stage_as_callable.stage_mixin import (
     StageMixin as WithStageAsCallable,
 )
@@ -96,7 +84,7 @@ from .partials.with_stage_as_callable.stage_interface_mixin import (
 # This will be updated by `bumpver` command.
 # - Make sure to commit all changes first before running `bumpver`.
 # - Run `bumpver update --[minor|major|patch]`
-__version__ = "1.14.0"
+__version__ = "1.15.0"
 
 # Expose the public API
 __all__ = [
@@ -109,8 +97,8 @@ __all__ = [
     "StageInterface",
     "Processor",
     "ProcessorInterface",
-    "PipelineBuilder",
-    "PipelineBuilderInterface",
+    "PipelineFactory",
+    "PipelineFactoryInterface",
     # Types
     "T_in",
     "T_out",
@@ -130,8 +118,6 @@ __all__ = [
     "WithPipelineCommandsInterface",
     "WithStageBase",
     "WithStageBaseInterface",
-    "WithBuilderMethods",
-    "WithBuilderMethodsInterface",
     "WithPipelineAsList",
     "WithPipelineAsListInterface",
     "WithPipelineProcessor",
@@ -142,8 +128,6 @@ __all__ = [
     "WithPipelineAsStageInterface",
     "WithPipelineAsImmutable",
     "WithPipelineAsImmutableInterface",
-    "WithPipelineableMethods",
-    "WithPipelineableMethodsInterface",
     "WithStageAsCallable",
     "WithStageAsCallableInterface",
 ]
