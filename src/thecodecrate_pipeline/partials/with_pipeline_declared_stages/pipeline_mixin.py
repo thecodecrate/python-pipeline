@@ -21,7 +21,7 @@ class PipelineMixin(
             self._instantiate_stages()
 
     def _should_instantiate_stages(self) -> bool:
-        return len(self.get_items()) == 0 and len(self.stages) > 0
+        return len(self._get_items()) == 0 and len(self.stages) > 0
 
     def _instantiate_stages(self) -> None:
         instances = [
@@ -29,4 +29,4 @@ class PipelineMixin(
             for stage in self.stages
         ]
 
-        self.set_items(instances)
+        self._set_items(instances)

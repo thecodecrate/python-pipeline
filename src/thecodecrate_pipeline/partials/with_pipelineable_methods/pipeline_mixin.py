@@ -13,4 +13,4 @@ class PipelineMixin(
     ABC,
 ):
     def pipe(self, stage: StageCallableType) -> Self:
-        return self.add_item(stage)
+        return self._add_item(stage)

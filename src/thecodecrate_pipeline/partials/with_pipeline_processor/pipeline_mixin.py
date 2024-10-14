@@ -36,5 +36,5 @@ class PipelineMixin(
             raise ValueError("Processor not set")
 
         return await self.processor.process(
-            payload=payload, stages=self.get_items(), *args, **kwds
+            payload=payload, stages=self._get_items(), *args, **kwds
         )

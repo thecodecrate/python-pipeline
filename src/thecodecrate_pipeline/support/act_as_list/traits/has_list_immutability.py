@@ -9,9 +9,9 @@ class HasListImmutability(
     ActAsListInterface[TItem],
     Protocol[TItem],
 ):
-    def add_item(self, item: TItem) -> Self:
+    def _add_item(self, item: TItem) -> Self:
         cloned = copy.deepcopy(self)
 
-        cloned.get_items().append(item)
+        cloned._get_items().append(item)
 
         return cloned

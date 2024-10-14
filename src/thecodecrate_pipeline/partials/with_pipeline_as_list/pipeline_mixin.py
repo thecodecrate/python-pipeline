@@ -25,10 +25,10 @@ class PipelineMixin(
 
         self.stage_instances = [*stage_instances]
 
-    def get_items(self) -> list[StageCallableType]:
+    def _get_items(self) -> list[StageCallableType]:
         return self.stage_instances
 
-    def set_items(self, items: list[StageCallableType]) -> Self:
+    def _set_items(self, items: list[StageCallableType]) -> Self:
         self.stage_instances = items
 
         return self

@@ -18,13 +18,13 @@ class PipelineMixin(
     pipelineable_class: type[TPipelineable]
 
     def add(self, item: StageCallableType) -> Self:
-        return self.add_item(item)
+        return self._add_item(item)
 
     def build(
         self,
         processor: Optional[ProcessorInterface[T_in, T_out]] = None,
     ) -> TPipelineable:
         return self.pipelineable_class(
-            stage_instances=self.get_items(),
+            stage_instances=self._get_items(),
             processor=processor,
         )
