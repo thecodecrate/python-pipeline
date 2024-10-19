@@ -24,4 +24,4 @@ class CommandProcessingStrategy(ProcessingStrategy[T_in, T_out]):
             **kwds,
         )
 
-        return await command.execute()
+        return await command.execute(*args, **kwds)
