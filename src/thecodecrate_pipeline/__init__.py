@@ -84,7 +84,7 @@ from .partials.with_processor_commands.traits.processable_as_command import (
 # This will be updated by `bumpver` command.
 # - Make sure to commit all changes first before running `bumpver`.
 # - Run `bumpver update --[minor|major|patch]`
-__version__ = "1.15.0"
+__version__ = "1.17.0"
 
 # Expose the public API
 __all__ = [
