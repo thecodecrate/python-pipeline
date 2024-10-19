@@ -4,7 +4,7 @@ from ...classes.command import Command
 from ...partials.with_base.types import T_in, T_out
 
 
-class StatefulChainedCommand(Command[T_in, T_out]):
+class ChainedCommand(Command[T_in, T_out]):
     async def execute(self) -> T_out:
         for stage in self.stages:
             self.payload = await self._call_stage(

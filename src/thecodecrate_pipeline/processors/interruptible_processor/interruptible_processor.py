@@ -12,6 +12,8 @@ class InterruptibleProcessor(Processor[T_in, T_out]):
     check: CheckCallable[T_in]
 
     def __init__(self, check: CheckCallable[T_in]) -> None:
+        super().__init__()
+
         self.check = check
 
     async def process(

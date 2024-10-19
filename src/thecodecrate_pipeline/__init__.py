@@ -17,15 +17,6 @@ from .processors.interruptible_processor.interruptible_processor import (
 from .processors.interruptible_processor.interruptible_pipeline import (
     InterruptiblePipeline,
 )
-from .processors.stateful_chained_processor.stateful_chained_command import (
-    StatefulChainedCommand,
-)
-from .processors.stateful_chained_processor.stateful_chained_processor import (
-    StatefulChainedProcessor,
-)
-from .processors.stateful_chained_processor.stateful_chained_pipeline import (
-    StatefulChainedPipeline,
-)
 from .partials.with_base.stage_callable import StageCallable
 from .partials.with_base.pipeline import Pipeline as WithPipelineBase
 from .partials.with_base.pipeline_interface import (
@@ -34,12 +25,6 @@ from .partials.with_base.pipeline_interface import (
 from .partials.with_base.stage import Stage as WithStageBase
 from .partials.with_base.stage_interface import (
     StageInterface as WithStageBaseInterface,
-)
-from .partials.with_pipeline_commands.pipeline_mixin import (
-    PipelineMixin as WithPipelineCommands,
-)
-from .partials.with_pipeline_commands.pipeline_interface_mixin import (
-    PipelineInterfaceMixin as WithPipelineCommandsInterface,
 )
 from .partials.with_pipeline_as_list.pipeline_mixin import (
     PipelineMixin as WithPipelineAsList,
@@ -77,6 +62,21 @@ from .partials.with_stage_as_callable.stage_mixin import (
 from .partials.with_stage_as_callable.stage_interface_mixin import (
     StageInterfaceMixin as WithStageAsCallableInterface,
 )
+from .partials.with_processor_commands.processing_strategy import (
+    ProcessingStrategy,
+)
+from .partials.with_processor_commands.processing_strategy_interface import (
+    ProcessingStrategyInterface,
+)
+from .partials.with_processor_commands.strategies.command_processing_strategy import (  # noqa
+    CommandProcessingStrategy,
+)
+from .partials.with_processor_commands.strategies.processor_processing_strategy import (  # noqa
+    ProcessorProcessingStrategy,
+)
+from .partials.with_processor_commands.traits.processable_as_command import (
+    ProcessableAsCommand,
+)
 
 
 # Version of the package
@@ -99,6 +99,10 @@ __all__ = [
     "ProcessorInterface",
     "PipelineFactory",
     "PipelineFactoryInterface",
+    "ProcessingStrategy",
+    "ProcessingStrategyInterface",
+    # Traits
+    "ProcessableAsCommand",
     # Types
     "T_in",
     "T_out",
@@ -108,14 +112,12 @@ __all__ = [
     "ChainedPipeline",
     "InterruptibleProcessor",
     "InterruptiblePipeline",
-    "StatefulChainedProcessor",
-    "StatefulChainedPipeline",
-    "StatefulChainedCommand",
+    # Strategies
+    "CommandProcessingStrategy",
+    "ProcessorProcessingStrategy",
     # Partials
     "WithPipelineBase",
     "WithPipelineBaseInterface",
-    "WithPipelineCommands",
-    "WithPipelineCommandsInterface",
     "WithStageBase",
     "WithStageBaseInterface",
     "WithPipelineAsList",

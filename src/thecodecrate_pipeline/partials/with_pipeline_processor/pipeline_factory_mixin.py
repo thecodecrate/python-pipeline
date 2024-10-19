@@ -1,6 +1,7 @@
 from abc import ABC
 from typing import Any, Optional, Self
 
+from ..with_base.types import T_in, T_out
 from .processor_interface import ProcessorInterface
 from .pipeline_factory_interface_mixin import (
     PipelineFactoryInterfaceMixin as PipelineFactoryInterface,
@@ -8,11 +9,11 @@ from .pipeline_factory_interface_mixin import (
 
 
 class PipelineFactoryMixin(
-    PipelineFactoryInterface,
+    PipelineFactoryInterface[T_in, T_out],
     ABC,
 ):
-    processor_class: Optional[type[ProcessorInterface]] = None
-    processor: Optional[ProcessorInterface] = None
+    processor_class: Optional[type[ProcessorInterface[T_in, T_out]]] = None
+    processor: Optional[ProcessorInterface[T_in, T_out]] = None
 
     def __init__(
         self,

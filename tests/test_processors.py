@@ -1,12 +1,26 @@
 import pytest
 from thecodecrate_pipeline import (
+    Pipeline,
     ChainedPipeline,
     ChainedProcessor,
     InterruptiblePipeline,
     InterruptibleProcessor,
-    StatefulChainedPipeline,
-    StatefulChainedProcessor,
 )
+
+from tests.stubs.stub_processor import StubProcessor
+
+
+@pytest.mark.asyncio
+async def test_custom_processor():
+    processor = StubProcessor()
+
+    pipeline = (
+        (Pipeline[int](processor=processor))
+        .pipe(lambda payload: payload + 1)
+        .pipe(lambda payload: payload + 1)
+    )
+
+    assert await pipeline.process(1) == 30
 
 
 @pytest.mark.asyncio
@@ -23,7 +37,7 @@ async def test_chained_pipeline():
 async def test_chained_processor():
     processor = ChainedProcessor[int]()
 
-    result = await processor.process(
+    result = await processor.process_with_strategy(
         payload=5,
         stages=[
             lambda payload: payload + 1,
@@ -32,13 +46,28 @@ async def test_chained_processor():
     )
     assert result == 12
 
-    result = await processor.process(
+    result = await processor.process_with_strategy(
         payload=5,
         stages=[
             lambda payload: payload + 1,
         ],
     )
     assert result == 6
+
+
+@pytest.mark.asyncio
+async def test_pipeline_with_chained_processor():
+    processor = ChainedProcessor[int]()
+
+    pipeline = (
+        (Pipeline[int](processor=processor))
+        .pipe(lambda payload: payload + 2)
+        .pipe(lambda payload: payload * 5)
+        .pipe(lambda payload: payload * 10)
+    )
+
+    assert await pipeline.process(5) == 350
+    assert await pipeline.process(1) == 150
 
 
 @pytest.mark.asyncio
@@ -76,32 +105,15 @@ async def test_interruptible_processor():
 
 
 @pytest.mark.asyncio
-async def test_stateful_chained_pipeline():
+async def test_pipeline_with_interruptible_processor():
+    processor = InterruptibleProcessor[int](lambda payload: payload < 20)
+
     pipeline = (
-        StatefulChainedPipeline[int]()
-        .pipe(lambda payload: payload + 1)
-        .pipe(lambda payload: payload * 2)
+        (Pipeline[int](processor=processor))
+        .pipe(lambda payload: payload + 2)
+        .pipe(lambda payload: payload * 5)
+        .pipe(lambda payload: payload * 10)
     )
-    assert await pipeline.process(5) == 12
 
-
-@pytest.mark.asyncio
-async def test_stateful_chained_processor():
-    processor = StatefulChainedProcessor[int]()
-
-    result = await processor.process(
-        payload=5,
-        stages=[
-            lambda payload: payload + 1,
-            lambda payload: payload * 2,
-        ],
-    )
-    assert result == 12
-
-    result = await processor.process(
-        payload=5,
-        stages=[
-            lambda payload: payload + 1,
-        ],
-    )
-    assert result == 6
+    assert await pipeline.process(5) == 35
+    assert await pipeline.process(1) == 150

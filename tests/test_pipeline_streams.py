@@ -5,7 +5,7 @@ from typing import AsyncIterator
 from thecodecrate_pipeline import Pipeline
 
 
-# Define the stages
+# Define stages
 async def stage1(stream: AsyncIterator[int]) -> AsyncIterator[int]:
     async for item in stream:
         # Multiply each item by 2
