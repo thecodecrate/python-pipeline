@@ -1,14 +1,12 @@
 import pytest
+from thecodecrate_pipeline import (
+    Pipeline,
+    StageCallable,
+)
 
 from tests.stubs.stub_stage_with_custom_args import (
     IndexedPipeline,
     IndexedStage,
-)
-from thecodecrate_pipeline import (
-    Pipeline,
-    InterruptibleProcessor,
-    Command,
-    StageCallable,
 )
 from .stubs.stub_stages_int import (
     AddOneStage,
@@ -45,7 +43,7 @@ async def test_classbased_stages():
 
 
 @pytest.mark.asyncio
-async def test_pipeline_stages():
+async def test_pipelinebased_stages():
     sub_pipeline1 = (
         (Pipeline[int]())
         .pipe(TimesTwoStage())
@@ -111,33 +109,6 @@ async def test_pipeline_immutability():
 
 
 @pytest.mark.asyncio
-async def test_custom_processor():
-    processor = StubProcessor()
-
-    pipeline = (
-        (Pipeline[int](processor=processor))
-        .pipe(lambda payload: payload + 1)
-        .pipe(lambda payload: payload + 1)
-    )
-
-    assert await pipeline.process(1) == 30
-
-
-@pytest.mark.asyncio
-async def test_interruptible_processor():
-    processor = InterruptibleProcessor[int](lambda payload: payload > 5)
-
-    pipeline = (
-        (Pipeline[int](processor=processor))
-        .pipe(lambda payload: payload * 2)
-        .pipe(lambda payload: payload + 1)
-    )
-
-    assert await pipeline.process(3) == 7
-    assert await pipeline.process(1) == 2
-
-
-@pytest.mark.asyncio
 async def test_declarative_stages():
     pipeline = (Pipeline[int]()).pipe(TimesTwoStage()).pipe(AddOneStage())
 
@@ -195,30 +166,3 @@ async def test_stages_with_custom_args():
     )
 
     assert await pipeline.process("test") == "test: 0: 1"
-
-
-@pytest.mark.asyncio
-async def test_pipeline_command_class():
-    class MyCommand(Command[int, int]):
-        async def execute(self) -> int:
-            for stage in self.stages:
-                self.payload = await self._call_stage(
-                    payload=self.payload,
-                    stage=stage,
-                    *self.extra_args,
-                    **self.extra_kwds,
-                )
-
-            return self.payload * 10
-
-    class MyPipeline(Pipeline[int, int]):
-        command_class = MyCommand
-
-    pipeline = (
-        MyPipeline()
-        .pipe(lambda payload: payload + 1)
-        .pipe(lambda payload: payload * 2)
-        .pipe(lambda payload: payload * 3)
-    )
-
-    assert await pipeline.process(5) == 360

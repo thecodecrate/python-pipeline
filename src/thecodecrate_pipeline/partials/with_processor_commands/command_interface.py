@@ -1,7 +1,12 @@
+from __future__ import annotations
 from abc import abstractmethod
-from typing import Any, Protocol
+from typing import Any, Protocol, TYPE_CHECKING
 
-from .processor_facade import ProcessorFacade
+if TYPE_CHECKING:
+    from .processor_interface_mixin import (
+        ProcessorInterfaceMixin as ProcessorInterface,
+    )
+
 from ..with_base.types import T_in, T_out
 from ..with_base.stage_callable import StageCallableType
 
@@ -11,7 +16,7 @@ class CommandInterface(
 ):
     def __init__(
         self,
-        processor: ProcessorFacade[T_in, T_out],
+        processor: ProcessorInterface,
         payload: T_in,
         stages: list[StageCallableType],
         *args: Any,

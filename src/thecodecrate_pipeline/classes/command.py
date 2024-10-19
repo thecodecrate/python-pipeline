@@ -1,6 +1,5 @@
 from abc import ABC
 
-from .processor import Processor
 from .command_interface import (
     CommandInterface as ImplementsCommandInterface,
 )
@@ -11,7 +10,7 @@ from ..partials.with_processor_commands.command import (
 
 
 class Command(
-    WithCommandBaseConcern[Processor[T_in, T_out], T_in, T_out],
+    WithCommandBaseConcern[T_in, T_out],
     ImplementsCommandInterface[T_in, T_out],
     ABC,
 ):

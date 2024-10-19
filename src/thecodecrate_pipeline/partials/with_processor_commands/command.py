@@ -2,7 +2,9 @@ from abc import ABC, abstractmethod
 import inspect
 from typing import Any, Generic
 
-from .processor_facade import TProcessor
+from .processor_interface_mixin import (
+    ProcessorInterfaceMixin as ProcessorInterface,
+)
 from .command_interface import CommandInterface
 from ..with_base.types import T_in, T_out
 from ..with_base.stage_callable import StageCallableType
@@ -10,18 +12,18 @@ from ..with_base.stage_callable import StageCallableType
 
 class Command(
     CommandInterface[T_in, T_out],
-    Generic[TProcessor, T_in, T_out],
+    Generic[T_in, T_out],
     ABC,
 ):
-    processor: TProcessor
-    payload: T_in
-    stages: list[StageCallableType]
+    processor: ProcessorInterface
+    payload: T_in = None
+    stages: list[StageCallableType] = []
     extra_args: Any = None
     extra_kwds: Any = None
 
     def __init__(
         self,
-        processor: TProcessor,
+        processor: ProcessorInterface,
         payload: T_in,
         stages: list[StageCallableType],
         *args: Any,

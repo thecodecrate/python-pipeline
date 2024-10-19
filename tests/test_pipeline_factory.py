@@ -10,7 +10,7 @@ from .stubs.stub_stages_int import (
     AddOneStage,
 )
 
-a_few_stages: list[StageCallable] = [
+some_stages: list[StageCallable] = [
     AddOneStage(),
     (lambda x: x + 1),
     (lambda x: f"result is {x}"),
@@ -19,7 +19,7 @@ a_few_stages: list[StageCallable] = [
 
 @pytest.mark.asyncio
 async def test_with_stages():
-    pipeline_factory = (PipelineFactory[int, str]()).with_stages(a_few_stages)
+    pipeline_factory = (PipelineFactory[int, str]()).with_stages(some_stages)
 
     pipeline = pipeline_factory.make()
 
@@ -29,7 +29,7 @@ async def test_with_stages():
 @pytest.mark.asyncio
 async def test_parameter_immutability():
     # creating a pipeline with a few stages
-    pipeline_factory = (PipelineFactory()).with_stages(a_few_stages)
+    pipeline_factory = (PipelineFactory()).with_stages(some_stages)
     pipeline = pipeline_factory.make()
     result = await pipeline.process(10)
     assert result == "result is 12"
@@ -38,16 +38,16 @@ async def test_parameter_immutability():
     add_excitement: StageCallable = lambda x: f"{x}!!!"
     pipeline_factory.add_stage(add_excitement)
 
-    # the original "a_few_stages" list should not be affected
+    # the original "some_stages" list should not be affected
     result2 = await pipeline.process(10)
     assert result2 == result
-    assert len(a_few_stages) == 3
+    assert len(some_stages) == 3
 
 
 @pytest.mark.asyncio
 async def test_immutability():
     # creating a pipeline with a few stages
-    pipeline_factory = (PipelineFactory[int, str]()).with_stages(a_few_stages)
+    pipeline_factory = (PipelineFactory[int, str]()).with_stages(some_stages)
     pipeline = pipeline_factory.make()
     result = await pipeline.process(10)
     assert result == "result is 12"
@@ -90,7 +90,7 @@ async def test_with_processor():
     # create factory with a processor
     pipeline_factory = (
         (PipelineFactory[int, str]())
-        .with_stages(a_few_stages)
+        .with_stages(some_stages)
         .with_processor(MyProcessor())
     )
 
@@ -111,7 +111,7 @@ async def test_with_processor_class():
     # create factory with a processor
     pipeline_factory = (
         (PipelineFactory[int, str]())
-        .with_stages(a_few_stages)
+        .with_stages(some_stages)
         .with_processor_class(MyProcessor)
     )
 
