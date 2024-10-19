@@ -182,3 +182,33 @@ async def test_immutability_of_process_with_strategy():
         ],
     )
     assert result == 12
+
+
+@pytest.mark.asyncio
+async def test_command_with_extra_arguments():
+    # define a command class
+    class MultiplyCommand(Command[int, int]):
+        async def execute(self, factor: int) -> int:
+            for stage in self.stages:
+                self.payload = await self._call_stage(
+                    payload=self.payload,
+                    stage=stage,
+                )
+
+            return self.payload * factor
+
+    class MyProcessor(ChainedProcessor[int, int]):
+        command_class = MultiplyCommand
+
+    # test command
+    processor = MyProcessor()
+
+    result = await processor.process_with_strategy(
+        payload=5,
+        stages=[
+            lambda payload: payload + 1,
+            lambda payload: payload * 2,
+        ],
+        factor=8,
+    )
+    assert result == 96

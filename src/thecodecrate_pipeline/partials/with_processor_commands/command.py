@@ -36,7 +36,7 @@ class Command(
         self.extra_kwds = kwds
 
     @abstractmethod
-    async def execute(self) -> T_out:
+    async def execute(self, *args: Any, **kwds: Any) -> T_out:
         pass
 
     async def _call_stage(
