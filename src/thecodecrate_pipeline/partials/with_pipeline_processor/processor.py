@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import inspect
 from typing import Any
 
+from ...support.clonable import Clonable
 from .processor_interface import (
     ProcessorInterface as ImplementsProcessorInterface,
 )
@@ -10,6 +11,7 @@ from ..with_base.stage_callable import StageCallableType
 
 
 class Processor(
+    Clonable,
     ImplementsProcessorInterface[T_in, T_out],
     ABC,
 ):

@@ -16,11 +16,13 @@ class PipelineMixin(
     ABC,
 ):
     async def process(self, payload: T_in, *args: Any, **kwds: Any) -> T_out:
-        self.processor = cast(Optional[ProcessorInterface], self.processor)
+        self.processor_instance = cast(
+            Optional[ProcessorInterface], self.processor_instance
+        )  # type: ignore
 
-        if self.processor is None:
+        if self.processor_instance is None:
             raise ValueError("Processor not set")
 
-        return await self.processor.process_with_strategy(
+        return await self.processor_instance.process_with_strategy(
             payload=payload, stages=self._get_items(), *args, **kwds
         )

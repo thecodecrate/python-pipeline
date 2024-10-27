@@ -1,12 +1,12 @@
 import copy
 from typing import Protocol, Self
 
-from ..act_as_list_interface import ActAsListInterface
+from .has_list_immutability_interface import HasListImmutabilityInterface
 from ..item import TItem
 
 
 class HasListImmutability(
-    ActAsListInterface[TItem],
+    HasListImmutabilityInterface[TItem],
     Protocol[TItem],
 ):
     def _add_item(self, item: TItem) -> Self:

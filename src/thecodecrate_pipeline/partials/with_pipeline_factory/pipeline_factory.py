@@ -13,7 +13,7 @@ class PipelineFactory(
     ActAsList[StageClassOrInstance],
     Generic[TPipeline],
 ):
-    _instance_class: Optional[type[TPipeline]] = None  # ActAsFactory
+    _model_class: Optional[type[TPipeline]] = None  # ActAsFactory
     stages: list[StageClassOrInstance] = []  # ActAsList
 
     def __init__(
@@ -39,10 +39,10 @@ class PipelineFactory(
     def _definition(self) -> dict[str, Any]:
         return {"stages": self._get_items()}
 
-    # User factory configuration
+    # public API: factory configuration
     def add_stage(self, stage: StageClassOrInstance) -> Self:
         return self._add_item(stage)
 
-    # User factory configuration
+    # public API: factory configuration
     def with_stages(self, stages: list[StageClassOrInstance]) -> Self:
         return self._set_items([*stages])

@@ -1,11 +1,13 @@
 from abc import abstractmethod
 from typing import Any, Protocol, TypeVar
 
+from ...support.clonable import ClonableInterface
 from ..with_base.types import T_in, T_out
 from ..with_base.stage_callable import StageCallableType
 
 
 class ProcessorInterface(
+    ClonableInterface,
     Protocol[T_in, T_out],
 ):
     @abstractmethod

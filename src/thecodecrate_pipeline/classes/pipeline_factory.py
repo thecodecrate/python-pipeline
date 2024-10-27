@@ -19,4 +19,4 @@ class PipelineFactory(
     ImplementsPipelineFactoryInterface,
     Generic[T_in, T_out],
 ):
-    _instance_class = Pipeline
+    _model_class = Pipeline

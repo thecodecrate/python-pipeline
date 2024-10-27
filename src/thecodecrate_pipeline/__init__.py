@@ -74,9 +74,6 @@ from .partials.with_processor_commands.strategies.command_processing_strategy im
 from .partials.with_processor_commands.strategies.processor_processing_strategy import (  # noqa
     ProcessorProcessingStrategy,
 )
-from .partials.with_processor_commands.traits.processable_as_command import (
-    ProcessableAsCommand,
-)
 
 
 # Version of the package
@@ -101,8 +98,6 @@ __all__ = [
     "PipelineFactoryInterface",
     "ProcessingStrategy",
     "ProcessingStrategyInterface",
-    # Traits
-    "ProcessableAsCommand",
     # Types
     "T_in",
     "T_out",

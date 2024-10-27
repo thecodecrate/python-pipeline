@@ -1,4 +1,3 @@
-from .processor import Processor
 from .pipeline_interface import (
     PipelineInterface as ImplementsPipelineInterface,
 )
@@ -37,5 +36,4 @@ class Pipeline(
     WithPipelineBaseConcern,
     ImplementsPipelineInterface[T_in, T_out],
 ):
-    base_processor_class = Processor
     processor_class = ChainedProcessor

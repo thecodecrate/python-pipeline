@@ -20,22 +20,41 @@ class ProcessorInterfaceMixin(
     def __init__(
         self,
         command_class: Optional[type[CommandInterface]] = None,
-        processing_strategy: Optional[
-            type[ProcessingStrategyInterface]
+        strategy_class: Optional[type[ProcessingStrategyInterface]] = None,
+        strategy_instance: Optional[ProcessingStrategyInterface] = None,
+        strategy: Optional[
+            type[ProcessingStrategyInterface] | ProcessingStrategyInterface
         ] = None,
         *args: Any,
         **kwds: Any,
     ) -> None: ...
 
-    def with_processing_strategy(
-        self, processing_strategy: ProcessingStrategyInterface[T_in, T_out]
+    def with_command_class(
+        self, command_class: type[CommandInterface]
     ) -> Self: ...
 
-    def which_processing_strategy_class(
+    def with_strategy(
+        self,
+        strategy: (
+            type[ProcessingStrategyInterface[T_in, T_out]]
+            | ProcessingStrategyInterface[T_in, T_out]
+        ),
+    ) -> Self: ...
+
+    def with_strategy_instance(
+        self, strategy_instance: ProcessingStrategyInterface[T_in, T_out]
+    ) -> Self: ...
+
+    def with_strategy_class(
+        self,
+        strategy_class: type[ProcessingStrategyInterface[T_in, T_out]],
+    ) -> Self: ...
+
+    def which_strategy_class(
         self,
     ) -> type[ProcessingStrategyInterface[T_in, T_out]]: ...
 
-    def _make_processing_strategy(
+    def _make_strategy(
         self,
     ) -> ProcessingStrategyInterface[T_in, T_out]: ...
 
@@ -47,8 +66,11 @@ class ProcessorInterfaceMixin(
         **kwds: Any,
     ) -> T_out: ...
 
-    # make `process` method not abstract
-    # when using command strategy, the `process` method is not used
+    # let's turn `process` as a not abstract method
+    # having `process` as abstract will cause an exception on
+    # command processors
+    # that's because processors with the "command" strategy
+    # don't have to implement the `process` method
     async def process(
         self,
         payload: T_in,
