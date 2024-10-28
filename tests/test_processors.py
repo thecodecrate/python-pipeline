@@ -22,6 +22,8 @@ async def test_custom_processor():
 
     assert await pipeline.process(1) == 30
 
+    assert pipeline.processor_instance.__class__ == StubProcessor
+
 
 @pytest.mark.asyncio
 async def test_chained_pipeline():
@@ -32,12 +34,14 @@ async def test_chained_pipeline():
     )
     assert await pipeline.process(5) == 12
 
+    assert pipeline.processor_instance.__class__ == ChainedProcessor
+
 
 @pytest.mark.asyncio
 async def test_chained_processor():
     processor = ChainedProcessor[int]()
 
-    result = await processor.process_with_strategy(
+    result = await processor.process(
         payload=5,
         stages=[
             lambda payload: payload + 1,
@@ -46,7 +50,7 @@ async def test_chained_processor():
     )
     assert result == 12
 
-    result = await processor.process_with_strategy(
+    result = await processor.process(
         payload=5,
         stages=[
             lambda payload: payload + 1,
@@ -69,6 +73,8 @@ async def test_pipeline_with_chained_processor():
     assert await pipeline.process(5) == 350
     assert await pipeline.process(1) == 150
 
+    assert pipeline.processor_instance.__class__ == ChainedProcessor
+
 
 @pytest.mark.asyncio
 async def test_interruptible_pipeline():
@@ -78,7 +84,10 @@ async def test_interruptible_pipeline():
         .pipe(lambda payload: payload * 10)
         .pipe(lambda payload: payload * 10)
     )
+
     assert await pipeline.process(5) == 70
+
+    assert pipeline.processor_instance.__class__ == InterruptibleProcessor
 
 
 @pytest.mark.asyncio
@@ -117,3 +126,5 @@ async def test_pipeline_with_interruptible_processor():
 
     assert await pipeline.process(5) == 35
     assert await pipeline.process(1) == 150
+
+    assert pipeline.processor_instance.__class__ == InterruptibleProcessor

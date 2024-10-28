@@ -6,6 +6,7 @@ from thecodecrate_pipeline import (
 
 from tests.stubs.stub_stage_with_custom_args import (
     IndexedPipeline,
+    IndexedProcessor,
     IndexedStage,
 )
 from .stubs.stub_stages_int import (
@@ -77,8 +78,8 @@ async def test_string_stage():
 
 @pytest.mark.asyncio
 async def test_process_repeat():
-    # it happened that the pipeline was not reset, so the second process call
-    # would not work as expected
+    # it happened before that the pipeline was not reset,
+    # making the second process call would not work as expected.
     for _ in range(3):
         pipeline = (
             (Pipeline[int]())
@@ -139,7 +140,12 @@ async def test_declarative_stages_with_processor():
             TimesThreeStage,
         ]
 
-    assert await MyPipeline().process(5) == 300
+    pipeline = MyPipeline()
+
+    assert await pipeline.process(5) == 300
+
+    assert pipeline.__class__ == MyPipeline
+    assert pipeline.processor_instance.__class__ == StubProcessor
 
 
 @pytest.mark.asyncio
@@ -166,3 +172,5 @@ async def test_stages_with_custom_args():
     )
 
     assert await pipeline.process("test") == "test: 0: 1"
+    assert pipeline.processor_instance.__class__ == IndexedProcessor
+    assert pipeline.__class__ == IndexedPipeline
