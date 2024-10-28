@@ -1,19 +1,17 @@
 import inspect
-from typing import Any, Callable, Protocol, TypeVar
+from typing import Any, Awaitable, Callable, Protocol
 
-from .has_call_async_interface import HasCallAsyncInterface
-
-TCallableReturn = TypeVar("TCallableReturn", infer_variance=True)
+from .has_call_async_interface import HasCallAsyncInterface, TCallableReturn
 
 
 class HasCallAsync(HasCallAsyncInterface, Protocol):
-    async def _call_async(
+    async def _call(
         self,
-        callable_: Callable[..., TCallableReturn],
+        callable: Callable[..., TCallableReturn | Awaitable[TCallableReturn]],
         *args: Any,
         **kwds: Any,
     ) -> TCallableReturn:
-        result = callable_(*args, **kwds)
+        result = callable(*args, **kwds)
 
         if inspect.isawaitable(result):
             return await result
