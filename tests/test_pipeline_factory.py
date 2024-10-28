@@ -100,7 +100,7 @@ async def test_with_processor():
     assert result == "result is 12"
 
     # check the processor
-    assert pipeline.processor.__class__ == MyProcessor
+    assert pipeline.processor_instance.__class__ == MyProcessor
 
 
 @pytest.mark.asyncio
@@ -121,7 +121,7 @@ async def test_with_processor_class():
     assert result == "result is 12"
 
     # check the processor
-    assert pipeline.processor.__class__ == MyProcessor
+    assert pipeline.processor_instance.__class__ == MyProcessor
 
 
 @pytest.mark.asyncio

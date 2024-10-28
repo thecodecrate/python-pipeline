@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
-import inspect
 from typing import Any
 
+from ...support.has_call_async import HasCallAsync
+from ...support.clonable import Clonable
 from .processor_interface import (
     ProcessorInterface as ImplementsProcessorInterface,
 )
@@ -10,6 +11,8 @@ from ..with_base.stage_callable import StageCallableType
 
 
 class Processor(
+    HasCallAsync,
+    Clonable,
     ImplementsProcessorInterface[T_in, T_out],
     ABC,
 ):
@@ -23,12 +26,12 @@ class Processor(
     ) -> T_out:
         pass
 
-    async def _call_stage(
-        self, payload: T_in, stage: StageCallableType, *args: Any, **kwds: Any
-    ) -> T_in:
-        result = stage(payload, *args, **kwds)
-
-        if inspect.isawaitable(result):
-            return await result
-
-        return result
+    # HasCallAsync: include callable type and `payload` in the signature
+    async def _call(
+        self,
+        stage: StageCallableType,
+        payload: T_in,
+        *args: Any,
+        **kwds: Any,
+    ) -> Any:
+        return await super()._call(stage, payload, *args, **kwds)

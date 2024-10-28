@@ -13,12 +13,15 @@ class PipelineFactoryMixin(
     ABC,
 ):
     processor_class: Optional[type[ProcessorInterface[T_in, T_out]]] = None
-    processor: Optional[ProcessorInterface[T_in, T_out]] = None
+    processor_instance: Optional[ProcessorInterface[T_in, T_out]] = None
 
     def __init__(
         self,
         processor_class: Optional[type[ProcessorInterface]] = None,
-        processor: Optional[ProcessorInterface] = None,
+        processor_instance: Optional[ProcessorInterface] = None,
+        processor: Optional[
+            type[ProcessorInterface] | ProcessorInterface
+        ] = None,
         *args: Any,
         **kwds: Any,
     ) -> None:
@@ -27,11 +30,26 @@ class PipelineFactoryMixin(
         if not self.processor_class:
             self.processor_class = processor_class or None
 
-        if not self.processor:
-            self.processor = processor or None
+        if not self.processor_instance:
+            self.processor_instance = processor_instance or None
 
-    def with_processor(self, processor: ProcessorInterface) -> Self:
-        self.processor = processor
+        if processor:
+            self.with_processor(processor)
+
+    def with_processor(
+        self, processor: type[ProcessorInterface] | ProcessorInterface
+    ) -> Self:
+        if isinstance(processor, type):
+            return self.with_processor_class(processor)
+
+        return self.with_processor_instance(processor)
+
+    def with_processor_instance(
+        self, processor_instance: ProcessorInterface
+    ) -> Self:
+        self.processor_class = processor_instance.__class__
+
+        self.processor_instance = processor_instance
 
         return self
 
@@ -47,5 +65,5 @@ class PipelineFactoryMixin(
         return {
             **super()._definition(),  # type: ignore
             "processor_class": self.processor_class,
-            "processor": self.processor,
+            "processor_instance": self.processor_instance,
         }

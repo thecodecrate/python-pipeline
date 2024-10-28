@@ -150,36 +150,6 @@ And use it in your pipeline:
 pipeline = Pipeline[int, int](processor=MyCustomProcessor()).pipe(lambda x: x * 2)
 ```
 
-## Command-Based Processors
-
-In addition to the standard processors, this package supports command-based processors, which utilize the Command Pattern to encapsulate processing logic within a command object. This approach provides better encapsulation and isolation of state for each processing request.
-
-### Using Command-Based Processors
-
-You can create a command-based processor by specifying a `command_class` in your processor. The command class should inherit from `Command[T_in, T_out]` and implement the `execute` method.
-
-```python
-class StatefulChainedProcessor(Processor[T_in, T_out]):
-    command_class = StatefulChainedCommand
-
-class StatefulChainedCommand(Command[T_in, T_out]):
-    async def execute(self) -> T_out:
-        # Custom processing logic
-        for stage in self.stages:
-            self.payload = await stage(self.payload)
-        return self.payload
-```
-
-You can then use this processor in your pipeline:
-
-```python
-pipeline = Pipeline[int, int](processor=StatefulChainedProcessor()).pipe(lambda x: x * 2)
-```
-
-### When to Use Command-Based Processors
-
-Command-based processors are useful when you need to maintain state within the processing of each payload or prefer an object-oriented approach that aligns with the Command Pattern.
-
 ## Declarative Stages
 
 Instead of using `pipe` to add stages at runtime, you can define stages declaratively by specifying them as class-level attributes. This makes pipelines easier to set up and reuse with predefined stages.

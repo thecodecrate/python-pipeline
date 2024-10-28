@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from typing import Protocol, Self
+
 from .item import TItem
 from .act_as_list_interface import ActAsListInterface
 

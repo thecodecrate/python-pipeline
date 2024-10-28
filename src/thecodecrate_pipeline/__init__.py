@@ -1,5 +1,3 @@
-from .classes.command import Command
-from .classes.command_interface import CommandInterface
 from .classes.pipeline_factory import PipelineFactory
 from .classes.pipeline_factory_interface import PipelineFactoryInterface
 from .classes.pipeline import Pipeline
@@ -62,35 +60,17 @@ from .partials.with_stage_as_callable.stage_mixin import (
 from .partials.with_stage_as_callable.stage_interface_mixin import (
     StageInterfaceMixin as WithStageAsCallableInterface,
 )
-from .partials.with_processor_commands.processing_strategy import (
-    ProcessingStrategy,
-)
-from .partials.with_processor_commands.processing_strategy_interface import (
-    ProcessingStrategyInterface,
-)
-from .partials.with_processor_commands.strategies.command_processing_strategy import (  # noqa
-    CommandProcessingStrategy,
-)
-from .partials.with_processor_commands.strategies.processor_processing_strategy import (  # noqa
-    ProcessorProcessingStrategy,
-)
-from .partials.with_processor_commands.traits.processable_as_command import (
-    ProcessableAsCommand,
-)
-
 
 # Version of the package
 # DO NOT MODIFY MANUALLY
 # This will be updated by `bumpver` command.
 # - Make sure to commit all changes first before running `bumpver`.
 # - Run `bumpver update --[minor|major|patch]`
-__version__ = "1.19.0"
+__version__ = "1.20.0"
 
 # Expose the public API
 __all__ = [
     # Core
-    "Command",
-    "CommandInterface",
     "Pipeline",
     "PipelineInterface",
     "Stage",
@@ -99,10 +79,6 @@ __all__ = [
     "ProcessorInterface",
     "PipelineFactory",
     "PipelineFactoryInterface",
-    "ProcessingStrategy",
-    "ProcessingStrategyInterface",
-    # Traits
-    "ProcessableAsCommand",
     # Types
     "T_in",
     "T_out",
@@ -112,9 +88,6 @@ __all__ = [
     "ChainedPipeline",
     "InterruptibleProcessor",
     "InterruptiblePipeline",
-    # Strategies
-    "CommandProcessingStrategy",
-    "ProcessorProcessingStrategy",
     # Partials
     "WithPipelineBase",
     "WithPipelineBaseInterface",

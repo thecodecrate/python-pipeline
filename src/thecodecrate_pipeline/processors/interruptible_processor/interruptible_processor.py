@@ -24,8 +24,8 @@ class InterruptibleProcessor(Processor[T_in, T_out]):
         **kwds: Any,
     ) -> T_out:
         for stage in stages:
-            payload = await self._call_stage(
-                payload=payload, stage=stage, *args, **kwds
+            payload = await self._call(
+                stage=stage, payload=payload, *args, **kwds
             )
 
             if not await self._call_check(payload):
