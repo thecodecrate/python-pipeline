@@ -19,15 +19,11 @@ from ..partials.with_pipeline_as_stage.pipeline_interface_mixin import (
 from ..partials.with_pipeline_as_immutable.pipeline_interface_mixin import (
     PipelineInterfaceMixin as WithPipelineAsImmutableInterface,
 )
-from ..partials.with_processor_commands.pipeline_interface_mixin import (
-    PipelineInterfaceMixin as WithProcessorCommandsInterface,
-)
 
 
 class PipelineInterface(
     WithPipelineAsImmutableInterface,
     WithPipelineAsStageInterface[T_in, T_out],
-    WithProcessorCommandsInterface[T_in, T_out],
     WithPipelineProcessorInterface[T_in, T_out],
     WithPipelineDeclaredStagesInterface,
     WithPipelineAsListInterface,

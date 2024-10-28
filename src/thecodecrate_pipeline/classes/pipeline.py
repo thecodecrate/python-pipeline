@@ -21,15 +21,11 @@ from ..partials.with_pipeline_as_stage.pipeline_mixin import (
 from ..partials.with_pipeline_as_immutable.pipeline_mixin import (
     PipelineMixin as WithPipelineAsImmutableConcern,
 )
-from ..partials.with_processor_commands.pipeline_mixin import (
-    PipelineMixin as WithProcessorCommandsConcern,
-)
 
 
 class Pipeline(
     WithPipelineAsImmutableConcern,
     WithPipelineAsStageConcern[T_in, T_out],
-    WithProcessorCommandsConcern[T_in, T_out],
     WithPipelineProcessorConcern[T_in, T_out],
     WithPipelineDeclaredStagesConcern,
     WithPipelineAsListConcern,
