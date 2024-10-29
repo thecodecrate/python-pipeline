@@ -48,11 +48,8 @@ from .partials.with_pipeline_as_stage.pipeline_mixin import (
 from .partials.with_pipeline_as_stage.pipeline_interface_mixin import (
     PipelineInterfaceMixin as WithPipelineAsStageInterface,
 )
-from .partials.with_pipeline_as_immutable.pipeline_mixin import (
-    PipelineMixin as WithPipelineAsImmutable,
-)
-from .partials.with_pipeline_as_immutable.pipeline_interface_mixin import (
-    PipelineInterfaceMixin as WithPipelineAsImmutableInterface,
+from .partials.with_pipeline_declared_stages.pipeline_interface_mixin import (
+    StageClassOrInstance,
 )
 from .partials.with_stage_as_callable.stage_mixin import (
     StageMixin as WithStageAsCallable,
@@ -66,7 +63,7 @@ from .partials.with_stage_as_callable.stage_interface_mixin import (
 # This will be updated by `bumpver` command.
 # - Make sure to commit all changes first before running `bumpver`.
 # - Run `bumpver update --[minor|major|patch]`
-__version__ = "1.20.0"
+__version__ = "1.21.0"
 
 # Expose the public API
 __all__ = [
@@ -83,6 +80,7 @@ __all__ = [
     "T_in",
     "T_out",
     "StageCallable",
+    "StageClassOrInstance",
     # Processors
     "ChainedProcessor",
     "ChainedPipeline",
@@ -101,8 +99,6 @@ __all__ = [
     "WithProcessorBaseInterface",
     "WithPipelineAsStage",
     "WithPipelineAsStageInterface",
-    "WithPipelineAsImmutable",
-    "WithPipelineAsImmutableInterface",
     "WithStageAsCallable",
     "WithStageAsCallableInterface",
 ]

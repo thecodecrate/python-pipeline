@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import Any, Optional, Protocol, Self
 
 from .processor_interface import ProcessorInterface

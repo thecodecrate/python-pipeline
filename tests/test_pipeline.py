@@ -1,6 +1,7 @@
 import pytest
 from thecodecrate_pipeline import (
     Pipeline,
+    StageClassOrInstance,
     StageCallable,
 )
 
@@ -149,20 +150,59 @@ async def test_declarative_stages_with_processor():
 
 
 @pytest.mark.asyncio
-async def test_declarative_stages_dont_override_constructor_stages():
+async def test_declarative_stage_instances():
+    pipeline = (Pipeline[int]()).pipe(TimesTwoStage()).pipe(AddOneStage())
+
+    def add_seven(payload: int) -> int:
+        return payload + 7
+
+    async def sub_three_async(payload: int) -> int:
+        return payload - 3
+
     class MyPipeline(Pipeline[int]):
-        stages = [
-            TimesTwoStage,
-            TimesThreeStage,
+        stage_instances = [
+            TimesThreeStage(),  # stage instance
+            pipeline,  # pipeline
+            AddOneStage(),  # another stage instance
+            add_seven,  # function
+            sub_three_async,  # async function
         ]
 
-    stage_instances: list[StageCallable] = [AddOneStage(), TimesTwoStage()]
+    stage_instances: list[StageCallable] = [
+        add_seven,  # function
+        sub_three_async,  # async function
+    ]
 
+    assert await MyPipeline().process(5) == 36
+    assert await MyPipeline(stage_instances=stage_instances).process(5) == 9
+
+
+@pytest.mark.asyncio
+async def test_constructor_override_declared_stages():
+    class MyPipeline(Pipeline[int]):
+        stages = [
+            TimesTwoStage,  # stage class
+            TimesThreeStage(),  # stage instance
+        ]
+
+    stages: list[StageClassOrInstance] = [
+        AddOneStage,  # stage class
+        TimesTwoStage(),  # stage instance
+    ]
+
+    stage_instances: list[StageCallable] = [
+        AddOneStage(),  # only instances can be added
+        TimesTwoStage(),  # only instances can be added
+    ]
+
+    assert await MyPipeline().process(5) == 30
+    assert await MyPipeline(stages=stages).process(5) == 12
+    assert await MyPipeline(stages=stage_instances).process(5) == 12
     assert await MyPipeline(stage_instances=stage_instances).process(5) == 12
 
 
 @pytest.mark.asyncio
-async def test_stages_with_custom_args():
+async def test_custom_args_on_stages():
     class MyIndexedStage(IndexedStage[str]):
         async def __call__(self, payload: str, index: int) -> str:
             return f"{payload}: {index}"
@@ -174,3 +214,38 @@ async def test_stages_with_custom_args():
     assert await pipeline.process("test") == "test: 0: 1"
     assert pipeline.processor_instance.__class__ == IndexedProcessor
     assert pipeline.__class__ == IndexedPipeline
+
+
+@pytest.mark.asyncio
+async def test_method__with_stages():
+    pipeline = Pipeline()
+
+    stages: list[StageClassOrInstance] = [
+        AddOneStage,  # stage class
+        TimesTwoStage(),  # stage instance
+    ]
+
+    new_pipeline = pipeline.with_stages(stages)
+
+    assert new_pipeline is not pipeline  # ensures immutability
+    assert len(new_pipeline.stages) == len(stages)
+    for stage in stages:
+        assert stage in new_pipeline.stages
+
+
+@pytest.mark.asyncio
+async def test_method__with_stages__override_current_instances():
+    pipeline = Pipeline().pipe(AddOneStage())
+
+    stages: list[StageClassOrInstance] = [
+        TimesTwoStage,  # stage class
+        TimesThreeStage(),  # stage instance
+    ]
+
+    new_pipeline = pipeline.with_stages(stages)
+
+    assert len(pipeline.stage_instances) == 1
+    assert len(new_pipeline.stage_instances) == 2
+
+    assert await pipeline.process(5) == 6
+    assert await new_pipeline.process(5) == 30
