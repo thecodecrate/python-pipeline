@@ -1,12 +1,9 @@
-from typing import Any
+from typing import Any, Optional, Self
 
-from .stage_facade import StageFacade
 from .pipeline_interface_mixin import (
     PipelineInterfaceMixin as ImplementsPipelineInterface,
+    StageClassOrInstance,
 )
-from ..with_base.stage_callable import StageCallableType
-
-StageClassOrInstance = type[StageFacade[Any, Any]] | StageCallableType
 
 
 class PipelineMixin(
@@ -15,11 +12,14 @@ class PipelineMixin(
     stages: list[StageClassOrInstance] = []
 
     def __init__(
-        self, stages: list[StageClassOrInstance] = [], *args: Any, **kwds: Any
+        self,
+        stages: Optional[list[StageClassOrInstance]] = None,
+        *args: Any,
+        **kwds: Any,
     ) -> None:
         super().__init__(*args, **kwds)  # type: ignore
 
-        if len(stages) > 0:
+        if stages:
             self.stages = [*stages]
 
         if self._should_instantiate_stages():
@@ -28,10 +28,15 @@ class PipelineMixin(
     def _should_instantiate_stages(self) -> bool:
         return len(self._get_items()) == 0 and len(self.stages) > 0
 
-    def _instantiate_stages(self) -> None:
+    def _instantiate_stages(self) -> Self:
         instances = [
             stage() if isinstance(stage, type) else stage
             for stage in self.stages
         ]
 
-        self._set_items(instances)
+        return self._set_items(instances)
+
+    def with_stages(self, stages: list[StageClassOrInstance]) -> Self:
+        cloned = self.clone({"stages": stages, "stage_instances": []})
+
+        return cloned._instantiate_stages()
