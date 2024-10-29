@@ -37,5 +37,8 @@ class PipelineMixin(
 
         return self
 
+    def _add_item(self, item: StageCallableType) -> Self:
+        return self.clone({"stage_instances": [*self.stage_instances, item]})
+
     def pipe(self, stage: StageCallableType) -> Self:
         return self._add_item(stage)

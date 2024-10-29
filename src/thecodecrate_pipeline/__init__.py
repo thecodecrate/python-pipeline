@@ -48,12 +48,6 @@ from .partials.with_pipeline_as_stage.pipeline_mixin import (
 from .partials.with_pipeline_as_stage.pipeline_interface_mixin import (
     PipelineInterfaceMixin as WithPipelineAsStageInterface,
 )
-from .partials.with_pipeline_as_immutable.pipeline_mixin import (
-    PipelineMixin as WithPipelineAsImmutable,
-)
-from .partials.with_pipeline_as_immutable.pipeline_interface_mixin import (
-    PipelineInterfaceMixin as WithPipelineAsImmutableInterface,
-)
 from .partials.with_pipeline_declared_stages.pipeline_interface_mixin import (
     StageClassOrInstance,
 )
@@ -105,8 +99,6 @@ __all__ = [
     "WithProcessorBaseInterface",
     "WithPipelineAsStage",
     "WithPipelineAsStageInterface",
-    "WithPipelineAsImmutable",
-    "WithPipelineAsImmutableInterface",
     "WithStageAsCallable",
     "WithStageAsCallableInterface",
 ]
