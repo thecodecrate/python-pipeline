@@ -48,8 +48,11 @@ from .partials.with_pipeline_as_stage.pipeline_mixin import (
 from .partials.with_pipeline_as_stage.pipeline_interface_mixin import (
     PipelineInterfaceMixin as WithPipelineAsStageInterface,
 )
-from .partials.with_pipeline_declared_stages.pipeline_interface_mixin import (
+from .partials.with_base.stage_callable import (
+    StageInstance,
+    StageInstanceCollection,
     StageClassOrInstance,
+    StageCollection,
 )
 from .partials.with_stage_as_callable.stage_mixin import (
     StageMixin as WithStageAsCallable,
@@ -80,7 +83,10 @@ __all__ = [
     "T_in",
     "T_out",
     "StageCallable",
+    "StageInstance",
+    "StageInstanceCollection",
     "StageClassOrInstance",
+    "StageCollection",
     # Processors
     "ChainedProcessor",
     "ChainedPipeline",

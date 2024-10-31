@@ -43,18 +43,16 @@ async def test_chained_processor():
 
     result = await processor.process(
         payload=5,
-        stages=[
+        stages=(
             lambda payload: payload + 1,
             lambda payload: payload * 2,
-        ],
+        ),
     )
     assert result == 12
 
     result = await processor.process(
         payload=5,
-        stages=[
-            lambda payload: payload + 1,
-        ],
+        stages=(lambda payload: payload + 1,),
     )
     assert result == 6
 
@@ -96,19 +94,17 @@ async def test_interruptible_processor():
 
     result = await processor.process(
         payload=5,
-        stages=[
+        stages=(
             lambda payload: payload + 2,
             lambda payload: payload * 10,
             lambda payload: payload * 10,
-        ],
+        ),
     )
     assert result == 70
 
     result = await processor.process(
         payload=5,
-        stages=[
-            lambda payload: payload + 2,
-        ],
+        stages=(lambda payload: payload + 2,),
     )
     assert result == 7
 

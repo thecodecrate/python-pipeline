@@ -4,17 +4,18 @@ from thecodecrate_pipeline import (
     StageCallable,
     ChainedProcessor,
     Stage,
+    StageCollection,
 )
 
 from .stubs.stub_stages_int import (
     AddOneStage,
 )
 
-some_stages: list[StageCallable] = [
-    AddOneStage(),
+some_stages: StageCollection = (
+    AddOneStage,
     (lambda x: x + 1),
     (lambda x: f"result is {x}"),
-]
+)
 
 
 @pytest.mark.asyncio
@@ -130,7 +131,7 @@ async def test_with_class_stages():
         async def __call__(self, x: int) -> str:
             return f"result is {x}"
 
-    pipeline_factory = (PipelineFactory[int, str]()).with_stages([MyStage])
+    pipeline_factory = (PipelineFactory[int, str]()).with_stages((MyStage,))
 
     pipeline = pipeline_factory.make()
     assert await pipeline.process(10) == "result is 10"
@@ -143,7 +144,7 @@ async def test_with_declared_stages():
             return f"result is {x}"
 
     class MyPipelineFactory(PipelineFactory[int, str]):
-        stages = [MyStage]
+        stages = (MyStage,)
 
     pipeline_factory = MyPipelineFactory()
 

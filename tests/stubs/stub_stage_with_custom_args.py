@@ -5,6 +5,7 @@ from thecodecrate_pipeline import (
     Pipeline,
     Processor,
     Stage,
+    StageInstanceCollection,
     T_in,
     T_out,
 )
@@ -31,7 +32,7 @@ class IndexedProcessor(Processor[T_in, T_out]):
     async def process(
         self,
         payload: T_in,
-        stages: list[IndexedPipelineCallable],
+        stages: StageInstanceCollection,
     ) -> T_out:
         index = 0
 

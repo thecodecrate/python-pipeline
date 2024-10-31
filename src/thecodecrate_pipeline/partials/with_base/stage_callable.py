@@ -13,4 +13,10 @@ class StageCallable(Protocol[T_in, T_out]):
     ) -> T_out | Awaitable[T_out]: ...
 
 
-StageCallableType = StageCallable[Any, Any]
+StageInstance = StageCallable[Any, Any]
+
+StageInstanceCollection = tuple[StageInstance, ...]
+
+StageClassOrInstance = StageInstance | type[StageInstance]
+
+StageCollection = tuple[StageClassOrInstance, ...]
