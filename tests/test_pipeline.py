@@ -78,6 +78,17 @@ async def test_string_stage():
 
 
 @pytest.mark.asyncio
+async def test_stages_with_different_types():
+    pipeline = (
+        (Pipeline[int, str]())
+        .pipe(lambda x: x + 1)
+        .pipe(lambda payload: f"total is {payload}!")
+    )
+
+    assert await pipeline.process(10) == "total is 11!"
+
+
+@pytest.mark.asyncio
 async def test_process_repeat():
     # it happened before that the pipeline was not reset,
     # making the second process call would not work as expected.
