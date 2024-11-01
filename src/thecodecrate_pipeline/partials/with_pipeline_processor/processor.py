@@ -7,7 +7,10 @@ from .processor_interface import (
     ProcessorInterface as ImplementsProcessorInterface,
 )
 from ..with_base.types import T_in, T_out
-from ..with_base.stage_callable import StageCallableType
+from ..with_base.stage_callable import (
+    StageInstance,
+    StageInstanceCollection,
+)
 
 
 class Processor(
@@ -20,7 +23,7 @@ class Processor(
     async def process(
         self,
         payload: T_in,
-        stages: list[StageCallableType],
+        stages: StageInstanceCollection,
         *args: Any,
         **kwds: Any,
     ) -> T_out:
@@ -29,7 +32,7 @@ class Processor(
     # HasCallAsync: include callable type and `payload` in the signature
     async def _call(
         self,
-        stage: StageCallableType,
+        stage: StageInstance,
         payload: T_in,
         *args: Any,
         **kwds: Any,

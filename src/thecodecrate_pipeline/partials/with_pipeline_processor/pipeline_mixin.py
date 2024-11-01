@@ -12,8 +12,8 @@ class PipelineMixin(
     PipelineInterface[T_in, T_out],
     ABC,
 ):
-    processor_class: Optional[type[ProcessorInterface]] = None
-    processor_instance: Optional[ProcessorInterface] = None
+    processor_class: Optional[type[ProcessorInterface]]
+    processor_instance: Optional[ProcessorInterface]
 
     def __init__(
         self,
@@ -26,6 +26,12 @@ class PipelineMixin(
         **kwds: Any,
     ) -> None:
         super().__init__(*args, **kwds)  # type: ignore
+
+        if not hasattr(self, "processor_class"):
+            self.processor_class = None
+
+        if not hasattr(self, "processor_instance"):
+            self.processor_instance = None
 
         if processor_class:
             self.processor_class = processor_class

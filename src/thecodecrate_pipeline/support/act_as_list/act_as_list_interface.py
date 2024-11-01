@@ -1,13 +1,13 @@
 from typing import Protocol, Self
 
-from .item import TItem
+from .types import TItem, TCollection
 
 
 class ActAsListInterface(
-    Protocol[TItem],
+    Protocol[TItem, TCollection],
 ):
-    def _get_items(self) -> list[TItem]: ...
+    def _get_items(self) -> TCollection: ...
 
-    def _set_items(self, items: list[TItem]) -> Self: ...
+    def _set_items(self, items: TCollection) -> Self: ...
 
     def _add_item(self, item: TItem) -> Self: ...

@@ -136,7 +136,7 @@ class MyCustomProcessor(Processor[T_in, T_out]):
     async def process(
         self,
         payload: T_in,
-        stages: list[StageInterface[T_in, T_out]],
+        stages: StageInstanceCollection,
     ) -> T_out:
         # Custom processing logic
         for stage in stages:

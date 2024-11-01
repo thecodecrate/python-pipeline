@@ -3,6 +3,9 @@ from typing import Protocol
 from ..partials.with_base.types import T_in, T_out
 from ..partials.with_base.stage_callable import (
     StageCallable as WithStageCallableBase,
+    StageCollection,
+    StageInstanceCollection,
+    StageClassOrInstance,
 )
 
 
@@ -11,3 +14,11 @@ class StageCallable(
     Protocol[T_in, T_out],
 ):
     pass
+
+
+__all__ = [
+    "StageCallable",
+    "StageCollection",
+    "StageInstanceCollection",
+    "StageClassOrInstance",
+]
