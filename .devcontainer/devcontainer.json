@@ -11,35 +11,52 @@
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-python.black-formatter",
-        "oderwat.indent-rainbow",
         "ms-python.isort",
         "ms-python.debugpy",
+        "ms-python.flake8",
         "ms-toolsai.jupyter",
         "DavidAnson.vscode-markdownlint",
-        "GitHub.copilot",
-        "GitHub.copilot-chat",
+        "github.copilot",
+        "github.copilot-chat",
+        "github.vscode-github-actions",
         "mikestead.dotenv",
-        "ms-python.flake8",
-        "tamasfe.even-better-toml",
-        "github.vscode-github-actions"
+        "tamasfe.even-better-toml"
       ],
       "settings": {
-        "terminal.integrated.shell.linux": "/bin/bash",
-        "editor.defaultFormatter": "ms-python.black-formatter",
-        "indentRainbow.indicatorStyle": "light",
+        "editor.linkedEditing": true,
         "editor.formatOnSave": true,
+        "editor.rulers": [
+          80,
+          100
+        ],
+        "editor.guides.bracketPairs": true,
+        "editor.guides.highlightActiveIndentation": true,
+        "explorer.sortOrderLexicographicOptions": "upper",
         "python.condaPath": "/opt/conda/bin/conda",
         "python.defaultInterpreterPath": "/opt/conda/envs/venv/bin/python",
         "python.analysis.autoImportCompletions": true,
         "python.analysis.typeCheckingMode": "strict",
         "python.analysis.diagnosticMode": "workspace",
-        "explorer.sortOrderLexicographicOptions": "upper",
+        "python.testing.pytestArgs": [
+          "tests"
+        ],
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true,
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter",
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+          }
+        },
         "[toml]": {
           "editor.defaultFormatter": "tamasfe.even-better-toml",
           "editor.formatOnSave": true
         },
         "[markdown]": {
-          "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+          "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+          "editor.wordWrap": "on"
         }
       }
     }

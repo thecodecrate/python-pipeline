@@ -13,6 +13,7 @@ dependencies:
     - pytest
     - pytest-asyncio
     - pytest-cov
+    - pytest-describe
     # tool for updating semantic versioning over multiple files
     - bumpver
     # tools for building package for PyPI
