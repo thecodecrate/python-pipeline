@@ -192,7 +192,7 @@ This example demonstrates implementing a `Todoable` class using Modular Fragment
 ```markdown
 # with_core
 
-This Fragment provides the core functionality for the `Todoable` class, including the basic method `list_todo` and the management of the todo list.
+This fragment provides the core functionality for the `Todoable` class, including the basic method `list_items` and the management of the todo list.
 
 Dependencies: None
 ```
@@ -206,7 +206,7 @@ from typing import Protocol
 class TodoableInterface(Protocol):
     def __init__(self) -> None:
         ...
-    def list_todo(self) -> list[str]:
+    def list_items(self) -> list[str]:
         ...
 ```
 
@@ -222,7 +222,7 @@ class Todoable(ImplementsInterface):
     def __init__(self) -> None:
         self._todo_list = []
 
-    def list_todo(self) -> list[str]:
+    def list_items(self) -> list[str]:
         return self._todo_list
 ```
 
@@ -233,7 +233,7 @@ class Todoable(ImplementsInterface):
 ```markdown
 # with_crud_todo_list
 
-This Fragment adds CRUD functionality to the `Todoable` class, allowing todo items to be created, read, updated, and deleted.
+This fragment adds CRUD functionality to the `Todoable` class, allowing todo items to be created, read, updated, and deleted.
 
 Dependencies:
 - with_core
@@ -247,13 +247,13 @@ from typing import Protocol
 from ..with_core.todoable_interface import TodoableInterface as WithBaseInterface
 
 class TodoableInterfaceMixin(WithBaseInterface, Protocol):
-    def create_todo(self, item: str) -> None:
+    def create_item(self, item: str) -> None:
         ...
-    def read_todo(self, index: int) -> str:
+    def read_item(self, index: int) -> str:
         ...
-    def update_todo(self, index: int, item: str) -> None:
+    def update_item(self, index: int, item: str) -> None:
         ...
-    def delete_todo(self, index: int) -> None:
+    def delete_item(self, index: int) -> None:
         ...
 ```
 
@@ -264,20 +264,17 @@ class TodoableInterfaceMixin(WithBaseInterface, Protocol):
 from .todoable_interface_mixin import TodoableInterfaceMixin as ImplementsInterface
 
 class TodoableMixin(ImplementsInterface):
-    def create_todo(self, item: str) -> None:
-        self._todo_list.append(item)
+    def create_item(self, item: str) -> None:
+        self.list_items().append(item)
 
-    def read_todo(self, index: int) -> str:
-        return self._todo_list[index]
+    def read_item(self, index: int) -> str:
+        return self.list_items()[index]
 
-    def update_todo(self, index: int, item: str) -> None:
-        self._todo_list[index] = item
+    def update_item(self, index: int, item: str) -> None:
+        self.list_items()[index] = item
 
-    def delete_todo(self, index: int) -> None:
-        del self._todo_list[index]
-
-    def list_todo(self) -> list[str]:
-        return self._todo_list
+    def delete_item(self, index: int) -> None:
+        del self.list_items()[index]
 ```
 
 ### 3.3 Fragment: `with_file_storage`
@@ -287,7 +284,7 @@ class TodoableMixin(ImplementsInterface):
 ```markdown
 # with_file_storage
 
-This Fragment adds the capability to automatically store and load the todo list from a file, enabling persistence between sessions. The todo list is loaded during initialization and saved automatically after create, update, and delete operations.
+This fragment adds the capability to automatically store and load the todo list from a file, enabling persistence between sessions. The todo list is loaded during initialization and saved automatically after create, update, and delete operations.
 
 Dependencies:
 - with_core
@@ -306,11 +303,11 @@ from ..with_crud_todo_list.todoable_interface_mixin import (
 class TodoableInterfaceMixin(WithCrudTodoListInterface, Protocol):
     def __init__(self) -> None:
         ...
-    def create_todo(self, item: str) -> None:
+    def create_item(self, item: str) -> None:
         ...
-    def update_todo(self, index: int, item: str) -> None:
+    def update_item(self, index: int, item: str) -> None:
         ...
-    def delete_todo(self, index: int) -> None:
+    def delete_item(self, index: int) -> None:
         ...
     def _load_from_file(self, filename: str) -> None:
         ...
@@ -343,16 +340,16 @@ class TodoableMixin(ImplementsInterface):
         with open(filename, 'w') as f:
             json.dump(self._todo_list, f)
 
-    def create_todo(self, item: str) -> None:
-        super().create_todo(item)
+    def create_item(self, item: str) -> None:
+        super().create_item(item)
         self._save_to_file(self._filename)
 
-    def update_todo(self, index: int, item: str) -> None:
-        super().update_todo(index, item)
+    def update_item(self, index: int, item: str) -> None:
+        super().update_item(index, item)
         self._save_to_file(self._filename)
 
-    def delete_todo(self, index: int) -> None:
-        super().delete_todo(index)
+    def delete_item(self, index: int) -> None:
+        super().delete_item(index)
         self._save_to_file(self._filename)
 ```
 
@@ -410,21 +407,21 @@ class Todoable(
 # example.py
 from _assembled.todoable import Todoable
 
-todo_manager = Todoable()
+todo = Todoable()
 
 # The todo list is automatically loaded from 'todo_list.json' during initialization
 
-todo_manager.create_todo("Buy milk")
-todo_manager.create_todo("Walk the dog")
-print(todo_manager.list_todo())
+todo.create_item("Buy milk")
+todo.create_item("Walk the dog")
+print(todo.list_items())
 # Output: ['Buy milk', 'Walk the dog']
 
-todo_manager.update_todo(0, "Buy almond milk")
-print(todo_manager.read_todo(0))
+todo.update_item(0, "Buy almond milk")
+print(todo.read_item(0))
 # Output: 'Buy almond milk'
 
-todo_manager.delete_todo(1)
-print(todo_manager.list_todo())
+todo.delete_item(1)
+print(todo.list_items())
 # Output: ['Buy almond milk']
 
 # The todo list is automatically saved to 'todo_list.json' after each modification
