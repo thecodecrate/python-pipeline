@@ -88,7 +88,7 @@ All interfaces must:
 
 An Assembled Package must have the following structure:
 
-```
+```text
 /<package_root>/
     __assembled__.py
     /_fragments/
@@ -185,19 +185,11 @@ This convention avoids name conflicts and clarifies the origin of each imported 
 
 This example demonstrates implementing a `Todoable` class using Modular Fragmented Design. The `Todoable` class allows for managing a todo list, with the core functionality provided by the `with_core` Fragment, extended CRUD operations provided by the `with_crud_todo_list` Fragment, and file storage capabilities provided by the `with_file_storage` Fragment.
 
-In this updated example, we have made the following changes:
-
-- **Removed `_get_todo_list`**: The `_get_todo_list` method has been removed as it was redundant.
-
-- **Accessed `_todo_list` Directly**: Mixins now access the `_todo_list` attribute directly.
-
-- **Inheritance List Formatting**: In Assembled Classes, the inherited classes are listed one per line for clarity.
-
 ### 3.1 Fragment: `with_core`
 
 #### 3.1.1 `README.md`
 
-```
+```markdown
 # with_core
 
 This Fragment provides the core functionality for the `Todoable` class, including the basic method `list_todo` and the management of the todo list.
@@ -238,7 +230,7 @@ class Todoable(ImplementsInterface):
 
 #### 3.2.1 `README.md`
 
-```
+```markdown
 # with_crud_todo_list
 
 This Fragment adds CRUD functionality to the `Todoable` class, allowing todo items to be created, read, updated, and deleted.
@@ -292,7 +284,7 @@ class TodoableMixin(ImplementsInterface):
 
 #### 3.3.1 `README.md`
 
-```
+```markdown
 # with_file_storage
 
 This Fragment adds the capability to automatically store and load the todo list from a file, enabling persistence between sessions. The todo list is loaded during initialization and saved automatically after create, update, and delete operations.
