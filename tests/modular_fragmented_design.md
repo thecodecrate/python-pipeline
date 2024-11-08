@@ -88,7 +88,7 @@ All interfaces must:
 
 An Assembled Package must have the following structure:
 
-```text
+```
 /<package_root>/
     __assembled__.py
     /_fragments/
@@ -96,6 +96,9 @@ An Assembled Package must have the following structure:
             README.md
             <Fragment files>
         /with_crud_todo_list/
+            README.md
+            <Fragment files>
+        /with_file_storage/
             README.md
             <Fragment files>
     /_assembled/
@@ -113,7 +116,7 @@ An Assembled Package must have the following structure:
 When composing classes, the MRO must be:
 
 1. **Mixin Classes from Fragments** (ordered based on dependencies):
-   - Mixins are renamed to match their Fragment folder name (e.g., `WithCrudTodoList`).
+   - Mixins are renamed to match their Fragment folder name (e.g., `WithFileStorage`, `WithCrudTodoList`).
 
 2. **Base Class**:
    - Imported and renamed to `WithBase`.
@@ -124,7 +127,7 @@ When composing classes, the MRO must be:
 For interfaces, the MRO is:
 
 1. **Mixin Interfaces from Fragments** (ordered based on dependencies):
-   - Mixin interfaces are renamed to match their Fragment folder name plus `Interface` (e.g., `WithCrudTodoListInterface`).
+   - Mixin interfaces are renamed to match their Fragment folder name plus `Interface` (e.g., `WithFileStorageInterface`, `WithCrudTodoListInterface`).
 
 2. **Base Class Interface**:
    - Imported and renamed to `WithBaseInterface`.
@@ -173,23 +176,31 @@ When importing classes and interfaces:
   - Imported base class interfaces must be renamed to `WithBaseInterface`.
 
 - **Mixins and Mixin Interfaces**:
-  - Imported mixin classes from Fragments must be renamed to match their Fragment folder name (e.g., `WithCrudTodoList`).
-  - Imported mixin interfaces must be renamed to match their Fragment folder name plus `Interface` (e.g., `WithCrudTodoListInterface`).
+  - Imported mixin classes from Fragments must be renamed to match their Fragment folder name (e.g., `WithFileStorage`, `WithCrudTodoList`).
+  - Imported mixin interfaces must be renamed to match their Fragment folder name plus `Interface` (e.g., `WithFileStorageInterface`, `WithCrudTodoListInterface`).
 
 This convention avoids name conflicts and clarifies the origin of each imported class or interface.
 
 ## 3. Example
 
-This example demonstrates implementing a `Todoable` class using Modular Fragment Design. The `Todoable` class allows for managing a todo list, with the core functionality provided by the `with_core` Fragment and extended CRUD operations provided by the `with_crud_todo_list` Fragment.
+This example demonstrates implementing a `Todoable` class using Modular Fragmented Design. The `Todoable` class allows for managing a todo list, with the core functionality provided by the `with_core` Fragment, extended CRUD operations provided by the `with_crud_todo_list` Fragment, and file storage capabilities provided by the `with_file_storage` Fragment.
+
+In this updated example, we have made the following changes:
+
+- **Removed `_get_todo_list`**: The `_get_todo_list` method has been removed as it was redundant.
+
+- **Accessed `_todo_list` Directly**: Mixins now access the `_todo_list` attribute directly.
+
+- **Inheritance List Formatting**: In Assembled Classes, the inherited classes are listed one per line for clarity.
 
 ### 3.1 Fragment: `with_core`
 
 #### 3.1.1 `README.md`
 
-```markdown
+```
 # with_core
 
-This Fragment provides the core functionality for the `Todoable` class, including the basic method `list_todo`.
+This Fragment provides the core functionality for the `Todoable` class, including the basic method `list_todo` and the management of the todo list.
 
 Dependencies: None
 ```
@@ -201,6 +212,8 @@ Dependencies: None
 from typing import Protocol
 
 class TodoableInterface(Protocol):
+    def __init__(self) -> None:
+        ...
     def list_todo(self) -> list[str]:
         ...
 ```
@@ -212,15 +225,20 @@ class TodoableInterface(Protocol):
 from .todoable_interface import TodoableInterface as ImplementsInterface
 
 class Todoable(ImplementsInterface):
+    _todo_list: list[str]
+
+    def __init__(self) -> None:
+        self._todo_list = []
+
     def list_todo(self) -> list[str]:
-        return []
+        return self._todo_list
 ```
 
 ### 3.2 Fragment: `with_crud_todo_list`
 
 #### 3.2.1 `README.md`
 
-```markdown
+```
 # with_crud_todo_list
 
 This Fragment adds CRUD functionality to the `Todoable` class, allowing todo items to be created, read, updated, and deleted.
@@ -254,11 +272,6 @@ class TodoableInterfaceMixin(WithBaseInterface, Protocol):
 from .todoable_interface_mixin import TodoableInterfaceMixin as ImplementsInterface
 
 class TodoableMixin(ImplementsInterface):
-    _todo_list: list[str]
-
-    def __init__(self):
-        self._todo_list = []
-
     def create_todo(self, item: str) -> None:
         self._todo_list.append(item)
 
@@ -275,13 +288,92 @@ class TodoableMixin(ImplementsInterface):
         return self._todo_list
 ```
 
-### 3.3 Assembled Class: `Todoable`
+### 3.3 Fragment: `with_file_storage`
 
-#### 3.3.1 Interface: `TodoableInterface`
+#### 3.3.1 `README.md`
+
+```
+# with_file_storage
+
+This Fragment adds the capability to automatically store and load the todo list from a file, enabling persistence between sessions. The todo list is loaded during initialization and saved automatically after create, update, and delete operations.
+
+Dependencies:
+- with_core
+- with_crud_todo_list
+```
+
+#### 3.3.2 Interface Mixin: `TodoableInterfaceMixin`
+
+```python
+# _fragments/with_file_storage/todoable_interface_mixin.py
+from typing import Protocol
+from ..with_crud_todo_list.todoable_interface_mixin import (
+    TodoableInterfaceMixin as WithCrudTodoListInterface,
+)
+
+class TodoableInterfaceMixin(WithCrudTodoListInterface, Protocol):
+    def __init__(self) -> None:
+        ...
+    def create_todo(self, item: str) -> None:
+        ...
+    def update_todo(self, index: int, item: str) -> None:
+        ...
+    def delete_todo(self, index: int) -> None:
+        ...
+    def _load_from_file(self, filename: str) -> None:
+        ...
+    def _save_to_file(self, filename: str) -> None:
+        ...
+```
+
+#### 3.3.3 Mixin: `TodoableMixin`
+
+```python
+# _fragments/with_file_storage/todoable_mixin.py
+from .todoable_interface_mixin import TodoableInterfaceMixin as ImplementsInterface
+import json
+
+class TodoableMixin(ImplementsInterface):
+    _filename: str = 'todo_list.json'
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._load_from_file(self._filename)
+
+    def _load_from_file(self, filename: str) -> None:
+        try:
+            with open(filename, 'r') as f:
+                self._todo_list = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            self._todo_list = []
+
+    def _save_to_file(self, filename: str) -> None:
+        with open(filename, 'w') as f:
+            json.dump(self._todo_list, f)
+
+    def create_todo(self, item: str) -> None:
+        super().create_todo(item)
+        self._save_to_file(self._filename)
+
+    def update_todo(self, index: int, item: str) -> None:
+        super().update_todo(index, item)
+        self._save_to_file(self._filename)
+
+    def delete_todo(self, index: int) -> None:
+        super().delete_todo(index)
+        self._save_to_file(self._filename)
+```
+
+### 3.4 Assembled Class: `Todoable`
+
+#### 3.4.1 Interface: `TodoableInterface`
 
 ```python
 # _assembled/todoable_interface.py
 from typing import Protocol
+from .._fragments.with_file_storage.todoable_interface_mixin import (
+    TodoableInterfaceMixin as WithFileStorageInterface,
+)
 from .._fragments.with_crud_todo_list.todoable_interface_mixin import (
     TodoableInterfaceMixin as WithCrudTodoListInterface,
 )
@@ -289,29 +381,47 @@ from .._fragments.with_core.todoable_interface import (
     TodoableInterface as WithBaseInterface,
 )
 
-class TodoableInterface(WithCrudTodoListInterface, WithBaseInterface, Protocol):
+class TodoableInterface(
+    WithFileStorageInterface,
+    WithCrudTodoListInterface,
+    WithBaseInterface,
+    Protocol,
+):
     pass
 ```
 
-#### 3.3.2 Class: `Todoable`
+#### 3.4.2 Class: `Todoable`
 
 ```python
 # _assembled/todoable.py
-from .._fragments.with_crud_todo_list.todoable_mixin import TodoableMixin as WithCrudTodoList
+from .._fragments.with_file_storage.todoable_mixin import (
+    TodoableMixin as WithFileStorage,
+)
+from .._fragments.with_crud_todo_list.todoable_mixin import (
+    TodoableMixin as WithCrudTodoList,
+)
 from .._fragments.with_core.todoable import Todoable as WithBase
 from .todoable_interface import TodoableInterface as ImplementsInterface
 
-class Todoable(WithCrudTodoList, WithBase, ImplementsInterface):
+class Todoable(
+    WithFileStorage,
+    WithCrudTodoList,
+    WithBase,
+    ImplementsInterface,
+):
     pass
 ```
 
-### 3.4 Usage Example
+### 3.5 Usage Example
 
 ```python
 # example.py
 from _assembled.todoable import Todoable
 
 todo_manager = Todoable()
+
+# The todo list is automatically loaded from 'todo_list.json' during initialization
+
 todo_manager.create_todo("Buy milk")
 todo_manager.create_todo("Walk the dog")
 print(todo_manager.list_todo())
@@ -324,8 +434,10 @@ print(todo_manager.read_todo(0))
 todo_manager.delete_todo(1)
 print(todo_manager.list_todo())
 # Output: ['Buy almond milk']
+
+# The todo list is automatically saved to 'todo_list.json' after each modification
 ```
 
 ## 4. Conclusion
 
-Modular Fragment Design provides a structured and enforced approach to building software systems through the assembly of incomplete, interdependent Fragments. By following the conventions and specifications outlined in this document, developers can create modular, maintainable, and extensible applications. MFD encourages progressive understanding and collaboration, allowing developers to focus on individual Fragments and their integration into the complete system.
+Modular Fragmented Design provides a structured and enforced approach to building software systems through the assembly of incomplete, interdependent Fragments. By following the conventions and specifications outlined in this document, developers can create modular, maintainable, and extensible applications. MFD encourages progressive understanding and collaboration, allowing developers to focus on individual Fragments and their integration into the complete system.
