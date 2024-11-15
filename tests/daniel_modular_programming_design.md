@@ -131,8 +131,8 @@ Our `with_core` will implement the MVC. Then, we will have a `with_crud_todo_lis
 Let's implement the `with_core` partial for our todo list library.
 
 ```python
-# partials/with_core/todo_item_collection.py
-class TodoItemCollection:
+# partials/with_core/todo_items.py
+class TodoItems:
   _items: list[str]
 
   def __init__(self, items: list[str]):
@@ -145,20 +145,20 @@ class TodoItemCollection:
 ```python
 # partials/with_core/todoable.py
 class Todoable:
-  todo_item_collection: TodoItemCollection
+  todo_items: TodoItems
 
   def __init__(self):
-    self.todo_item_collection = TodoItemCollection(items=[])
+    self.todo_items = TodoItems(items=[])
 
   def get_todo_list(self) -> list[str]:
-    return self.todo_item_collection._get_items()
+    return self.todo_items._get_items()
 ```
 
 As we known, each class in a partial must have a corresponding interface. Let's extract the interfaces from the classes:
 
 ```python
-# partials/with_core/todo_item_collection_interface.py
-class TodoItemCollectionInterface(Protocol):
+# partials/with_core/todo_items_interface.py
+class TodoItemsInterface(Protocol):
   def __init__(self, items: list[str]): ...
   def _get_items(self) -> list[str]: ...
 ```
@@ -173,12 +173,12 @@ class TodoableInterface(Protocol):
 The previous concrete classes must implement these interfaces. Let's refactor them:
 
 ```python
-# partials/with_core/todo_item_collection.py
-from .todo_item_collection_interface import (
-  TodoItemCollectionInterface as ImplementsInterface,
+# partials/with_core/todo_items.py
+from .todo_items_interface import (
+  TodoItemsInterface as ImplementsInterface,
 )
 
-class TodoItemCollection(
+class TodoItems(
   ImplementsInterface,
 ):
   # ... rest of the class remains the same
@@ -199,12 +199,12 @@ class Todoable(
 Each base class must have two files on `classes`: one for the concrete class and another for the corresponding interface).
 
 ```python
-# classes/todo_item_collection_interface.py
-from ..partials.with_core.todo_item_collection_interface import (
-  TodoItemCollectionInterface as WithBaseInterface,
+# classes/todo_items_interface.py
+from ..partials.with_core.todo_items_interface import (
+  TodoItemsInterface as WithBaseInterface,
 )
 
-class TodoItemCollectionInterface(
+class TodoItemsInterface(
   WithBaseInterface,
   Protocol,
 ):
@@ -212,15 +212,15 @@ class TodoItemCollectionInterface(
 ```
 
 ```python
-# classes/todo_item_collection.py
-from ..partials.with_core.todo_item_collection import (
-  TodoItemCollection as WithBase,
+# classes/todo_items.py
+from ..partials.with_core.todo_items import (
+  TodoItems as WithBase,
 )
-from .todo_item_collection_interface import (
-  TodoItemCollectionInterface as ImplementsInterface,
+from .todo_items_interface import (
+  TodoItemsInterface as ImplementsInterface,
 )
 
-class TodoItemCollection(
+class TodoItems(
   WithBase,
   ImplementsInterface,
 ):
@@ -267,12 +267,12 @@ First, we need to define which other partials our "with_crud_todo_list" partial 
 Now that we know the partial's dependencies, we can start implementing it:
 
 ```python
-# partials/with_crud_todo_list/todo_item_collection_interface_mixin.py
-from ..with_core.todo_item_collection_interface import (
-  TodoItemCollectionInterface as WithBaseInterface,
+# partials/with_crud_todo_list/todo_items_interface_mixin.py
+from ..with_core.todo_items_interface import (
+  TodoItemsInterface as WithBaseInterface,
 )
 
-class TodoItemCollectionInterfaceMixin(
+class TodoItemsInterfaceMixin(
   WithBaseInterface,
   Protocol,
 ):
@@ -290,12 +290,12 @@ We always rename the imported mixins to the same name as the partial folder they
 After declaring the interfaces, let's implement their methods:
 
 ```python
-# partials/with_crud_todo_list/todo_item_collection_mixin.py
-from .todo_item_collection_interface_mixin import (
-  TodoItemCollectionInterfaceMixin as ImplementsInterface,
+# partials/with_crud_todo_list/todo_items_mixin.py
+from .todo_items_interface_mixin import (
+  TodoItemsInterfaceMixin as ImplementsInterface,
 )
 
-class TodoItemCollectionMixin(ImplementsInterface):
+class TodoItemsMixin(ImplementsInterface):
   def create(self, item: str):
     self._get_items().append(item)
 
@@ -319,15 +319,15 @@ Usually, a concrete mixin class only inherits `ImplementsInterface`. However, in
 Now we have the partial implemented, we can add it to the composition on `classes`:
 
 ```python
-# classes/todo_item_collection_interface.py
-from ..partials.with_core.todo_item_collection_interface import (
-  TodoItemCollectionInterface as WithBaseInterface,
+# classes/todo_items_interface.py
+from ..partials.with_core.todo_items_interface import (
+  TodoItemsInterface as WithBaseInterface,
 )
-from ..partials.with_crud_todo_list.todo_item_collection_interface_mixin import (
-  TodoItemCollectionInterfaceMixin as WithCrudTodoListInterface,
+from ..partials.with_crud_todo_list.todo_items_interface_mixin import (
+  TodoItemsInterfaceMixin as WithCrudTodoListInterface,
 )
 
-class TodoItemCollectionInterface(
+class TodoItemsInterface(
   WithCrudTodoListInterface,
   WithBaseInterface,
   Protocol,
@@ -336,18 +336,18 @@ class TodoItemCollectionInterface(
 ```
 
 ```python
-# classes/todo_item_collection.py
-from ..partials.with_core.todo_item_collection import (
-  TodoItemCollection as WithBase,
+# classes/todo_items.py
+from ..partials.with_core.todo_items import (
+  TodoItems as WithBase,
 )
-from ..partials.with_crud_todo_list.todo_item_collection_mixin import (
-  TodoItemCollectionMixin as WithCrudTodoList,
+from ..partials.with_crud_todo_list.todo_items_mixin import (
+  TodoItemsMixin as WithCrudTodoList,
 )
-from .todo_item_collection_interface import (
-  TodoItemCollectionInterface as ImplementsInterface,
+from .todo_items_interface import (
+  TodoItemsInterface as ImplementsInterface,
 )
 
-class TodoItemCollection(
+class TodoItems(
   WithCrudTodoList,
   WithBase,
   ImplementsInterface,
