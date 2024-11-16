@@ -93,7 +93,7 @@ Before diving into the example, let's outline the import and renaming convention
     from typing import Protocol
 
     class WithPartial1Interface(Protocol):
-        ...  # List methods
+        # ... list of methods
     ```
 
     ```python
@@ -101,7 +101,7 @@ Before diving into the example, let's outline the import and renaming convention
     from .with_partial1_interface import WithPartial1Interface as ImplementsInterface
 
     class WithPartial1(ImplementsInterface):
-        ...  # Implement methods and attributes
+        # ... implementation
     ```
 
     `ImplementsInterface` must always be the last item in the inheritance list to avoid MRO conflicts.
@@ -173,7 +173,7 @@ Before diving into the example, let's outline the import and renaming convention
 
     # MUST NOT import Base Class, Partial1, or Partial2, even though it uses their methods
     class WithPartial3(ImplementsInterface):
-        ...  # Implement methods and attributes
+        # ... implementation
     ```
 
     Partial classes often only inherit `ImplementsInterface`; however, they can inherit other classes, as long as they are external concrete classes, like traits.
@@ -187,7 +187,7 @@ Before diving into the example, let's outline the import and renaming convention
         SomeTrait,
         ImplementsInterface,
     ):
-        ...  # Implement methods and attributes
+        # ... implementation
     ```
 
 5. **Composed Interface Inheritance List**: The composed interface must import all partial interfaces and the base interface.
@@ -455,84 +455,115 @@ vehicle.stop()
 
 In the previous section, we focused on implementing partial classes in Python for individual classes. Now, we'll explore an alternative approach that applies partials horizontally across a group of classes. This method is particularly useful when partials represent features that are shared across multiple classes within a project or package.
 
-### Overview
-
-In this approach, partials are designed to be reusable components that can be mixed into multiple base classes. This promotes code reuse and consistency across different classes that share similar functionality.
-
-### File Structure
-
-The file structure for this approach is as follows:
+The file structure for this approach is:
 
 ```text
 <package_name>/
-├── partials/                        # Partial implementations
-│   ├── with_core/                   # Core partial, contains base classes
-│   │   ├── <base_class1>.py
+├── partials/                        # Folder storing the partials
+│   ├── with_core/                   # Package's core features
+│   │   ├── <class1>_base.py
 │   │   ├── ...
-│   │   └── <base_classN>.py
+│   │   └── <classN>_base.py
 │   │
-│   ├── with_<feature1>/             # Partial for feature 1
-│   │   ├── <base_class...>.py       # New base class
-│   │   ├── ...
-│   │   ├── <base_class...>.py       # Another new base class
-│   │   ├── <class...>_partial.py    # Partial with methods for some base class
-│   │   ├── ...
-│   │   └── <class...>_partial.py    # Another partial for a different base class
+│   ├── with_<feature1>/             # Package's feature 1
+│   │   ├── <class...>_base.py       # Optional: New base classes for the package
+│   │   └── <class...>_partial.py    # Optional: Partial classes for base classes from other features
 │   │
-│   ├── ...                          # Additional partials
+│   ├── ...
 │   │
-│   └── with_<featureN>/             # Partial for feature 2
-│       ├── <class...>_partial.py
-│       └── <class...>_partial.py
+│   └── with_<featureN>/             # Package's feature N
+│       └── ...
 │
-└── classes/                         # Folder with composed classes
+└── classes/                         # Folder for composed classes
     ├── <class1>.py
-    ├── <class2>.py
-    └── ...                          # Additional composed classes
+    ├── ...
+    └── <classN>.py
 ```
 
-- **`partials/with_core/`**: Contains base classes for the core features.
-- **`partials/with_<feature>/`**: Contains partial classes for extra features.
-- **`classes/`**: Contains the composed classes.
+- **`partials/with_core/`**: Package's core features.
+- **`partials/with_<feature>/`**: Package's extra features; Contains base classes and partials for classes.
+- **`classes/`**: Stores the composed classes.
 
 Each concrete class has a corresponding interface, stored in the same directory.
 
 ### Key Rules and Conventions
 
-Most of the rules from the previous approach apply here, with some important differences:
+Most of the rules from the previous approach apply here, with some differences:
 
-1. **Naming Conventions for Partials**:
-   - Partial classes have the same name as their base class but with `Partial` as a suffix.
-     - Example: `VehiclePartial`
-   - Partial interfaces have the same name as their base class but with `PartialInterface` as a suffix.
-     - Example: `VehiclePartialInterface`
+1. **Partial Names**: Partial classes have the same name as their base class but with the suffixes `Partial` and `PartialInterface` for the class and interface, respectively.
 
-2. **Importing and Renaming Partials**:
-   - When importing a partial class, rename it to `With<PartialName>`.
-     - Example:
+    ```text
+    <package_name>/
+    ├── partials/
+    │   ├── with_core/
+    │   │   ├── vehicle_base.py
+    │   │   └── vehicle_base_interface.py
+    │   │
+    │   ├── with_speed/
+    │   │   ├── vehicle_partial.py
+    │   │   └── vehicle_partial_interface.py
+    │   │
+    │   └── with_travel_time/
+    │       ├── vehicle_partial.py
+    │       └── vehicle_partial_interface.py
+    │
+    └── classes/
+        ├── vehicle.py
+        └── vehicle_interface.py
+    ```
 
-       ```python
-       from vehicle.partials.with_speed.vehicle_partial import VehiclePartial as WithSpeed
-       ```
+2. **Importing Partials**: When importing a partial class, rename it to `With<PartialName>` and `With<PartialName>Interface` for its interface.
 
-   - When importing a partial interface, rename it to `With<PartialName>Interface`.
-     - Example:
+    ```python
+    # classes/vehicle_interface.py
+    from ..partials.with_travel_time.vehicle_partial_interface import VehiclePartialInterface as WithTravelTimeInterface
+    from ..partials.with_speed.vehicle_partial_interface import VehiclePartialInterface as WithSpeedInterface
+    from ..partials.with_core.vehicle_interface import VehicleInterface as WithBaseInterface
 
-       ```python
-       from vehicle.partials.with_speed.vehicle_partial_interface import VehiclePartialInterface as WithSpeedInterface
-       ```
+    class VehicleInterface(
+        WithTravelTimeInterface, # Renamed partial interface
+        WithSpeedInterface,      # Renamed partial interface
+        WithBaseInterface,
+        Protocol,
+    ):
+        pass
+    ```
 
-3. **Base Classes in `classes/` Folder**:
-   - All base classes must have an entry in the `classes/` folder, along with their corresponding interfaces.
+    ```python
+    # classes/vehicle.py
+    from ..partials.with_travel_time.vehicle_partial import VehiclePartial as WithTravelTime
+    from ..partials.with_speed.vehicle_partial import VehiclePartial as WithSpeed
+    from ..partials.with_core.vehicle import Vehicle as WithBase
+    from .vehicle_interface import VehicleInterface as ImplementsInterface
 
-4. **Importing Base Classes and Interfaces**:
-   - When importing a base class or its interface, rename them to `WithBase` and `WithBaseInterface`, respectively.
+    class Vehicle(
+        WithTravelTime,  # Renamed partial class
+        WithSpeed,       # Renamed partial class
+        WithBase,
+        ImplementsInterface,
+    ):
+        pass
+    ```
 
-5. **Concrete Classes Import Their Interfaces**:
-   - Each concrete class must import its interface, renaming it as `ImplementsInterface`.
+3. **Base Classes in `classes/` Folder**: All base classes must have an entry in the `classes/` folder, along with their corresponding interfaces.
 
-6. **Partial Interfaces Import Base Interfaces**:
-   - Each partial interface must import the interface of its base class, renaming it as `WithBaseInterface`.
+    ```text
+    <package_name>/
+    ├── partials/
+    │   │   ...   # previous structure
+    │   │
+    │   ├── with_engine/   # Now, vehicles have an engine instance
+    │   │   ├── engine_base.py
+    │   │   ├── engine_base_interface.py
+    │   │   ├── vehicle_partial.py
+    │   │   └── vehicle_partial_interface.py
+    │
+    └── classes/
+        ├── vehicle.py
+        ├── vehicle_interface.py
+        ├── engine.py   # New base class (from `partials/with_engine`)
+        └── engine_interface.py
+    ```
 
 ### Example: `Vehicle` and `Boat` Classes with Shared Features
 
