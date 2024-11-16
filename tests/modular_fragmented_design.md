@@ -1,163 +1,286 @@
-# Title for this design methodology
+# Partial Classes
 
-some intro text...
+Partial classes enable you to split a class definition across multiple source files.
 
-## Partial Classes
+Each partial class contains a section of the overall class definition. All parts are then combined into a single, complete class.
 
-The partial class pattern allows you to split the definition of a class over two or more source files.
+```text
+class ClassA
+├── Partial1
+├── ...
+└── PartialN
 
-Each partial class contains a piece of the class definition. All parts are combined into a single class definition to form the complete class:
+class Partial1
+├── method1
+└── method2
 
-```python
-class ClassA(Partial1, Partial2):
-    pass
+class Partial2
+├── method3
+└── method4
 
-class Partial1:
-    def method1(self): ...
-    def method2(self): ...
-
-class Partial2:
-    def method3(self): ...
-    def method4(self): ...
+...
 ```
 
 There are several situations when splitting a class definition is desirable:
 
-- When the class is too large and needs to be split into smaller parts.
-- To group related methods together for better organization.
-- To make easier concurrent development by team members.
+- **Modularity**: To break a large class into smaller, more manageable pieces.
+- **Organization**: To group related methods together for better organization.
+- **Collaboration**: To enable team members to work on different parts simultaneously.
 
-## Partial Classes vs Traits
+## Partial Classes vs. Traits
 
-Technically, there's no difference between partial classes and traits. Both patterns allow you to split a class definition into multiple parts.
+While both partial classes and traits allow you to split a class's functionality, they serve different purposes.
 
-What distinguishes them is the intent behind their use:
+**Partial classes** are used to divide a single class definition into multiple parts, often across different files. This approach helps in:
 
-- Partial classes are used to split a class definition into multiple parts, usually to group related methods together.
-- Traits are used to define a set of methods that can be reused across multiple classes.
+- Organizing code by grouping related methods together.
+- Facilitating collaboration by allowing multiple developers to work on different parts simultaneously.
+
+**Traits**, on the other hand, define a set of methods that can be reused across multiple classes. They enable code reuse without the constraints of single inheritance.
+
+In summary:
+
+- **Partial classes** split a single class into multiple parts.
+- **Traits** provide reusable methods that can be incorporated into multiple classes.
 
 ## Implementation
 
-Some languages like C# have built-in support for partial classes. In C#, you can define a class in multiple files using the `partial` keyword.
+Some languages, like C#, have built-in support for partial classes. In C#, you can define a class in multiple files using the `partial` keyword.
 
-Other languages, like Python, don't have built-in support for partial classes. However, you can achieve the same effect by using traits, mixins, multiple inheritance or a chained single inheritance pattern.
+Other languages, like Python, don't have built-in support for partial classes. However, you can achieve similar functionality by using traits, mixins, multiple inheritance, or a chained single inheritance pattern.
 
-## A simple approach for partial classes in Python
+## A Convention for Implementing Partial Classes in Python
 
-We present a simple approach for working with partial classes in Python.
+This section introduces a convention for implementing partial classes in Python, focusing on simple, individual classes. In later sections, we'll explore how to extend this approach horizontally across groups of classes, which is particularly useful when partials represent features in a project or package.
 
-The approach consists of three parts:
+The approach consists of three main components:
 
-1. A base class that defines the core functionality of the class.
-2. Partial classes that define additional functionality.
-3. A composed class that combines the base class and the partial classes.
+1. **Base Class**: Defines the core functionality of the class.
+2. **Partials**: Partial classes that add additional functionality.
+3. **Composed Class**: Combines the base class and partials into a single class.
 
-The file structure follows this pattern:
+The recommended file structure is:
 
 ```text
-<class name>/
-├── <class name>_base.py    # Base class: core functionality
-├── partials/               # Folder containing all partial implementations
-│   ├── with_<partial 1>.py
-|   ├── with_<partial 2>.py
-|   ├── ...
-│   └── with_<partial n>.py
-└── <class name>.py         # Composed class: base + partials
+<class_name>/
+├── <class_name>_base.py       # Base class with core functionality
+├── partials/                  # Folder containing all partial implementations
+│   ├── with_<partial1>.py
+│   ├── with_<partial2>.py
+│   ├── ...
+│   └── with_<partialN>.py
+└── <class_name>.py            # Composed class: base + partials
 ```
 
-The "base class" is a technically a partial. It is the first partial and contains the core functionality of the class.
+In this convention, the base class is considered a special kind of partial that contains the core functionality. Partial classes are named using the pattern `With<PartialName>` and are stored in the `partials` folder.
 
-The name convention for a partial is `with_<partial name>.py`. The partials are stored in a `partials` folder.
+Each class also has a corresponding interface, defined as a protocol, to enforce the expected behavior:
 
-Each class has a corresponding interface, not shown in the file structure. The interfaces are implemented as a protocol in Python.
-
-## Example: Cat class
-
-Let's create a `Cat` class that has a name and an age. We will split the class into two partials: one for the name and one for the age.
-
-The base class will be called `CatBase` and will contain the name functionality:
-
-```python
-# cat/cat_base_interface.py
-class CatBaseInterface(Protocol):
-    def set_name(self, name: str) -> None: ...
-    def get_name(self) -> str: ...
+```text
+<class_name>/
+├── ...                                  # Previous structure
+├── <class_name>_base_interface.py       # Interface for the base class
+├── partials/                            # Folder containing all partial interfaces
+│   ├── with_<partial1>_interface.py
+│   ├── with_<partial2>_interface.py
+│   ├── ...
+│   └── with_<partialN>_interface.py
+└── <class_name>_interface.py            # Composed interface: base + partial interfaces
 ```
 
-Now, we implement the concrete base class. A the concrete class of a partial (a base class is a partial) should import the corresponding interface and rename it as `ImplementsInterface`:
+By following this convention, you can organize your code for better modularity and maintainability when working with simple classes.
+
+### Import and Renaming Rules
+
+Before diving into the example, let's outline the import and renaming conventions used in this approach:
+
+1. **Concrete Classes Import Their Interfaces**: Every concrete class (base, partial, or composed) should import its corresponding interface. When importing, the interface should be renamed to `ImplementsInterface`.
+
+2. **Consistency Across All Classes**: The above rule applies to all types of classes—base classes, partials, and composed classes.
+
+3. **Partial Interfaces Import Dependencies**: The interface of a partial should import the interfaces of its dependencies.
+
+4. **Renaming Base Interfaces**: When importing a base class or its interface, it should be renamed to `WithBase` or `WithBaseInterface`, respectively.
+
+5. **Importing Order Matters**: The order of imports and inheritance lists is crucial due to Python's Method Resolution Order (MRO).
+
+6. **Inheritance Order in Partial Interfaces**: In partial interfaces, the inheritance list should include the interfaces of the partials it depends on (with newer dependencies on top and more basic ones at the bottom), followed by `Protocol` to provide type-hint support.
+
+7. **Concrete Partials Avoid Other Partials**: The concrete class of a partial should only import its corresponding interface (renamed to `ImplementsInterface`) and must not import other partials. However, it can import external concrete classes like traits.
+
+8. **Composed Interface Imports**: The composed interface must import the interfaces of all partials and the base interface (renamed as `WithBaseInterface`), then inherit from them in the specified order, followed by `Protocol`.
+
+9. **Composed Class Imports**: The concrete composed class should import the concrete classes of all partials, the concrete base class (renamed as `WithBase`), and the composed interface (renamed as `ImplementsInterface`). The inheritance list should follow this order due to Python's MRO.
+
+### Example: `Vehicle` Class
+
+Let's create a `Vehicle` class split into two partials: one for managing speed and another for calculating travel time, where the second partial depends on a method declared in the first partial.
+
+#### Base Class: `VehicleBase`
+
+The base class contains core functionality.
+
+**Interface**:
 
 ```python
-# cat/cat_base.py
-from .cat_base_interface import CatBaseInterface as ImplementsInterface
-
-class CatBase(ImplementsInterface):
-    _name: str
-
-    def set_name(self, name: str) -> None:
-        self._name = name
-
-    def get_name(self) -> str:
-        return self._name
+# vehicle/vehicle_base_interface.py
+class VehicleBaseInterface(Protocol):
+    def start(self) -> None: ...
+    def stop(self) -> None: ...
 ```
 
-Now, let's create a partial for the age.
-
-On a partial interface, we import the interfaces of the partials that it depends on. In this case, the `CatBaseInterface`.
-
-Base interfaces are always imported with the `WithBaseInterface` alias:
+**Implementation**:
 
 ```python
-# cat/partials/with_age_interface.py
-from ..cat_base_interface import CatBaseInterface as WithBaseInterface
+# vehicle/vehicle_base.py
+from .vehicle_base_interface import VehicleBaseInterface as ImplementsInterface
 
-class WithAgeInterface(WithBaseInterface, Protocol):
-    def set_age(self, age: int) -> None: ...
-    def get_age(self) -> int: ...
+class VehicleBase(ImplementsInterface):
+    _is_running: bool = False
+
+    def start(self) -> None:
+        self._is_running = True
+
+    def stop(self) -> None:
+        self._is_running = False
 ```
 
-On a partial concrete class, we import the interface and rename it as `ImplementsInterface`:
+**Explanation**:
+
+- **Rule 1 & 2**: The concrete class `VehicleBase` imports its corresponding interface `VehicleBaseInterface`, renaming it to `ImplementsInterface`.
+- **Rule 4**: When importing the base interface elsewhere, we'll rename it to `WithBaseInterface`.
+
+#### First Partial: `WithSpeed`
+
+The first partial adds speed-related methods.
+
+**Interface**:
 
 ```python
-# cat/partials/with_age.py
-from .with_age_interface import WithAgeInterface as ImplementsInterface
+# vehicle/partials/with_speed_interface.py
+from ..vehicle_base_interface import VehicleBaseInterface as WithBaseInterface
 
-class WithAge(ImplementsInterface):
-    _age: int
-
-    def set_age(self, age: int) -> None:
-        self._age = age
-
-    def get_age(self) -> int:
-        return self._age
+class WithSpeedInterface(WithBaseInterface, Protocol):
+    def set_speed(self, speed: float) -> None: ...
+    def get_speed(self) -> float: ...
 ```
 
-Finally, we compose the class. The composed interface should import the partial interfaces, the base interface, and the `Protocol` class:
+**Implementation**:
 
 ```python
-# cat/cat_interface.py
-from .cat_base_interface import CatBaseInterface as WithBaseInterface
-from .partials.with_age_interface import WithAgeInterface
+# vehicle/partials/with_speed.py
+from .with_speed_interface import WithSpeedInterface as ImplementsInterface
 
-class CatInterface(
-    WithAgeInterface,
+class WithSpeed(ImplementsInterface):
+    _speed: float = 0.0
+
+    def set_speed(self, speed: float) -> None:
+        self._speed = speed
+
+    def get_speed(self) -> float:
+        return self._speed
+```
+
+**Explanation**:
+
+- **Rule 1 & 2**: `WithSpeed` imports its interface `WithSpeedInterface` as `ImplementsInterface`.
+- **Rule 3 & 6**: The interface `WithSpeedInterface` imports its dependency `VehicleBaseInterface` (renamed to `WithBaseInterface`) and inherits from it, followed by `Protocol`.
+- **Rule 4**: Renaming `VehicleBaseInterface` to `WithBaseInterface` when importing.
+- **Rule 7**: The concrete partial `WithSpeed` only imports its corresponding interface and does not import other partials.
+
+#### Second Partial: `WithTravelTime`
+
+The second partial depends on the `get_speed` method from the first partial to calculate travel time.
+
+**Interface**:
+
+```python
+# vehicle/partials/with_travel_time_interface.py
+from .with_speed_interface import WithSpeedInterface
+
+class WithTravelTimeInterface(WithSpeedInterface, Protocol):
+    def calculate_travel_time(self, distance: float) -> float: ...
+```
+
+**Implementation**:
+
+```python
+# vehicle/partials/with_travel_time.py
+from .with_travel_time_interface import WithTravelTimeInterface as ImplementsInterface
+
+class WithTravelTime(ImplementsInterface):
+    def calculate_travel_time(self, distance: float) -> float:
+        speed = self.get_speed()
+        return distance / speed if speed != 0 else float('inf')
+```
+
+**Explanation**:
+
+- **Rule 1 & 2**: `WithTravelTime` imports its interface as `ImplementsInterface`.
+- **Rule 3 & 6**: The interface `WithTravelTimeInterface` imports its dependency `WithSpeedInterface` and inherits from it, followed by `Protocol`.
+- **Rule 7**: The concrete partial `WithTravelTime` only imports its interface.
+
+#### Composed Interface: `VehicleInterface`
+
+The composed interface combines all interfaces.
+
+```python
+# vehicle/vehicle_interface.py
+from .partials.with_travel_time_interface import WithTravelTimeInterface
+from .partials.with_speed_interface import WithSpeedInterface
+from .vehicle_base_interface import VehicleBaseInterface as WithBaseInterface
+
+class VehicleInterface(
+    WithTravelTimeInterface,
+    WithSpeedInterface,
     WithBaseInterface,
     Protocol,
 ):
     pass
 ```
 
-The composed concrete class must import the partials, the base class and the composed interface:
+**Explanation**:
+
+- **Rule 8**: The composed interface imports the interfaces of all partials (`WithTravelTimeInterface`, `WithSpeedInterface`), the base interface (renamed as `WithBaseInterface`), and inherits from them in the specified order, followed by `Protocol`.
+- **Rule 5**: The inheritance order is important due to Python's MRO.
+
+#### Composed Class: `Vehicle`
+
+The composed class combines the base class and all partials.
 
 ```python
-# cat/cat.py
-from .cat_base import CatBase as WithBase
-from .partials.with_age import WithAge
-from .cat_interface import CatInterface as ImplementsInterface
+# vehicle/vehicle.py
+from .partials.with_travel_time import WithTravelTime
+from .partials.with_speed import WithSpeed
+from .vehicle_base import VehicleBase as WithBase
+from .vehicle_interface import VehicleInterface as ImplementsInterface
 
-class Cat(
-    WithAge,
+class Vehicle(
+    WithTravelTime,
+    WithSpeed,
     WithBase,
     ImplementsInterface,
 ):
     pass
+```
+
+**Explanation**:
+
+- **Rule 9**: The composed class imports the concrete classes of all partials (`WithTravelTime`, `WithSpeed`), the concrete base class (renamed as `WithBase`), and the composed interface (renamed as `ImplementsInterface`).
+- **Rule 5**: The inheritance list follows the specified order due to Python's MRO.
+
+#### Usage Example
+
+Now, you can use the `Vehicle` class as a single, cohesive unit:
+
+```python
+vehicle = Vehicle()
+vehicle.start()
+vehicle.set_speed(60.0)
+time = vehicle.calculate_travel_time(120.0)
+print(f"Travel time: {time} hours")
+vehicle.stop()
+
+# Output:
+# Travel time: 2.0 hours
 ```
