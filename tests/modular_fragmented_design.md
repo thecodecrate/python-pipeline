@@ -451,7 +451,7 @@ vehicle.stop()
 # Travel time: 2.0 hours
 ```
 
-## Applying Partials Horizontally Across Multiple Classes
+## Horizontal Partials Approach
 
 In the previous section, we focused on implementing partial classes in Python for individual classes. Now, we'll explore an alternative approach that applies partials horizontally across a group of classes. This method is particularly useful when partials represent features that are shared across multiple classes within a project or package.
 
@@ -565,294 +565,301 @@ Most of the rules from the previous approach apply here, with some differences:
         └── engine_interface.py
     ```
 
-### Example: `Vehicle` and `Boat` Classes with Shared Features
+### Example: Horizontal Partials
 
-Let's illustrate this approach with an example involving two classes, `Vehicle` and `Boat`, that share common features like speed management and travel time calculation.
+In this example, we'll create a `Transport` package that demonstrates the horizontal partials approach. We start with a core partial that defines a `Vehicle` base class. Then, we'll introduce another partial that adds an `Engine` base class and extends `Vehicle` to include an engine. Finally, we'll create a partial that extends both `Vehicle` and `Engine` to add fuel management functionality.
+
+#### Package Structure
 
 ```text
-transportation/
+transport/
 ├── partials/
 │   ├── with_core/
-│   │   ├── vehicle.py
-│   │   ├── vehicle_interface.py
-│   │   ├── boat.py
-│   │   └── boat_interface.py
-│   ├── with_speed/
+│   │   ├── vehicle_base.py
+│   │   └── vehicle_base_interface.py
+│   │
+│   ├── with_engine/
+│   │   ├── engine_base.py
+│   │   ├── engine_base_interface.py
+│   │   ├── vehicle_partial.py
+│   │   └── vehicle_partial_interface.py
+│   │
+│   ├── with_fuel/
 │   │   ├── vehicle_partial.py
 │   │   ├── vehicle_partial_interface.py
-│   │   ├── boat_partial.py
-│   │   └── boat_partial_interface.py
-│   ├── with_travel_time/
-│   │   ├── vehicle_partial.py
-│   │   ├── vehicle_partial_interface.py
-│   │   ├── boat_partial.py
-│   │   └── boat_partial_interface.py
+│   │   └── engine_partial.py
+│       └── engine_partial_interface.py
+│
 └── classes/
     ├── vehicle.py
     ├── vehicle_interface.py
-    ├── boat.py
-    ├── boat_interface.py
+    ├── engine.py
+    └── engine_interface.py
 ```
 
-#### Core Partials (`with_core`)
+#### Core Partial: `with_core`
 
-**Vehicle Base Class and Interface**
+**`VehicleBase` Interface**
 
-- **Interface**:
+```python
+# partials/with_core/vehicle_base_interface.py
+from typing import Protocol
 
-  ```python
-  # transportation/partials/with_core/vehicle_interface.py
-  from typing import Protocol
+class VehicleBaseInterface(Protocol):
+    def start(self) -> None: ...
+    def stop(self) -> None: ...
+```
 
-  class VehicleInterface(Protocol):
-      def start(self) -> None: ...
-      def stop(self) -> None: ...
-  ```
+**`VehicleBase` Implementation**
 
-- **Implementation**:
+```python
+# partials/with_core/vehicle_base.py
+from .vehicle_base_interface import VehicleBaseInterface as ImplementsInterface
 
-  ```python
-  # transportation/partials/with_core/vehicle.py
-  from .vehicle_interface import VehicleInterface as ImplementsInterface
+class VehicleBase(ImplementsInterface):
+    _is_running: bool = False
 
-  class Vehicle(ImplementsInterface):
-      _is_running: bool = False
+    def start(self) -> None:
+        self._is_running = True
 
-      def start(self) -> None:
-          self._is_running = True
+    def stop(self) -> None:
+        self._is_running = False
+```
 
-      def stop(self) -> None:
-          self._is_running = False
-  ```
+#### Partial: `with_engine`
 
-**Boat Base Class and Interface**
+Introduces an `EngineBase` class and extends `Vehicle` to include an engine.
 
-- **Interface**:
+**`EngineBase` Interface**
 
-  ```python
-  # transportation/partials/with_core/boat_interface.py
-  from typing import Protocol
+```python
+# partials/with_engine/engine_base_interface.py
+from typing import Protocol
 
-  class BoatInterface(Protocol):
-      def anchor(self) -> None: ...
-      def sail(self) -> None: ...
-  ```
+class EngineBaseInterface(Protocol):
+    def ignite(self) -> None: ...
+    def shutdown(self) -> None: ...
+```
 
-- **Implementation**:
+**`EngineBase` Implementation**
 
-  ```python
-  # transportation/partials/with_core/boat.py
-  from .boat_interface import BoatInterface as ImplementsInterface
+```python
+# partials/with_engine/engine_base.py
+from .engine_base_interface import EngineBaseInterface as ImplementsInterface
 
-  class Boat(ImplementsInterface):
-      _is_sailing: bool = False
+class EngineBase(ImplementsInterface):
+    _is_running: bool = False
 
-      def anchor(self) -> None:
-          self._is_sailing = False
+    def ignite(self) -> None:
+        self._is_running = True
 
-      def sail(self) -> None:
-          self._is_sailing = True
-  ```
+    def shutdown(self) -> None:
+        self._is_running = False
+```
 
-#### Partial: `with_speed`
+**`VehiclePartial` Interface**
 
-**Vehicle Speed Partial**
+```python
+# partials/with_engine/vehicle_partial_interface.py
+from ..with_core.vehicle_base_interface import VehicleBaseInterface as WithBaseInterface
+from .engine_base_interface import EngineBaseInterface
+from typing import Protocol
 
-- **Interface**:
+class VehiclePartialInterface(
+    EngineBaseInterface,    # New base class interface
+    WithBaseInterface,      # Original base interface
+    Protocol,
+):
+    def get_engine(self) -> EngineBaseInterface: ...
+    def start(self) -> None    # Overriding start method
+    def stop(self) -> None     # Overriding stop method
+```
 
-  ```python
-  # transportation/partials/with_speed/vehicle_partial_interface.py
-  from ..with_core.vehicle_interface import VehicleInterface as WithBaseInterface
-  from typing import Protocol
+**`VehiclePartial` Implementation**
 
-  class VehiclePartialInterface(WithBaseInterface, Protocol):
-      def set_speed(self, speed: float) -> None: ...
-      def get_speed(self) -> float: ...
-  ```
+```python
+# partials/with_engine/vehicle_partial.py
+from .vehicle_partial_interface import VehiclePartialInterface as ImplementsInterface
+from .engine_base import EngineBase
 
-- **Implementation**:
+class VehiclePartial(ImplementsInterface):
+    def __init__(self):
+        super().__init__()
+        self._engine = EngineBase()
 
-  ```python
-  # transportation/partials/with_speed/vehicle_partial.py
-  from .vehicle_partial_interface import VehiclePartialInterface as ImplementsInterface
+    def get_engine(self) -> EngineBase:
+        return self._engine
 
-  class VehiclePartial(ImplementsInterface):
-      _speed: float = 0.0
+    def start(self) -> None:
+        self._engine.ignite()
+        super().start()
 
-      def set_speed(self, speed: float) -> None:
-          self._speed = speed
+    def stop(self) -> None:
+        self._engine.shutdown()
+        super().stop()
+```
 
-      def get_speed(self) -> float:
-          return self._speed
-  ```
+#### Partial: `with_fuel`
 
-**Boat Speed Partial**
+Extends both `Vehicle` and `Engine` to add fuel management.
+
+**`EnginePartial` Interface**
 
-- **Interface**:
-
-  ```python
-  # transportation/partials/with_speed/boat_partial_interface.py
-  from ..with_core.boat_interface import BoatInterface as WithBaseInterface
-  from typing import Protocol
-
-  class BoatPartialInterface(WithBaseInterface, Protocol):
-      def set_speed(self, speed: float) -> None: ...
-      def get_speed(self) -> float:
-          ...
-  ```
-
-- **Implementation**:
-
-  ```python
-  # transportation/partials/with_speed/boat_partial.py
-  from .boat_partial_interface import BoatPartialInterface as ImplementsInterface
-
-  class BoatPartial(ImplementsInterface):
-      _speed: float = 0.0
-
-      def set_speed(self, speed: float) -> None:
-          self._speed = speed
-
-      def get_speed(self) -> float:
-          return self._speed
-  ```
-
-#### Partial: `with_travel_time`
-
-**Vehicle Travel Time Partial**
-
-- **Interface**:
-
-  ```python
-  # transportation/partials/with_travel_time/vehicle_partial_interface.py
-  from ..with_speed.vehicle_partial_interface import VehiclePartialInterface as WithSpeedInterface
-  from ..with_core.vehicle_interface import VehicleInterface as WithBaseInterface
-  from typing import Protocol
-
-  class VehiclePartialInterface(
-      WithSpeedInterface,
-      WithBaseInterface,
-      Protocol,
-  ):
-      def calculate_travel_time(self, distance: float) -> float: ...
-  ```
-
-- **Implementation**:
-
-  ```python
-  # transportation/partials/with_travel_time/vehicle_partial.py
-  from .vehicle_partial_interface import VehiclePartialInterface as ImplementsInterface
-
-  class VehiclePartial(ImplementsInterface):
-      def calculate_travel_time(self, distance: float) -> float:
-          speed = self.get_speed()
-          return distance / speed if speed != 0 else float('inf')
-  ```
-
-**Boat Travel Time Partial**
-
-- **Interface**:
-
-  ```python
-  # transportation/partials/with_travel_time/boat_partial_interface.py
-  from ..with_speed.boat_partial_interface import BoatPartialInterface as WithSpeedInterface
-  from ..with_core.boat_interface import BoatInterface as WithBaseInterface
-  from typing import Protocol
-
-  class BoatPartialInterface(
-      WithSpeedInterface,
-      WithBaseInterface,
-      Protocol,
-  ):
-      def calculate_travel_time(self, distance: float) -> float: ...
-  ```
-
-- **Implementation**:
-
-  ```python
-  # transportation/partials/with_travel_time/boat_partial.py
-  from .boat_partial_interface import BoatPartialInterface as ImplementsInterface
-
-  class BoatPartial(ImplementsInterface):
-      def calculate_travel_time(self, distance: float) -> float:
-          speed = self.get_speed()
-          return distance / speed if speed != 0 else float('inf')
-  ```
-
-#### Composed Classes in `classes/`
-
-**Vehicle Class**
-
-- **Interface**:
-
-  ```python
-  # transportation/classes/vehicle_interface.py
-  from ..partials.with_travel_time.vehicle_partial_interface import VehiclePartialInterface as WithTravelTimeInterface
-  from ..partials.with_speed.vehicle_partial_interface import VehiclePartialInterface as WithSpeedInterface
-  from ..partials.with_core.vehicle_interface import VehicleInterface as WithBaseInterface
-  from typing import Protocol
-
-  class VehicleInterface(
-      WithTravelTimeInterface,
-      WithSpeedInterface,
-      WithBaseInterface,
-      Protocol,
-  ):
-      pass
-  ```
-
-- **Implementation**:
-
-  ```python
-  # transportation/classes/vehicle.py
-  from ..partials.with_travel_time.vehicle_partial import VehiclePartial as WithTravelTime
-  from ..partials.with_speed.vehicle_partial import VehiclePartial as WithSpeed
-  from ..partials.with_core.vehicle import Vehicle as WithBase
-  from .vehicle_interface import VehicleInterface as ImplementsInterface
-
-  class Vehicle(
-      WithTravelTime,
-      WithSpeed,
-      WithBase,
-      ImplementsInterface,
-  ):
-      pass
-  ```
-
-**Boat Class**
-
-- **Interface**:
-
-  ```python
-  # transportation/classes/boat_interface.py
-  from ..partials.with_travel_time.boat_partial_interface import BoatPartialInterface as WithTravelTimeInterface
-  from ..partials.with_speed.boat_partial_interface import BoatPartialInterface as WithSpeedInterface
-  from ..partials.with_core.boat_interface import BoatInterface as WithBaseInterface
-  from typing import Protocol
-
-  class BoatInterface(
-      WithTravelTimeInterface,
-      WithSpeedInterface,
-      WithBaseInterface,
-      Protocol,
-  ):
-      pass
-  ```
-
-- **Implementation**:
-
-  ```python
-  # transportation/classes/boat.py
-  from ..partials.with_travel_time.boat_partial import BoatPartial as WithTravelTime
-  from ..partials.with_speed.boat_partial import BoatPartial as WithSpeed
-  from ..partials.with_core.boat import Boat as WithBase
-  from .boat_interface import BoatInterface as ImplementsInterface
-
-  class Boat(
-      WithTravelTime,
-      WithSpeed,
-      WithBase,
-      ImplementsInterface,
-  ):
-      pass
-  ```
+```python
+# partials/with_fuel/engine_partial_interface.py
+from ..with_engine.engine_base_interface import EngineBaseInterface as WithBaseInterface
+from typing import Protocol
+
+class EnginePartialInterface(
+    WithBaseInterface,
+    Protocol,
+):
+    def consume_fuel(self, amount: float) -> None: ...
+    def get_fuel_level(self) -> float: ...
+```
+
+**`EnginePartial` Implementation**
+
+```python
+# partials/with_fuel/engine_partial.py
+from .engine_partial_interface import EnginePartialInterface as ImplementsInterface
+
+class EnginePartial(ImplementsInterface):
+    _fuel_level: float = 0.0
+
+    def consume_fuel(self, amount: float) -> None:
+        if self._fuel_level >= amount:
+            self._fuel_level -= amount
+        else:
+            raise RuntimeError("Not enough fuel.")
+
+    def get_fuel_level(self) -> float:
+        return self._fuel_level
+
+    def refuel(self, amount: float) -> None:
+        self._fuel_level += amount
+
+    def ignite(self) -> None:
+        if self._fuel_level <= 0:
+            raise RuntimeError("Cannot ignite engine: no fuel.")
+        super().ignite()
+```
+
+**`VehiclePartial` Interface**
+
+```python
+# partials/with_fuel/vehicle_partial_interface.py
+from ..with_engine.vehicle_partial_interface import VehiclePartialInterface as WithEngineInterface
+from typing import Protocol
+
+class VehiclePartialInterface(
+    WithEngineInterface,
+    Protocol,
+):
+    def refuel(self, amount: float) -> None: ...
+    def get_fuel_level(self) -> float: ...
+```
+
+**`VehiclePartial` Implementation**
+
+```python
+# partials/with_fuel/vehicle_partial.py
+from .vehicle_partial_interface import VehiclePartialInterface as ImplementsInterface
+
+class VehiclePartial(ImplementsInterface):
+    def refuel(self, amount: float) -> None:
+        self.get_engine().refuel(amount)
+
+    def get_fuel_level(self) -> float:
+        return self.get_engine().get_fuel_level()
+
+    def start(self) -> None:
+        self.get_engine().consume_fuel(1.0)  # Consume 1 unit of fuel on start
+        super().start()
+```
+
+#### Composed Classes
+
+**`EngineInterface`**
+
+```python
+# classes/engine_interface.py
+from ..partials.with_fuel.engine_partial_interface import EnginePartialInterface as WithFuelInterface
+from ..partials.with_engine.engine_base_interface import EngineBaseInterface as WithBaseInterface
+from typing import Protocol
+
+class EngineInterface(
+    WithFuelInterface,
+    WithBaseInterface,
+    Protocol,
+):
+    pass
+```
+
+**`Engine`**
+
+```python
+# classes/engine.py
+from ..partials.with_fuel.engine_partial import EnginePartial as WithFuel
+from ..partials.with_engine.engine_base import EngineBase as WithBase
+from .engine_interface import EngineInterface as ImplementsInterface
+
+class Engine(
+    WithFuel,
+    WithBase,
+    ImplementsInterface,
+):
+    pass
+```
+
+**`VehicleInterface`**
+
+```python
+# classes/vehicle_interface.py
+from ..partials.with_fuel.vehicle_partial_interface import VehiclePartialInterface as WithFuelInterface
+from ..partials.with_engine.vehicle_partial_interface import VehiclePartialInterface as WithEngineInterface
+from ..partials.with_core.vehicle_base_interface import VehicleBaseInterface as WithBaseInterface
+from typing import Protocol
+
+class VehicleInterface(
+    WithFuelInterface,
+    WithEngineInterface,
+    WithBaseInterface,
+    Protocol,
+):
+    pass
+```
+
+**`Vehicle`**
+
+```python
+# classes/vehicle.py
+from ..partials.with_fuel.vehicle_partial import VehiclePartial as WithFuel
+from ..partials.with_engine.vehicle_partial import VehiclePartial as WithEngine
+from ..partials.with_core.vehicle_base import VehicleBase as WithBase
+from .vehicle_interface import VehicleInterface as ImplementsInterface
+
+class Vehicle(
+    WithFuel,
+    WithEngine,
+    WithBase,
+    ImplementsInterface,
+):
+    pass
+```
+
+#### Usage Example
+
+```python
+vehicle = Vehicle()
+vehicle.refuel(10.0)  # Add 10 units of fuel
+vehicle.start()
+print(f"Fuel level: {vehicle.get_fuel_level()} units")
+vehicle.stop()
+```
+
+**Output:**
+
+```
+Fuel level: 9.0 units
+```
