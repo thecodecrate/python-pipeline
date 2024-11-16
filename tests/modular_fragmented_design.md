@@ -227,9 +227,9 @@ Before diving into the example, let's outline the import and renaming convention
     from .cat_interface import CatInterface as ImplementsInterface
 
     class Cat(
-        WithPartial3,
+        WithPartial3,         # Higher-level partials first
         WithPartial2,
-        WithPartial1,
+        WithPartial1,         # Lower-level partials last
         WithBase,             # Base class
         ImplementsInterface,  # Interface must be the last item
     ):
