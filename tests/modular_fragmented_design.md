@@ -215,7 +215,7 @@ Before diving into the example, let's outline the import and renaming convention
 
 Let's create a `Vehicle` class split into two partials:
 
-- `WithSpeed`: for managing speed
+- `WithSpeed`: for managing speed;
 - `WithTravelTime`: for calculating travel time.
 
 #### Base Class: `VehicleBase`
