@@ -31,17 +31,9 @@ There are several situations when splitting a class definition is desirable:
 
 While both partial classes and traits allow you to split a class's functionality, they serve different purposes.
 
-**Partial classes** are used to divide a single class definition into multiple parts, often across different files. This approach helps in:
+**Partial classes** are used to split a single class into multiple parts.
 
-- Organizing code by grouping related methods together.
-- Facilitating collaboration by allowing multiple developers to work on different parts simultaneously.
-
-**Traits**, on the other hand, define a set of methods that can be reused across multiple classes. They enable code reuse without the constraints of single inheritance.
-
-In summary:
-
-- **Partial classes** split a single class into multiple parts.
-- **Traits** provide reusable methods that can be incorporated into multiple classes.
+**Traits**, on the other hand, provide reusable methods that can be incorporated into multiple classes.
 
 ## Implementation
 
