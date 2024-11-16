@@ -1,6 +1,6 @@
 # Partial Classes
 
-Partial classes enable you to split a class definition across multiple source files.
+Partial classes allow you to split a class definition across multiple source files.
 
 Each partial class contains a section of the overall class definition. All parts are then combined into a single, complete class.
 
@@ -450,3 +450,378 @@ vehicle.stop()
 # Output:
 # Travel time: 2.0 hours
 ```
+
+## Applying Partials Horizontally Across Multiple Classes
+
+In the previous section, we focused on implementing partial classes in Python for individual classes. Now, we'll explore an alternative approach that applies partials horizontally across a group of classes. This method is particularly useful when partials represent features that are shared across multiple classes within a project or package.
+
+### Overview
+
+In this approach, partials are designed to be reusable components that can be mixed into multiple base classes. This promotes code reuse and consistency across different classes that share similar functionality.
+
+### File Structure
+
+The file structure for this approach is as follows:
+
+```text
+<package_name>/
+├── partials/                        # Partial implementations
+│   ├── with_core/                   # Core partial, contains base classes
+│   │   ├── <base_class1>.py
+│   │   ├── ...
+│   │   └── <base_classN>.py
+│   │
+│   ├── with_<feature1>/             # Partial for feature 1
+│   │   ├── <base_class...>.py       # New base class
+│   │   ├── ...
+│   │   ├── <base_class...>.py       # Another new base class
+│   │   ├── <class...>_partial.py    # Partial with methods for some base class
+│   │   ├── ...
+│   │   └── <class...>_partial.py    # Another partial for a different base class
+│   │
+│   ├── ...                          # Additional partials
+│   │
+│   └── with_<featureN>/             # Partial for feature 2
+│       ├── <class...>_partial.py
+│       └── <class...>_partial.py
+│
+└── classes/                         # Folder with composed classes
+    ├── <class1>.py
+    ├── <class2>.py
+    └── ...                          # Additional composed classes
+```
+
+- **`partials/with_core/`**: Contains base classes for the core features.
+- **`partials/with_<feature>/`**: Contains partial classes for extra features.
+- **`classes/`**: Contains the composed classes.
+
+Each concrete class has a corresponding interface, stored in the same directory.
+
+### Key Rules and Conventions
+
+Most of the rules from the previous approach apply here, with some important differences:
+
+1. **Naming Conventions for Partials**:
+   - Partial classes have the same name as their base class but with `Partial` as a suffix.
+     - Example: `VehiclePartial`
+   - Partial interfaces have the same name as their base class but with `PartialInterface` as a suffix.
+     - Example: `VehiclePartialInterface`
+
+2. **Importing and Renaming Partials**:
+   - When importing a partial class, rename it to `With<PartialName>`.
+     - Example:
+
+       ```python
+       from vehicle.partials.with_speed.vehicle_partial import VehiclePartial as WithSpeed
+       ```
+
+   - When importing a partial interface, rename it to `With<PartialName>Interface`.
+     - Example:
+
+       ```python
+       from vehicle.partials.with_speed.vehicle_partial_interface import VehiclePartialInterface as WithSpeedInterface
+       ```
+
+3. **Base Classes in `classes/` Folder**:
+   - All base classes must have an entry in the `classes/` folder, along with their corresponding interfaces.
+
+4. **Importing Base Classes and Interfaces**:
+   - When importing a base class or its interface, rename them to `WithBase` and `WithBaseInterface`, respectively.
+
+5. **Concrete Classes Import Their Interfaces**:
+   - Each concrete class must import its interface, renaming it as `ImplementsInterface`.
+
+6. **Partial Interfaces Import Base Interfaces**:
+   - Each partial interface must import the interface of its base class, renaming it as `WithBaseInterface`.
+
+### Example: `Vehicle` and `Boat` Classes with Shared Features
+
+Let's illustrate this approach with an example involving two classes, `Vehicle` and `Boat`, that share common features like speed management and travel time calculation.
+
+```text
+transportation/
+├── partials/
+│   ├── with_core/
+│   │   ├── vehicle.py
+│   │   ├── vehicle_interface.py
+│   │   ├── boat.py
+│   │   └── boat_interface.py
+│   ├── with_speed/
+│   │   ├── vehicle_partial.py
+│   │   ├── vehicle_partial_interface.py
+│   │   ├── boat_partial.py
+│   │   └── boat_partial_interface.py
+│   ├── with_travel_time/
+│   │   ├── vehicle_partial.py
+│   │   ├── vehicle_partial_interface.py
+│   │   ├── boat_partial.py
+│   │   └── boat_partial_interface.py
+└── classes/
+    ├── vehicle.py
+    ├── vehicle_interface.py
+    ├── boat.py
+    ├── boat_interface.py
+```
+
+#### Core Partials (`with_core`)
+
+**Vehicle Base Class and Interface**
+
+- **Interface**:
+
+  ```python
+  # transportation/partials/with_core/vehicle_interface.py
+  from typing import Protocol
+
+  class VehicleInterface(Protocol):
+      def start(self) -> None: ...
+      def stop(self) -> None: ...
+  ```
+
+- **Implementation**:
+
+  ```python
+  # transportation/partials/with_core/vehicle.py
+  from .vehicle_interface import VehicleInterface as ImplementsInterface
+
+  class Vehicle(ImplementsInterface):
+      _is_running: bool = False
+
+      def start(self) -> None:
+          self._is_running = True
+
+      def stop(self) -> None:
+          self._is_running = False
+  ```
+
+**Boat Base Class and Interface**
+
+- **Interface**:
+
+  ```python
+  # transportation/partials/with_core/boat_interface.py
+  from typing import Protocol
+
+  class BoatInterface(Protocol):
+      def anchor(self) -> None: ...
+      def sail(self) -> None: ...
+  ```
+
+- **Implementation**:
+
+  ```python
+  # transportation/partials/with_core/boat.py
+  from .boat_interface import BoatInterface as ImplementsInterface
+
+  class Boat(ImplementsInterface):
+      _is_sailing: bool = False
+
+      def anchor(self) -> None:
+          self._is_sailing = False
+
+      def sail(self) -> None:
+          self._is_sailing = True
+  ```
+
+#### Partial: `with_speed`
+
+**Vehicle Speed Partial**
+
+- **Interface**:
+
+  ```python
+  # transportation/partials/with_speed/vehicle_partial_interface.py
+  from ..with_core.vehicle_interface import VehicleInterface as WithBaseInterface
+  from typing import Protocol
+
+  class VehiclePartialInterface(WithBaseInterface, Protocol):
+      def set_speed(self, speed: float) -> None: ...
+      def get_speed(self) -> float: ...
+  ```
+
+- **Implementation**:
+
+  ```python
+  # transportation/partials/with_speed/vehicle_partial.py
+  from .vehicle_partial_interface import VehiclePartialInterface as ImplementsInterface
+
+  class VehiclePartial(ImplementsInterface):
+      _speed: float = 0.0
+
+      def set_speed(self, speed: float) -> None:
+          self._speed = speed
+
+      def get_speed(self) -> float:
+          return self._speed
+  ```
+
+**Boat Speed Partial**
+
+- **Interface**:
+
+  ```python
+  # transportation/partials/with_speed/boat_partial_interface.py
+  from ..with_core.boat_interface import BoatInterface as WithBaseInterface
+  from typing import Protocol
+
+  class BoatPartialInterface(WithBaseInterface, Protocol):
+      def set_speed(self, speed: float) -> None: ...
+      def get_speed(self) -> float:
+          ...
+  ```
+
+- **Implementation**:
+
+  ```python
+  # transportation/partials/with_speed/boat_partial.py
+  from .boat_partial_interface import BoatPartialInterface as ImplementsInterface
+
+  class BoatPartial(ImplementsInterface):
+      _speed: float = 0.0
+
+      def set_speed(self, speed: float) -> None:
+          self._speed = speed
+
+      def get_speed(self) -> float:
+          return self._speed
+  ```
+
+#### Partial: `with_travel_time`
+
+**Vehicle Travel Time Partial**
+
+- **Interface**:
+
+  ```python
+  # transportation/partials/with_travel_time/vehicle_partial_interface.py
+  from ..with_speed.vehicle_partial_interface import VehiclePartialInterface as WithSpeedInterface
+  from ..with_core.vehicle_interface import VehicleInterface as WithBaseInterface
+  from typing import Protocol
+
+  class VehiclePartialInterface(
+      WithSpeedInterface,
+      WithBaseInterface,
+      Protocol,
+  ):
+      def calculate_travel_time(self, distance: float) -> float: ...
+  ```
+
+- **Implementation**:
+
+  ```python
+  # transportation/partials/with_travel_time/vehicle_partial.py
+  from .vehicle_partial_interface import VehiclePartialInterface as ImplementsInterface
+
+  class VehiclePartial(ImplementsInterface):
+      def calculate_travel_time(self, distance: float) -> float:
+          speed = self.get_speed()
+          return distance / speed if speed != 0 else float('inf')
+  ```
+
+**Boat Travel Time Partial**
+
+- **Interface**:
+
+  ```python
+  # transportation/partials/with_travel_time/boat_partial_interface.py
+  from ..with_speed.boat_partial_interface import BoatPartialInterface as WithSpeedInterface
+  from ..with_core.boat_interface import BoatInterface as WithBaseInterface
+  from typing import Protocol
+
+  class BoatPartialInterface(
+      WithSpeedInterface,
+      WithBaseInterface,
+      Protocol,
+  ):
+      def calculate_travel_time(self, distance: float) -> float: ...
+  ```
+
+- **Implementation**:
+
+  ```python
+  # transportation/partials/with_travel_time/boat_partial.py
+  from .boat_partial_interface import BoatPartialInterface as ImplementsInterface
+
+  class BoatPartial(ImplementsInterface):
+      def calculate_travel_time(self, distance: float) -> float:
+          speed = self.get_speed()
+          return distance / speed if speed != 0 else float('inf')
+  ```
+
+#### Composed Classes in `classes/`
+
+**Vehicle Class**
+
+- **Interface**:
+
+  ```python
+  # transportation/classes/vehicle_interface.py
+  from ..partials.with_travel_time.vehicle_partial_interface import VehiclePartialInterface as WithTravelTimeInterface
+  from ..partials.with_speed.vehicle_partial_interface import VehiclePartialInterface as WithSpeedInterface
+  from ..partials.with_core.vehicle_interface import VehicleInterface as WithBaseInterface
+  from typing import Protocol
+
+  class VehicleInterface(
+      WithTravelTimeInterface,
+      WithSpeedInterface,
+      WithBaseInterface,
+      Protocol,
+  ):
+      pass
+  ```
+
+- **Implementation**:
+
+  ```python
+  # transportation/classes/vehicle.py
+  from ..partials.with_travel_time.vehicle_partial import VehiclePartial as WithTravelTime
+  from ..partials.with_speed.vehicle_partial import VehiclePartial as WithSpeed
+  from ..partials.with_core.vehicle import Vehicle as WithBase
+  from .vehicle_interface import VehicleInterface as ImplementsInterface
+
+  class Vehicle(
+      WithTravelTime,
+      WithSpeed,
+      WithBase,
+      ImplementsInterface,
+  ):
+      pass
+  ```
+
+**Boat Class**
+
+- **Interface**:
+
+  ```python
+  # transportation/classes/boat_interface.py
+  from ..partials.with_travel_time.boat_partial_interface import BoatPartialInterface as WithTravelTimeInterface
+  from ..partials.with_speed.boat_partial_interface import BoatPartialInterface as WithSpeedInterface
+  from ..partials.with_core.boat_interface import BoatInterface as WithBaseInterface
+  from typing import Protocol
+
+  class BoatInterface(
+      WithTravelTimeInterface,
+      WithSpeedInterface,
+      WithBaseInterface,
+      Protocol,
+  ):
+      pass
+  ```
+
+- **Implementation**:
+
+  ```python
+  # transportation/classes/boat.py
+  from ..partials.with_travel_time.boat_partial import BoatPartial as WithTravelTime
+  from ..partials.with_speed.boat_partial import BoatPartial as WithSpeed
+  from ..partials.with_core.boat import Boat as WithBase
+  from .boat_interface import BoatInterface as ImplementsInterface
+
+  class Boat(
+      WithTravelTime,
+      WithSpeed,
+      WithBase,
+      ImplementsInterface,
+  ):
+      pass
+  ```
