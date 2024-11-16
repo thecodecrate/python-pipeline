@@ -5,11 +5,6 @@ Partial classes enable you to split a class definition across multiple source fi
 Each partial class contains a section of the overall class definition. All parts are then combined into a single, complete class.
 
 ```text
-class ClassA
-├── Partial1
-├── ...
-└── PartialN
-
 class Partial1
 ├── method1
 └── method2
@@ -19,6 +14,11 @@ class Partial2
 └── method4
 
 ...
+
+class ClassA
+├── Partial1
+├── ...
+└── PartialN
 ```
 
 There are several situations when splitting a class definition is desirable:
