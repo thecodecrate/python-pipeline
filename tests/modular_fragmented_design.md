@@ -86,27 +86,137 @@ By following this convention, you can organize your code for better modularity a
 
 Before diving into the example, let's outline the import and renaming conventions used in this approach:
 
-1. **Concrete Classes Import Their Interfaces**: Every concrete class (base, partial, or composed) should import its corresponding interface. When importing, the interface should be renamed to `ImplementsInterface`.
+1. **Concrete Classes and Their Interfaces**: Each concrete class - whether it's base, partial, or composed - has a corresponding interface. A concrete class must always import its corresponding interface. When importing, rename the interface to `ImplementsInterface`.
 
-2. **Consistency Across All Classes**: The above rule applies to all types of classes—base classes, partials, and composed classes.
+    ```python
+    # partials/with_partial1_interface.py
+    class WithPartial1Interface(Protocol):
+        ...
+    ```
 
-3. **Partial Interfaces Import Dependencies**: The interface of a partial should import the interfaces of its dependencies.
+    ```python
+    # partials/with_partial1.py
+    from .partial1_interface import Partial1Interface as ImplementsInterface
 
-4. **Renaming Base Interfaces**: When importing a base class or its interface, it should be renamed to `WithBase` or `WithBaseInterface`, respectively.
+    class WithPartial1(ImplementsInterface):
+        ...
+    ```
 
-5. **Importing Order Matters**: The order of imports and inheritance lists is crucial due to Python's Method Resolution Order (MRO).
+    `ImplementsInterface` must always be the last item in the inheritance list to avoid MRO conflicts.
 
-6. **Inheritance Order in Partial Interfaces**: In partial interfaces, the inheritance list should include the interfaces of the partials it depends on (with newer dependencies on top and more basic ones at the bottom), followed by `Protocol` to provide type-hint support.
+    ```python
+    class Cat(WithPartial1Interface, ImplementsInterface):
+        ...
+    ```
 
-7. **Concrete Partials Avoid Other Partials**: The concrete class of a partial should only import its corresponding interface (renamed to `ImplementsInterface`) and must not import other partials. However, it can import external concrete classes like traits.
+2. **Importing a Base Class**: When importing a base class or its interface into another module, rename them to `WithBase` and `WithBaseInterface`, respectively. This distinguishes the base class from other components and maintains naming consistency.
 
-8. **Composed Interface Imports**: The composed interface must import the interfaces of all partials and the base interface (renamed as `WithBaseInterface`), then inherit from them in the specified order, followed by `Protocol`.
+    ```python
+    # cat_interface.py
+    from .cat_base_interface import CatBaseInterface as WithBaseInterface
 
-9. **Composed Class Imports**: The concrete composed class should import the concrete classes of all partials, the concrete base class (renamed as `WithBase`), and the composed interface (renamed as `ImplementsInterface`). The inheritance list should follow this order due to Python's MRO.
+    class CatInterface(WithBaseInterface, Protocol):
+        ...
+    ```
+
+    ```python
+    # cat.py
+    from .cat_base import CatBase as WithBase
+
+    class Cat(WithBase, ImplementsInterface):
+        ...
+    ```
+
+3. **Partial Interface - Inheritance List**: A partial interface must import the interfaces of any other partials it depends on. This ensures that all necessary methods and attributes are available.
+
+    ```python
+    # partials/with_partial3_interface.py
+    from .with_partial1_interface import WithPartial1Interface
+    from .with_partial2_interface import WithPartial2Interface
+
+    # Partial3 uses methods from Partial1 and Partial2
+    class WithPartial3Interface(
+        WithPartial2Interface,
+        WithPartial1Interface,
+        Protocol,
+    ):
+        ...
+    ```
+
+    The inheritance list must be ordered from the most specific (newer dependencies) to the most general (base dependencies), followed by `Protocol` to avoid MRO resolution conflicts.
+
+4. **Partial Class - Inheritance List**: The concrete class of a partial should import only its corresponding interface. It must not import other partial classes or their interfaces, even when it depends on them.
+
+    ```python
+    # partials/with_partial3.py
+    from .with_partial3_interface import WithPartial3Interface as ImplementsInterface
+
+    # Partial3 CANNOT import Partial1 or Partial2, even though it uses their methods
+    class WithPartial3(ImplementsInterface):
+        ...
+    ```
+
+    However, partial classes can import external concrete classes, like traits.
+
+    ```python
+    # partials/with_partial3.py
+    from external_module import SomeTrait
+
+    class WithPartial3(SomeTrait, ImplementsInterface):
+        ...
+    ```
+
+5. **Composed Interface - Inheritance List**: The composed interface must import all partial interfaces and the base interface.
+
+    ```python
+    # cat_interface.py
+    from .partials/with_partial3_interface import WithPartial3Interface
+    from .partials/with_partial2_interface import WithPartial2Interface
+    from .partials/with_partial1_interface import WithPartial1Interface
+    from .cat_base_interface import CatBaseInterface as WithBaseInterface
+
+    class CatInterface(
+        WithPartial3Interface,
+        WithPartial2Interface,
+        WithPartial1Interface,
+        WithBaseInterface,
+        Protocol,
+    ):
+        ...
+    ```
+
+    The order of interfaces in the inheritance list is crucial to ensure that the MRO works correctly:
+
+    - `With<...>` (all partials, from newer to older); then the
+    - `WithBaseInterface` (the base interface); followed by
+    - `Protocol`.
+
+6. **Composed Class - Inheritance List**: The concrete composed class should import the concrete classes of all partials, the concrete base class (renamed to `WithBase`), and its own composed interface (renamed to `ImplementsInterface`). The inheritance list must follow this order to respect Python's MRO and ensure proper method resolution.
+
+    ```python
+    # cat.py
+    from .partials/with_partial3 import WithPartial3
+    from .partials/with_partial2 import WithPartial2
+    from .partials/with_partial1 import WithPartial1
+    from .cat_base import CatBase as WithBase
+    from .cat_interface import CatInterface as ImplementsInterface
+
+    class Cat(
+        WithPartial3,
+        WithPartial2,
+        WithPartial1,
+        WithBase,
+        ImplementsInterface,
+    ):
+        ...
+    ```
 
 ### Example: `Vehicle` Class
 
-Let's create a `Vehicle` class split into two partials: one for managing speed and another for calculating travel time, where the second partial depends on a method declared in the first partial.
+Let's create a `Vehicle` class split into two partials:
+
+- `WithSpeed`: for managing speed
+- `WithTravelTime`: for calculating travel time.
 
 #### Base Class: `VehicleBase`
 
