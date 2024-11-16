@@ -247,11 +247,6 @@ class VehicleBase(ImplementsInterface):
         self._is_running = False
 ```
 
-**Explanation**:
-
-- **Rule 1 & 2**: The concrete class `VehicleBase` imports its corresponding interface `VehicleBaseInterface`, renaming it to `ImplementsInterface`.
-- **Rule 4**: When importing the base interface elsewhere, we'll rename it to `WithBaseInterface`.
-
 #### First Partial: `WithSpeed`
 
 The first partial adds speed-related methods.
@@ -283,13 +278,6 @@ class WithSpeed(ImplementsInterface):
         return self._speed
 ```
 
-**Explanation**:
-
-- **Rule 1 & 2**: `WithSpeed` imports its interface `WithSpeedInterface` as `ImplementsInterface`.
-- **Rule 3 & 6**: The interface `WithSpeedInterface` imports its dependency `VehicleBaseInterface` (renamed to `WithBaseInterface`) and inherits from it, followed by `Protocol`.
-- **Rule 4**: Renaming `VehicleBaseInterface` to `WithBaseInterface` when importing.
-- **Rule 7**: The concrete partial `WithSpeed` only imports its corresponding interface and does not import other partials.
-
 #### Second Partial: `WithTravelTime`
 
 The second partial depends on the `get_speed` method from the first partial to calculate travel time.
@@ -316,12 +304,6 @@ class WithTravelTime(ImplementsInterface):
         return distance / speed if speed != 0 else float('inf')
 ```
 
-**Explanation**:
-
-- **Rule 1 & 2**: `WithTravelTime` imports its interface as `ImplementsInterface`.
-- **Rule 3 & 6**: The interface `WithTravelTimeInterface` imports its dependency `WithSpeedInterface` and inherits from it, followed by `Protocol`.
-- **Rule 7**: The concrete partial `WithTravelTime` only imports its interface.
-
 #### Composed Interface: `VehicleInterface`
 
 The composed interface combines all interfaces.
@@ -340,11 +322,6 @@ class VehicleInterface(
 ):
     pass
 ```
-
-**Explanation**:
-
-- **Rule 8**: The composed interface imports the interfaces of all partials (`WithTravelTimeInterface`, `WithSpeedInterface`), the base interface (renamed as `WithBaseInterface`), and inherits from them in the specified order, followed by `Protocol`.
-- **Rule 5**: The inheritance order is important due to Python's MRO.
 
 #### Composed Class: `Vehicle`
 
@@ -365,11 +342,6 @@ class Vehicle(
 ):
     pass
 ```
-
-**Explanation**:
-
-- **Rule 9**: The composed class imports the concrete classes of all partials (`WithTravelTime`, `WithSpeed`), the concrete base class (renamed as `WithBase`), and the composed interface (renamed as `ImplementsInterface`).
-- **Rule 5**: The inheritance list follows the specified order due to Python's MRO.
 
 #### Usage Example
 
