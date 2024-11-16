@@ -82,7 +82,7 @@ Each class also has a corresponding interface, defined as a protocol, to enforce
 
 By following this convention, you can organize your code for better modularity and maintainability when working with simple classes.
 
-### Import and Renaming Rules
+### Rules for Import and Renaming
 
 Before diving into the example, let's outline the import and renaming conventions used in this approach:
 
@@ -90,80 +90,103 @@ Before diving into the example, let's outline the import and renaming convention
 
     ```python
     # partials/with_partial1_interface.py
+    from typing import Protocol
+
     class WithPartial1Interface(Protocol):
-        ...
+        ...  # List methods
     ```
 
     ```python
     # partials/with_partial1.py
-    from .partial1_interface import Partial1Interface as ImplementsInterface
+    from .with_partial1_interface import WithPartial1Interface as ImplementsInterface
 
     class WithPartial1(ImplementsInterface):
-        ...
+        ...  # Implements methods and attributes
     ```
 
     `ImplementsInterface` must always be the last item in the inheritance list to avoid MRO conflicts.
 
     ```python
-    class Cat(WithPartial1Interface, ImplementsInterface):
+    # cat.py
+    from .partials.with_partial1 import WithPartial1
+    from .cat_base import CatBase as WithBase
+    from .cat_interface import CatInterface as ImplementsInterface
+
+    class Cat(
+        WithPartial1,
+        WithBase,
+        ImplementsInterface,  # Must be the last item
+    ):
         ...
     ```
 
-2. **Importing a Base Class**: When importing a base class or its interface into another module, rename them to `WithBase` and `WithBaseInterface`, respectively. This distinguishes the base class from other components and maintains naming consistency.
+2. **Importing Base Classes**: When importing a base class or its interface into another module, rename them to `WithBase` and `WithBaseInterface`, respectively. This distinguishes the base class from other components and maintains naming consistency.
 
     ```python
     # cat_interface.py
     from .cat_base_interface import CatBaseInterface as WithBaseInterface
 
-    class CatInterface(WithBaseInterface, Protocol):
+    class CatInterface(
+        WithBaseInterface,  # Renamed to WithBaseInterface
+        Protocol,
+    ):
         ...
     ```
 
     ```python
     # cat.py
     from .cat_base import CatBase as WithBase
+    from .cat_interface import CatInterface as ImplementsInterface
 
-    class Cat(WithBase, ImplementsInterface):
+    class Cat(
+        WithBase,  # Renamed to WithBase
+        ImplementsInterface,
+    ):
         ...
     ```
 
-3. **Partial Interface - Inheritance List**: A partial interface must import the interfaces of any other partials it depends on. This ensures that all necessary methods and attributes are available.
+3. **Partial Interface - Inheritance List**: A partial interface must import the interfaces of any other partials it depends on. This ensures that all necessary methods and attributes are available. It also must import the base interface and `Protocol`.
 
     ```python
     # partials/with_partial3_interface.py
     from .with_partial1_interface import WithPartial1Interface
     from .with_partial2_interface import WithPartial2Interface
+    from ..cat_base_interface import CatBaseInterface as WithBaseInterface
 
-    # Partial3 uses methods from Partial1 and Partial2
     class WithPartial3Interface(
-        WithPartial2Interface,
-        WithPartial1Interface,
+        WithPartial2Interface, # Dependency: methods from Partial2
+        WithPartial1Interface, # Dependency: methods from Partial1
+        WithBaseInterface,     # Base interface
         Protocol,
     ):
         ...
     ```
 
-    The inheritance list must be ordered from the most specific (newer dependencies) to the most general (base dependencies), followed by `Protocol` to avoid MRO resolution conflicts.
+    The inheritance list must be ordered from the most specific (newer dependencies) to the most general (base dependencies), followed by the base class interface and `Protocol` to avoid MRO resolution conflicts.
 
-4. **Partial Class - Inheritance List**: The concrete class of a partial should import only its corresponding interface. It must not import other partial classes or their interfaces, even when it depends on them.
+4. **Partial Class - Inheritance List**: The concrete class of a partial should import its corresponding interface `ImplementsInterface`. It must not import the base class, other partial classes or their interfaces, even when it depends on them.
 
     ```python
     # partials/with_partial3.py
     from .with_partial3_interface import WithPartial3Interface as ImplementsInterface
 
-    # Partial3 CANNOT import Partial1 or Partial2, even though it uses their methods
+    # MUST NOT import Base Class, Partial1 or Partial2, even though it uses their methods
     class WithPartial3(ImplementsInterface):
-        ...
+        ...  # Implements methods and attributes
     ```
 
-    However, partial classes can import external concrete classes, like traits.
+    Partial classes often only inherit `ImplementsInterface`, however, they can inherit other classes, as long as they are external concrete classes, like traits.
 
     ```python
     # partials/with_partial3.py
     from external_module import SomeTrait
+    from .with_partial3_interface import WithPartial3Interface as ImplementsInterface
 
-    class WithPartial3(SomeTrait, ImplementsInterface):
-        ...
+    class WithPartial3(
+        SomeTrait,
+        ImplementsInterface,
+    ):
+        ...  # Implements methods and attributes
     ```
 
 5. **Composed Interface - Inheritance List**: The composed interface must import all partial interfaces and the base interface.
@@ -176,11 +199,11 @@ Before diving into the example, let's outline the import and renaming convention
     from .cat_base_interface import CatBaseInterface as WithBaseInterface
 
     class CatInterface(
-        WithPartial3Interface,
+        WithPartial3Interface, # Higher-level partials first
         WithPartial2Interface,
-        WithPartial1Interface,
-        WithBaseInterface,
-        Protocol,
+        WithPartial1Interface, # Lower-level partials last
+        WithBaseInterface,     # Base interface
+        Protocol,              # Protocol must be the last item
     ):
         ...
     ```
@@ -191,7 +214,7 @@ Before diving into the example, let's outline the import and renaming convention
     - `WithBaseInterface` (the base interface); followed by
     - `Protocol`.
 
-6. **Composed Class - Inheritance List**: The concrete composed class should import the concrete classes of all partials, the concrete base class (renamed to `WithBase`), and its own composed interface (renamed to `ImplementsInterface`). The inheritance list must follow this order to respect Python's MRO and ensure proper method resolution.
+6. **Composed Class - Inheritance List**: The concrete composed class should import the concrete classes of all partials, the concrete base class (`WithBase`), and its own composed interface (`ImplementsInterface`). The inheritance list must follow this order to respect Python's MRO and ensure proper method resolution.
 
     ```python
     # cat.py
@@ -205,22 +228,76 @@ Before diving into the example, let's outline the import and renaming convention
         WithPartial3,
         WithPartial2,
         WithPartial1,
-        WithBase,
-        ImplementsInterface,
+        WithBase,            # Base class
+        ImplementsInterface, # Interface must be the last item
     ):
         ...
     ```
 
+7. **Composed Classes MUST BE empty**: The composed class and its interface should not contain any methods or attributes. It only serves to combine the base class and partial. If you need to add additional methods or attributes, consider creating a new partial.
+
+    ```python
+    # cat_interface.py
+    class CatInterface(
+        WithPartial3Interface,
+        WithPartial2Interface,
+        WithPartial1Interface,
+        WithBaseInterface,
+        Protocol,
+    ):
+        pass  # Body must be EMPTY
+    ```
+
+    ```python
+    # cat.py
+    class Cat(
+        WithPartial3,
+        WithPartial2,
+        WithPartial1,
+        WithBase,
+        ImplementsInterface,
+    ):
+        pass  # Body must be EMPTY
+    ```
+
 ### Example: `Vehicle` Class
 
-Let's create a `Vehicle` class split into two partials:
+Let's create a `Vehicle` class with methods for controlling a vehicle's basic operations, managing speed, and calculating travel time:
 
-- `WithSpeed`: for managing speed;
-- `WithTravelTime`: for calculating travel time.
+**Core functionality:**
+
+- `start()`: Starts the vehicle.
+- `stop()`: Stops the vehicle.
+
+**Speed management:**
+
+- `set_speed(speed: float)`: Sets the speed of the vehicle.
+- `get_speed()`: Retrieves the current speed of the vehicle.
+
+**Travel time calculation:**
+
+- `calculate_travel_time(distance: float)`: Calculates the time required to travel a given distance at the current speed.
+
+**Usage example:**
+
+```python
+vehicle = Vehicle()
+vehicle.start()
+vehicle.set_speed(80.0)
+time = vehicle.calculate_travel_time(240.0)
+print(f"Estimated travel time: {time} hours")
+vehicle.stop()
+```
+
+We will split the class code into three parts:
+
+- `VehicleBase`: Base Class with core functionality.
+- `WithSpeed`: Partial for managing speed.
+- `WithTravelTime`: Partial for calculating travel time.
 
 #### Base Class: `VehicleBase`
 
-The base class contains core functionality.
+The base class with core functionality.
 
 **Interface**:
 
@@ -257,7 +334,10 @@ The first partial adds speed-related methods.
 # vehicle/partials/with_speed_interface.py
 from ..vehicle_base_interface import VehicleBaseInterface as WithBaseInterface
 
-class WithSpeedInterface(WithBaseInterface, Protocol):
+class WithSpeedInterface(
+    WithBaseInterface,  # Base interface
+    Protocol,
+):
     def set_speed(self, speed: float) -> None: ...
     def get_speed(self) -> float: ...
 ```
@@ -287,8 +367,13 @@ The second partial depends on the `get_speed` method from the first partial to c
 ```python
 # vehicle/partials/with_travel_time_interface.py
 from .with_speed_interface import WithSpeedInterface
+from ..vehicle_base_interface import VehicleBaseInterface as WithBaseInterface
 
-class WithTravelTimeInterface(WithSpeedInterface, Protocol):
+class WithTravelTimeInterface(
+    WithSpeedInterface, # Dependency: methods from WithSpeed
+    WithBaseInterface,  # Base interface
+    Protocol,
+):
     def calculate_travel_time(self, distance: float) -> float: ...
 ```
 
@@ -315,10 +400,10 @@ from .partials.with_speed_interface import WithSpeedInterface
 from .vehicle_base_interface import VehicleBaseInterface as WithBaseInterface
 
 class VehicleInterface(
-    WithTravelTimeInterface,
-    WithSpeedInterface,
-    WithBaseInterface,
-    Protocol,
+    WithTravelTimeInterface,  # Higher-level partials first
+    WithSpeedInterface,       # Lower-level partials last
+    WithBaseInterface,        # Base interface
+    Protocol,                 # Must be the last item
 ):
     pass
 ```
@@ -335,10 +420,10 @@ from .vehicle_base import VehicleBase as WithBase
 from .vehicle_interface import VehicleInterface as ImplementsInterface
 
 class Vehicle(
-    WithTravelTime,
-    WithSpeed,
-    WithBase,
-    ImplementsInterface,
+    WithTravelTime,       # Higher-level partials first
+    WithSpeed,            # Lower-level partials last
+    WithBase,             # Base class
+    ImplementsInterface,  # Must be the last item
 ):
     pass
 ```
