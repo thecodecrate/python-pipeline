@@ -1,14 +1,14 @@
-# \[spec-001\] Class Composition with Partial Classes
+# \[spec-001\] A Convention for Structuring Classes Using Partial Classes
 
-This document introduces a convention for class structuring using partial classes, focusing on simple, individual classes. In a different specification, we'll explore how to extend this approach horizontally across groups of classes, which is particularly useful when partials represent features in a project or package.
+This language-agnostic document introduces a convention for structuring individual classes using partial classes. It focuses on simplifying class definitions by splitting them into manageable parts, enhancing modularity and maintainability.
 
-This document is language-agnostic and can be applied to any programming language that supports object-oriented programming.
+In a separate specification, we'll explore how to extend this approach horizontally across groups of classes, which is particularly useful when partials represent features in a project or package.
 
 ## Background
 
-In this specification, partial classes are a construct used to split a class definition across multiple source files.
+Partial classes enable you to split a single class definition across multiple source files. Each partial class contains a portion of the overall class, and all parts are combined to form the complete class. This approach helps manage complex classes by dividing them into smaller, more manageable pieces.
 
-Each partial class contains a section of the overall class definition. All parts are then combined into a single, complete class.
+Example:
 
 ```pseudo
 class Partial1
@@ -27,11 +27,11 @@ class ClassA
 └── extends PartialN
 ```
 
-There are several situations when splitting a class definition is desirable:
+Using partial classes is beneficial in several scenarios:
 
-- **Modularity**: Break a large class into smaller, more manageable pieces.
-- **Organization**: Group related methods together for better organization.
-- **Collaboration**: Enable team members to work on different parts simultaneously.
+- **Modularity**: Large classes can be broken down into smaller sections for easier understanding and maintenance.
+- **Organization**: Related methods can be grouped together, improving code structure.
+- **Collaboration**: Multiple developers can work on different parts simultaneously, reducing merge conflicts.
 
 ## Partial Classes vs. Traits
 
@@ -43,21 +43,21 @@ While both partial classes and traits allow you to split a class's functionality
 
 ## Support in Programming Languages
 
-Some languages, like C#, have built-in support for partial classes. In C#, you can define a class in multiple files using the `partial` keyword.
+Some programming languages, like C#, provide built-in support for partial classes using the `partial` keyword. This feature allows you to split a class definition across multiple files, which are then combined at compile time.
 
-Other languages, like Python, don't have built-in support for partial classes. However, you can achieve similar functionality by using traits, mixins, multiple inheritance, or with a single inheritance composition.
+In languages without native support for partial classes, such as Python, you can achieve similar modularity through traits, mixins, multiple inheritance, or single inheritance composition.
 
-This specification achieves the same goal of partial classes in languages that don't have built-in support by using class inheritance.
+It's important to note that while traditional partial classes are combined during compilation, in this specification, we use the term "partial classes" differently. Here, it refers to splitting a class into multiple parts for better organization and modularity, with the parts combined at the source code level rather than at compile time.
 
 ## Specification
 
-This specification consists of three main components:
+This specification introduces a convention for structuring classes using partial classes. It involves three main components:
 
-1. **Base Class**: Defines the core functionality of the class.
-2. **Partials**: Partial classes that add extra functionality.
+1. **Base Class**: Contains the core functionality of the class.
+2. **Partials**: Partial classes that add additional functionality.
 3. **Composed Class**: Combines the base class and partials into a single class.
 
-A composed class typically looks like this:
+An example of a composed class is:
 
 ```pseudo
 # Base class
@@ -65,44 +65,58 @@ class CatBase
 ├── +set_name(name)
 └── +get_name()
 
-# Partial 1
+# Partial class: WithAge
 class WithAge
 ├── +set_age(age)
 └── +get_age()
 
-# Partial 2
+# Partial class: WithAgility
 class WithAgility
 ├── +set_agility(agility)
 └── +get_agility()
 
-# Composed Class: Partials + Base
+# Composed class: Cat
 class Cat
 ├── extends WithAgility
 ├── extends WithAge
 └── extends CatBase
 ```
 
-In this convention, the base class is a special kind of partial that contains the core functionality. Partial classes are named using the pattern `With<PartialName>`.
+In this convention:
+
+- The base class (`CatBase`) includes the essential methods.
+- Partial classes are named using the pattern `With<PartialName>` (e.g., `WithAge`, `WithAgility`).
+- The composed class (`Cat`) extends the base class and incorporates all partials.
+
+### File Structure
 
 The recommended file structure is:
 
 ```pseudo
 <class_name>/
-├── <class_name>_base.lang     # Base class with core functionality
+├── <class_name>_base.lang       # Base class with core functionality
 │
-├── partials/                  # Folder containing all partial implementations
-│   ├── with_<partial1>.lang
-│   ├── ...
-│   └── with_<partialN>.lang
+├── partials/                    # Folder containing all partial implementations
+│   ├── with_<partial1>.lang     # Partial 1
+│   ├── ...                      # Additional partial classes
+│   └── with_<partialN>.lang     # Partial N
 │
-└── <class_name>.lang          # Composed class: base +partials
+└── <class_name>.lang            # Composed class: base + partials
 ```
 
-The `.lang` represents the language-specific file extension (e.g., `.py` for Python, `.cs` for C#). You must adapt the casing style (PascalCase, snake_case, etc.) to match the conventions of your programming language.
+Notes:
+
+- `<class_name>` is the name of your class (e.g., `Cat`).
+- The `.lang` extension represents the language-specific file extension (e.g., `.py`, `.cs`).
+- Adjust the naming conventions (PascalCase, snake_case, etc.) to match your programming language's standards.
 
 ### One-to-One Interface Mapping
 
-Each class must have a corresponding interface to help with type hinting and ensure that all methods are implemented correctly.
+To enhance type safety and ensure consistent implementation of methods, each class in this convention must have a corresponding interface. This one-to-one mapping applies to:
+
+- **Base Class**
+- **Each Partial Class**
+- **Composed Class**
 
 ```pseudo
 <class_name>/
@@ -117,7 +131,11 @@ Each class must have a corresponding interface to help with type hinting and ens
 └── <class_name>_interface.lang          # Composed interface: base +partial interfaces
 ```
 
-The interfaces have the same name as their concrete classes plus `Interface`, e.g. `CatInterface`, `CatBaseInterface`, `WithAgeInterface`, etc.
+Interfaces are named by appending `Interface` to its corresponding class name. For example:
+
+- `CatBase` -> `CatBaseInterface`
+- `WithAge` -> `WithAgeInterface`
+- `Cat` -> `CatInterface`
 
 ### Implementation Details
 
