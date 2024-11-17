@@ -1,358 +1,865 @@
-# Daniel's Modular Programming Design
+# Partial Classes
 
-Please help me organizing some ideas I have regarding a modularized programming design that I'm working on. Here it goes:
+A partial class is a construct to split a class definition across multiple source files.
 
-I recently started programming with a modularized design in mind. It works like this: the software (website, app, library, etc) starts with almost no code, like when you create a new project in a framework. Think of a new empty project in nextjs, laravel, ruby on rails, or wordpress installation. Then, I add features to the project as if they were plugins or game DLCs.
+Each partial class contains a section of the overall class definition. All parts are then combined into a single, complete class.
 
-Technically, these DLCs/plugins are called "modules", however, in my design I call them "partials". The name "partials" comes from Laravel's partials, which are used to compose views. I'm not sure if I will keep this name, but that's the name I'm using for now.
+```text
+class Partial1
+├── method1
+└── method2
 
-The term "module" I think is too generic - someone not familiar with my design can be misled by the name. I thought about using other terms, but I couldn't find one that I loved.
+class Partial2
+├── method3
+└── method4
 
-For example, "plugins" for me are related to the "plugin pattern" or the "plugin architecture". When I think of "plugins" I think of an implementation using the observer pattern (like WordPress' plugins), which is not what I'm doing. My concept of "modules" is related to the "traits" concept in PHP. We extend the project in a static way, by composing classes. We don't extend it in a dynamically way as in the observer pattern.
+...
 
-A term that describes almost perfectly my idea of modules is the term "trait" as used in PHP. In PHP, a trait is a set of methods and properties that can be added to a class. For example, let's say you have a library that provides user authentication for Laravel. The library provides an `UserAuthenticable` trait that you should apply to the "User" model. By applying the trait, the User model gains methods like `login`, `logout`, `register`, etc, and thus, it gains a new feature: the ability to authenticate users.
+class ClassA
+├── Partial1
+├── ...
+└── PartialN
+```
 
-While the term "trait" works well to describe adding a feature, a trait is limited to a single class. This means "trait" cannot be used as a synonym of "feature", as a feature may need (and most likely it will) to change multiple classes in order to have effect. Let's say that in order to work, the user authentication library also requires to add a trait to the controller, and another trait to the routes file. In this case, the "user authentication" feature is formed by three different traits. That's my problem with the term "trait" - traits are specific to a single class and features can (and mostly will) affect multiple classes. I needed a term that could be used as synonym for "feature", regardless of how many classes it affects.
+There are several situations when splitting a class definition is desirable:
 
-Other terms I thought about using are "addons" and "extensions", however, they feel too decoupled from the project. "Addons" and "extensions" are things that you add to a project, but they are not part of the project itself. I want a term that makes it clear that the feature is part of the project, not an external thing that you add to the project.
+- **Modularity**: Break a large class into smaller, more manageable pieces.
+- **Organization**: Group related methods together for better organization.
+- **Collaboration**: Enable team members to work on different parts simultaneously.
 
-I want a term that putting many pieces together to assembly the project. Like building a Lego's house. You have the base, the walls, the roof, the windows, the doors, etc. Each piece is a part of the house, but the house is the sum of all parts.
+## Partial Classes vs. Traits
 
-The term "partial" is the best term I could find. In Laravel, using the Blade template engine, a view is composed of multiple parts, called "partials". That's the concept I'm looking for and that's why I chose the term "partial" to describe the features that I add to a project. I just hope that the term doesn't causes confusion to other developers.
+While both partial classes and traits allow you to split a class's functionality, they serve different purposes.
 
-So, when a trait needs to be added to multiple classes to work, it's not a trait, it's a partial ;) That's what partials are: a trait that should be applied to multiple classes in order to add a feature to the project.
+**Partial classes** are used to split a single class into multiple parts.
 
-Now that we have a term for the modules, let's talk about other terms and naming conventions I will use for my modular programming.
+**Traits**, on the other hand, provide reusable methods that can be incorporated into multiple classes.
 
-We use the term "mixins" for the traits that compose a partial. The term "mixin" is the technical name of what traits are. It's more generic than "traits", but I opted for the term "mixin" to avoid confusion with the traditional definition of "trait" while maintaining the same concept and being technically correct.
+## Implementation
 
-Partial names start with "with_", followed by the feature it adds to the project. For example, a partial that adds user authentication to a project is called "with_user_authentication". A partial that adds stripe integration is called "with_stripe_integration".
+Some languages, like C#, have built-in support for partial classes. In C#, you can define a class in multiple files using the `partial` keyword.
 
-Mixins have the same name of the class they extends, but with the word "Mixin" at the end. For example, the mixin for the "User" model is called "UserMixin". The mixin for the "Controller" is called "ControllerMixin". The mixin for the "Routes" file is called "RoutesMixin".
+Other languages, like Python, don't have built-in support for partial classes. However, you can achieve similar functionality by using traits, mixins, multiple inheritance, or a chained single inheritance pattern.
 
-Besides mixins, partials can add new classes to the project. These new classes are called "base classes". For example, the "with_user_authentication" partial could have a "AuthenticationToken" class, for its internal usage. In this case, "AuthenticationToken" class is a base class. However, notice that these new classes (aka "base classes") not necessarily are for internal usage only. They can be used by the project as well.
+## CCS1-Python: A Convention for Partial Classes in Python
 
-We use class composition to apply partials to a project. For example, to allow a class "A" be extended by the project partials, we create a new class that extends "A" plus the mixins from the partials. The class will have the same name as its base-class, "A" in the example. This new composed class is called a "composed class".
+This section introduces a convention for implementing partial classes in Python, focusing on simple, individual classes. In later sections, we'll explore how to extend this approach horizontally across groups of classes, which is particularly useful when partials represent features in a project or package.
 
-For example, let's say the MVC framework we are using has a "Controller" class and we want to allow the project's partials to extend it. We would do this:
+The approach consists of three main components:
+
+1. **Base Class**: Defines the core functionality of the class.
+2. **Partials**: Partial classes that add additional functionality.
+3. **Composed Class**: Combines the base class and partials into a single class.
+
+The recommended file structure is:
+
+```text
+<class_name>/
+├── <class_name>_base.py       # Base class with core functionality
+├── partials/                  # Folder containing all partial implementations
+│   ├── with_<partial1>.py
+│   ├── with_<partial2>.py
+│   ├── ...
+│   └── with_<partialN>.py
+└── <class_name>.py            # Composed class: base + partials
+```
+
+In this convention, the base class is considered a special kind of partial that contains the core functionality. Partial classes are named using the pattern `With<PartialName>` and are stored in the `partials` folder.
+
+Each class also has a corresponding interface, defined as a protocol, to enforce the expected behavior:
+
+```text
+<class_name>/
+├── ...                                  # Previous structure
+├── <class_name>_base_interface.py       # Interface for the base class
+├── partials/                            # Folder containing all partial interfaces
+│   ├── with_<partial1>_interface.py
+│   ├── with_<partial2>_interface.py
+│   ├── ...
+│   └── with_<partialN>_interface.py
+└── <class_name>_interface.py            # Composed interface: base + partial interfaces
+```
+
+By following this convention, you can organize your code for better modularity and maintainability when working with simple classes.
+
+### Rules for Importing and Renaming
+
+Before diving into the example, let's outline the import and renaming conventions used in this approach:
+
+1. **Concrete Classes and Their Interfaces**: Each concrete class—whether it's base, partial, or composed—has a corresponding interface. A concrete class must always import its corresponding interface. When importing, rename the interface to `ImplementsInterface`.
+
+    ```python
+    # partials/with_partial1_interface.py
+    from typing import Protocol
+
+    class WithPartial1Interface(Protocol):
+        # ... list of methods
+    ```
+
+    ```python
+    # partials/with_partial1.py
+    from .with_partial1_interface import WithPartial1Interface as ImplementsInterface
+
+    class WithPartial1(ImplementsInterface):
+        # ... implementation
+    ```
+
+    `ImplementsInterface` must always be the last item in the inheritance list to avoid MRO conflicts.
+
+    ```python
+    # cat.py
+    from .partials.with_partial1 import WithPartial1
+    from .cat_base import CatBase as WithBase
+    from .cat_interface import CatInterface as ImplementsInterface
+
+    class Cat(
+        WithPartial1,
+        WithBase,
+        ImplementsInterface,  # Must be the last item
+    ):
+        ...
+    ```
+
+2. **Importing Base Classes**: When importing a base class or its interface into another module, rename them to `WithBase` and `WithBaseInterface`, respectively. This distinguishes the base class from other components and maintains naming consistency.
+
+    ```python
+    # cat_interface.py
+    from .cat_base_interface import CatBaseInterface as WithBaseInterface
+
+    class CatInterface(
+        WithBaseInterface,  # Renamed to WithBaseInterface
+        Protocol,
+    ):
+        ...
+    ```
+
+    ```python
+    # cat.py
+    from .cat_base import CatBase as WithBase
+    from .cat_interface import CatInterface as ImplementsInterface
+
+    class Cat(
+        WithBase,  # Renamed to WithBase
+        ImplementsInterface,
+    ):
+        ...
+    ```
+
+3. **Partial Interface Inheritance List**: A partial interface must import the interfaces of any other partials it depends on. This ensures that all necessary methods and attributes are available. It also must import the base interface and `Protocol`.
+
+    ```python
+    # partials/with_partial3_interface.py
+    from .with_partial1_interface import WithPartial1Interface
+    from .with_partial2_interface import WithPartial2Interface
+    from ..cat_base_interface import CatBaseInterface as WithBaseInterface
+    from typing import Protocol
+
+    class WithPartial3Interface(
+        WithPartial2Interface,  # Dependency: methods from Partial2
+        WithPartial1Interface,  # Dependency: methods from Partial1
+        WithBaseInterface,      # Base interface
+        Protocol,
+    ):
+        ...
+    ```
+
+    The inheritance list must be ordered from the most specific (newer dependencies) to the most general (base dependencies), followed by the base class interface and `Protocol` to avoid MRO resolution conflicts.
+
+4. **Partial Class Inheritance List**: The concrete class of a partial should import its corresponding interface `ImplementsInterface`. It must not import the base class, other partial classes, or their interfaces, even when it depends on them.
+
+    ```python
+    # partials/with_partial3.py
+    from .with_partial3_interface import WithPartial3Interface as ImplementsInterface
+
+    # MUST NOT import Base Class, Partial1, or Partial2, even though it uses their methods
+    class WithPartial3(ImplementsInterface):
+        # ... implementation
+    ```
+
+    Partial classes often only inherit `ImplementsInterface`; however, they can inherit other classes, as long as they are external concrete classes, like traits.
+
+    ```python
+    # partials/with_partial3.py
+    from external_module import SomeTrait
+    from .with_partial3_interface import WithPartial3Interface as ImplementsInterface
+
+    class WithPartial3(
+        SomeTrait,
+        ImplementsInterface,
+    ):
+        # ... implementation
+    ```
+
+5. **Composed Interface Inheritance List**: The composed interface must import all partial interfaces and the base interface.
+
+    ```python
+    # cat_interface.py
+    from .partials.with_partial3_interface import WithPartial3Interface
+    from .partials.with_partial2_interface import WithPartial2Interface
+    from .partials.with_partial1_interface import WithPartial1Interface
+    from .cat_base_interface import CatBaseInterface as WithBaseInterface
+    from typing import Protocol
+
+    class CatInterface(
+        WithPartial3Interface,  # Higher-level partials first
+        WithPartial2Interface,
+        WithPartial1Interface,  # Lower-level partials last
+        WithBaseInterface,      # Base interface
+        Protocol,               # Must be the last item
+    ):
+        ...
+    ```
+
+    The order of interfaces in the inheritance list is crucial to ensure that the MRO works correctly:
+
+    - `With<...>` (all partials, from newer to older), then
+    - `WithBaseInterface` (the base interface), followed by
+    - `Protocol`.
+
+6. **Composed Class Inheritance List**: The concrete composed class should import the concrete classes of all partials, the concrete base class (`WithBase`), and its own composed interface (`ImplementsInterface`). The inheritance list must follow this order to respect Python's MRO and ensure proper method resolution.
+
+    ```python
+    # cat.py
+    from .partials.with_partial3 import WithPartial3
+    from .partials.with_partial2 import WithPartial2
+    from .partials.with_partial1 import WithPartial1
+    from .cat_base import CatBase as WithBase
+    from .cat_interface import CatInterface as ImplementsInterface
+
+    class Cat(
+        WithPartial3,         # Higher-level partials first
+        WithPartial2,
+        WithPartial1,         # Lower-level partials last
+        WithBase,             # Base class
+        ImplementsInterface,  # Interface must be the last item
+    ):
+        ...
+    ```
+
+7. **Composed Classes Must Be Empty**: The composed class and its interface should not contain any methods or attributes. They only serve to combine the base class and partials. If you need to add additional methods or attributes, consider creating a new partial.
+
+    ```python
+    # cat_interface.py
+    class CatInterface(
+        WithPartial3Interface,
+        WithPartial2Interface,
+        WithPartial1Interface,
+        WithBaseInterface,
+        Protocol,
+    ):
+        pass  # Body must be empty
+    ```
+
+    ```python
+    # cat.py
+    class Cat(
+        WithPartial3,
+        WithPartial2,
+        WithPartial1,
+        WithBase,
+        ImplementsInterface,
+    ):
+        pass  # Body must be empty
+    ```
+
+### Example: `Vehicle` Class
+
+Let's create a `Vehicle` class with methods for controlling a vehicle's basic operations, managing speed, and calculating travel time.
+
+**Core functionality:**
+
+- `start()`: Starts the vehicle.
+- `stop()`: Stops the vehicle.
+
+**Speed management:**
+
+- `set_speed(speed: float)`: Sets the speed of the vehicle.
+- `get_speed()`: Retrieves the current speed of the vehicle.
+
+**Travel time calculation:**
+
+- `calculate_travel_time(distance: float)`: Calculates the time required to travel a given distance at the current speed.
+
+**Usage example:**
 
 ```python
-from framework.controllers import Controller as WithBase
-from partials.with_user_authentication.controller_mixin import ControllerMixin as WithUserAuthentication
+vehicle = Vehicle()
+vehicle.start()
+vehicle.set_speed(80.0)
+time = vehicle.calculate_travel_time(240.0)
+print(f"Estimated travel time: {time} hours")
+vehicle.stop()
+```
 
-class Controller(
-  WithUserAuthentication,
-  WithBase,
+We will split the class code into three parts:
+
+- `VehicleBase`: Base class with core functionality.
+- `WithSpeed`: Partial for managing speed.
+- `WithTravelTime`: Partial for calculating travel time.
+
+#### Base Class: `VehicleBase`
+
+The base class with core functionality.
+
+**Interface:**
+
+```python
+# vehicle/vehicle_base_interface.py
+from typing import Protocol
+
+class VehicleBaseInterface(Protocol):
+    def start(self) -> None: ...
+    def stop(self) -> None: ...
+```
+
+**Implementation:**
+
+```python
+# vehicle/vehicle_base.py
+from .vehicle_base_interface import VehicleBaseInterface as ImplementsInterface
+
+class VehicleBase(ImplementsInterface):
+    _is_running: bool = False
+
+    def start(self) -> None:
+        self._is_running = True
+
+    def stop(self) -> None:
+        self._is_running = False
+```
+
+#### First Partial: `WithSpeed`
+
+The first partial adds speed-related methods.
+
+**Interface:**
+
+```python
+# vehicle/partials/with_speed_interface.py
+from ..vehicle_base_interface import VehicleBaseInterface as WithBaseInterface
+from typing import Protocol
+
+class WithSpeedInterface(
+    WithBaseInterface,  # Base interface
+    Protocol,
 ):
-  pass
+    def set_speed(self, speed: float) -> None: ...
+    def get_speed(self) -> float: ...
 ```
 
-In this example, "Controller" class is a composed class. To avoid name conflicts, we always rename the imported base-class to "WithBase".
-
-Here, we only have one mixin affecting the "Controller" class (from the "with_user_authentication" partial), but we could have multiple mixins. If we had multiple mixins, they all would have the same "ControllerMixin" name. This is because the name convention for mixins is `<base_class>Mixin`. To avoid name conflicts, we always rename the imported mixins to the same name as the partial folder they are from. In the example, it's `WithUserAuthentication`.
-
-In a project, we always use the composed-class versions of a class, never their base classes directly. Base classes can only be used by mixins and by composed-classes definitions.
-
-Ideally, each partial should have a file named `README.md` explaining what the partial does and that also lists the partials that it depends on. This is not mandatory, but it helps a lot when trying to understand the project structure.
-
-It's recommended, but not enforced, to store the partials in a folder named `/partials` and the composed classes in a folder named `/classes`. This is not mandatory, but having a convention for storing these classes makes easier to find them.
-
-The folder containing `/partials` and `/classes` is called a "composed package". A composed package must have a special file that indicates it is a composed package, named `__composed_package__.py`. This file can be empty.
-
-A composed package doesn't have to be a python package. However, it is highly recommended to be a python package. This makes it easier to understand and organize the project.
-
-I'm not 100% sold on the term "composed package". I'm not sure if it's the best term to describe the concept. I'm open to suggestions.
-
-When composing classes in this modular way, we must have interfaces for each class. We always have a concrete and an interface class. This is valid for mixins in partials, for new base-classes in partials, and for composed classes.
-
-The interfaces are used to ensure that the mixins and the composed classes have the methods they need. It's for type-checking.
-
-The interfaces for the concrete classes of a partial are stored together, in the same partial folder. Interfaces have the word "Interface" after the class name, but before "Mixin" if the class is a mixin. For example, the interface for the "UserMixin" class is called "UserInterfaceMixin".
-
-The interfaces for the concrete classes of composed classes are also stored in the `/classes` folder, alongside the concrete composed classes. The interfaces are named the same as the composed class, but with the word "Interface" at the end. For example, the interface for the "Controller" class is called "ControllerInterface".
-
-Let's refactor our previous code to include the interfaces:
+**Implementation:**
 
 ```python
-# /classes/controller_interface.py
-from framework.controllers import ControllerInterface as WithBaseInterface
-from partials.with_user_authentication.controller_interface_mixin import ControllerInterfaceMixin as WithUserAuthenticationInterface
+# vehicle/partials/with_speed.py
+from .with_speed_interface import WithSpeedInterface as ImplementsInterface
 
-class ControllerInterface(
-  WithUserAuthenticationInterface,
-  WithBaseInterface,
-  Protocol,
+class WithSpeed(ImplementsInterface):
+    _speed: float = 0.0
+
+    def set_speed(self, speed: float) -> None:
+        self._speed = speed
+
+    def get_speed(self) -> float:
+        return self._speed
+```
+
+#### Second Partial: `WithTravelTime`
+
+The second partial depends on the `get_speed` method from the first partial to calculate travel time.
+
+**Interface:**
+
+```python
+# vehicle/partials/with_travel_time_interface.py
+from .with_speed_interface import WithSpeedInterface
+from ..vehicle_base_interface import VehicleBaseInterface as WithBaseInterface
+from typing import Protocol
+
+class WithTravelTimeInterface(
+    WithSpeedInterface,  # Dependency: methods from WithSpeed
+    WithBaseInterface,   # Base interface
+    Protocol,
 ):
-  pass
+    def calculate_travel_time(self, distance: float) -> float: ...
 ```
 
-The composed-class interface must be a protocol. This is because we are using protocols to implement interfaces in python. However, I'm not sure if that's the best way to do it. Some alternatives to consider are: abstract classes (ABC), python's stub files, concrete classes, etc. For now, I will keep using protocols.
-
-Due to Python's MRO (Method Resolution Order), we must follow a specific order when composing interface classes. The mixins are the first to be added, then the base-class, and finally, the "Protocol" special class.
-
-As before, we rename the imported base-class to "WithBase" and the imported mixins to the same name as the partial folder they are from. The only difference is that we add the word "Interface" at the end, to indicate that they are interfaces.
+**Implementation:**
 
 ```python
-# /classes/controller.py
-from framework.controllers import Controller as WithBase
-from partials.with_user_authentication.controller_mixin import ControllerMixin as WithUserAuthentication
-from .controller_interface import ControllerInterface as ImplementsInterface
+# vehicle/partials/with_travel_time.py
+from .with_travel_time_interface import WithTravelTimeInterface as ImplementsInterface
 
-class Controller(
-  WithUserAuthentication,
-  WithBase,
-  ImplementsInterface,
+class WithTravelTime(ImplementsInterface):
+    def calculate_travel_time(self, distance: float) -> float:
+        speed = self.get_speed()
+        return distance / speed if speed != 0 else float('inf')
+```
+
+#### Composed Interface: `VehicleInterface`
+
+The composed interface combines all interfaces.
+
+```python
+# vehicle/vehicle_interface.py
+from .partials.with_travel_time_interface import WithTravelTimeInterface
+from .partials.with_speed_interface import WithSpeedInterface
+from .vehicle_base_interface import VehicleBaseInterface as WithBaseInterface
+from typing import Protocol
+
+class VehicleInterface(
+    WithTravelTimeInterface,  # Higher-level partials first
+    WithSpeedInterface,       # Lower-level partials last
+    WithBaseInterface,        # Base interface
+    Protocol,                 # Must be the last item
 ):
-  pass
+    pass
 ```
 
-For the concrete composed-class, we import the concrete mixins, the concrete base-class and finally, the composed-class interface. It's important to follow this order due to Python's MRO (Method Resolution Order). The mixins are the first to be called, then the base-class, and finally the composed-class itself (if anything is defined there). The last class to be called is the one that implements the interface.
+#### Composed Class: `Vehicle`
 
-As we did previously, we rename the imported base-class to "WithBase" and the imported mixins to the same name as the partial folder they are from.
-
-For clarity, our convention is to always rename the composed-class interface to "ImplementsInterface".
-
-A project can have multiple composed-packages. Each composed-package must have its own `/partials` and `/classes` folders. The `/partials` folder contains the partials and their interfaces. The `/classes` folder contains the composed classes and their interfaces.
-
-Even a partial can be a composed-package, with its own `/partials` and `/classes` folders. This is useful when a partial is too big and needs to be split into smaller parts. However, it is more common to have a single composed-package: the project itself, usually matching the project's root or a sub-folder that contains the source-code (ex. `/src`).
-
-It is recommended that the first partial of any composed-package to be named `with_core`. The "with_core" partial is the starting point of a composed-package. This partial contains the minimum necessary features for the composed-package to work. It's like a "minimum viable product" (MVP). The other partials depend on the "with_core" partial (directly or indirectly). The "with_core" partial doesn't depend on any other partial. Because of this, it usually only has base-classes and their interfaces, but not mixins. The exception is when it extends third-party classes.
-
-Notice that the `with_core` is a convention and not a rule, however, it is highly recommended to follow it.
-
-It is subjective how to break the code into partials. The idea is to break the code into smaller parts that are easier to understand and maintain. The goal is to have a project that is easy to extend and modify. The partials should be small enough to be understood in a single reading. The partials should be easy to test and to debug. The partials should be easy to reuse in other projects. Ideally, they should do a single thing only (single responsibility principle).
-
-My mindset for defining which features are part of "core" and which features should be implemented as other modules is to think: "if this was a commercial product, like a game, and I would like to maximize profit with DLCs - what's the minimum I can put on the base product so I can sell the other features in separate DLCs, but still making the base product to be functional enough to be indentified as what it proposes to be? how much can i break the other features into separate DLCs, maximizing the amount of them - and thus, the profit, and still having each DLC useful independently?". The projects I work are not for sale, however, I like to keep this mindset to help me define the modules (partials).
-
-Let's say we want to build a python library for a todo list. The library's API will provide a trait `Todoable` that can be added to any user-class to make it a todo list manager. The trait has a method `get_todo_list` that returns a list of todo items. The library will have a MVC version, where the todo list is hardcoded in the library, and a CRUD version, where the todo list is stored in a file.
-
-Our `with_core` will implement the MVC. Then, we will have a `with_crud_todo_list` that will implement the CRUD functionality.
-
-Let's implement the `with_core` partial for our todo list library.
+The composed class combines the base class and all partials.
 
 ```python
-# partials/with_core/todo_items.py
-class TodoItems:
-  _items: list[str]
+# vehicle/vehicle.py
+from .partials.with_travel_time import WithTravelTime
+from .partials.with_speed import WithSpeed
+from .vehicle_base import VehicleBase as WithBase
+from .vehicle_interface import VehicleInterface as ImplementsInterface
 
-  def __init__(self, items: list[str]):
-    self._items = items
-
-  def _get_items(self) -> list[str]:
-    return self._items
-```
-
-```python
-# partials/with_core/todoable.py
-class Todoable:
-  todo_items: TodoItems
-
-  def __init__(self):
-    self.todo_items = TodoItems(items=[])
-
-  def get_todo_list(self) -> list[str]:
-    return self.todo_items._get_items()
-```
-
-As we known, each class in a partial must have a corresponding interface. Let's extract the interfaces from the classes:
-
-```python
-# partials/with_core/todo_items_interface.py
-class TodoItemsInterface(Protocol):
-  def __init__(self, items: list[str]): ...
-  def _get_items(self) -> list[str]: ...
-```
-
-```python
-# partials/with_core/todoable_interface.py
-class TodoableInterface(Protocol):
-  def __init__(self): ...
-  def get_todo_list(self) -> list[str]: ...
-```
-
-The previous concrete classes must implement these interfaces. Let's refactor them:
-
-```python
-# partials/with_core/todo_items.py
-from .todo_items_interface import (
-  TodoItemsInterface as ImplementsInterface,
-)
-
-class TodoItems(
-  ImplementsInterface,
+class Vehicle(
+    WithTravelTime,        # Higher-level partials first
+    WithSpeed,             # Lower-level partials last
+    WithBase,              # Base class
+    ImplementsInterface,   # Must be the last item
 ):
-  # ... rest of the class remains the same
+    pass
 ```
 
-```python
-# partials/with_core/todoable.py
-from .todoable_interface import (
-  TodoableInterface as ImplementsInterface,
-)
+#### Usage Example
 
-class Todoable(
-  ImplementsInterface,
+Now you can use the `Vehicle` class as a single, cohesive unit:
+
+```python
+vehicle = Vehicle()
+vehicle.start()
+vehicle.set_speed(60.0)
+time = vehicle.calculate_travel_time(120.0)
+print(f"Travel time: {time} hours")
+vehicle.stop()
+
+# Output:
+# Travel time: 2.0 hours
+```
+
+## Horizontal Partials Approach
+
+In the previous section, we focused on implementing partial classes in Python for individual classes. Now, we'll explore an alternative approach that applies partials horizontally across a group of classes. This method is particularly useful when partials represent features that are shared across multiple classes within a project or package.
+
+The file structure for this approach is:
+
+```text
+<package_name>/
+├── partials/                        # Folder storing the partials
+│   ├── with_core/                   # Package's core features
+│   │   ├── <class1>_base.py
+│   │   ├── ...
+│   │   └── <classN>_base.py
+│   │
+│   ├── with_<feature1>/             # Package's feature 1
+│   │   ├── <class...>_base.py       # Optional: New base classes for the package
+│   │   └── <class...>_partial.py    # Optional: Partial classes for base classes from other features
+│   │
+│   ├── ...
+│   │
+│   └── with_<featureN>/             # Package's feature N
+│       └── ...
+│
+└── classes/                         # Folder for composed classes
+    ├── <class1>.py
+    ├── ...
+    └── <classN>.py
+```
+
+- **`partials/with_core/`**: Package's core features.
+- **`partials/with_<feature>/`**: Package's extra features; Contains base classes and partials for classes.
+- **`classes/`**: Stores the composed classes.
+
+Each concrete class has a corresponding interface, stored in the same directory.
+
+### Key Rules and Conventions
+
+Most of the rules from the previous approach apply here, with some differences:
+
+1. **Partial Names**: Partial classes have the same name as their base class but with the suffixes `Partial` and `PartialInterface` for the class and interface, respectively.
+
+    ```text
+    <package_name>/
+    ├── partials/
+    │   ├── with_core/
+    │   │   ├── vehicle_base.py
+    │   │   └── vehicle_base_interface.py
+    │   │
+    │   ├── with_speed/
+    │   │   ├── vehicle_partial.py
+    │   │   └── vehicle_partial_interface.py
+    │   │
+    │   └── with_travel_time/
+    │       ├── vehicle_partial.py
+    │       └── vehicle_partial_interface.py
+    │
+    └── classes/
+        ├── vehicle.py
+        └── vehicle_interface.py
+    ```
+
+2. **Importing Partials**: When importing a partial class, rename it to `With<PartialName>` and `With<PartialName>Interface` for its interface.
+
+    ```python
+    # classes/vehicle_interface.py
+    from ..partials.with_travel_time.vehicle_partial_interface import VehiclePartialInterface as WithTravelTimeInterface
+    from ..partials.with_speed.vehicle_partial_interface import VehiclePartialInterface as WithSpeedInterface
+    from ..partials.with_core.vehicle_interface import VehicleInterface as WithBaseInterface
+
+    class VehicleInterface(
+        WithTravelTimeInterface, # Renamed partial interface
+        WithSpeedInterface,      # Renamed partial interface
+        WithBaseInterface,
+        Protocol,
+    ):
+        pass
+    ```
+
+    ```python
+    # classes/vehicle.py
+    from ..partials.with_travel_time.vehicle_partial import VehiclePartial as WithTravelTime
+    from ..partials.with_speed.vehicle_partial import VehiclePartial as WithSpeed
+    from ..partials.with_core.vehicle import Vehicle as WithBase
+    from .vehicle_interface import VehicleInterface as ImplementsInterface
+
+    class Vehicle(
+        WithTravelTime,  # Renamed partial class
+        WithSpeed,       # Renamed partial class
+        WithBase,
+        ImplementsInterface,
+    ):
+        pass
+    ```
+
+3. **Base Classes in `classes/` Folder**: All base classes must have an entry in the `classes/` folder, along with their corresponding interfaces.
+
+    ```text
+    <package_name>/
+    ├── partials/
+    │   │   ...   # previous structure
+    │   │
+    │   ├── with_engine/   # Now, vehicles have an engine instance
+    │   │   ├── engine_base.py
+    │   │   ├── engine_base_interface.py
+    │   │   ├── vehicle_partial.py
+    │   │   └── vehicle_partial_interface.py
+    │
+    └── classes/
+        ├── vehicle.py
+        ├── vehicle_interface.py
+        ├── engine.py   # New base class (from `partials/with_engine`)
+        └── engine_interface.py
+    ```
+
+### Example: Horizontal Partials
+
+In this example, we'll create a `Transport` package that demonstrates the horizontal partials approach. We start with a core partial that defines a `Vehicle` base class. Then, we'll introduce another partial that adds an `Engine` base class and extends `Vehicle` to include an engine. Finally, we'll create a partial that extends both `Vehicle` and `Engine` to add fuel management functionality.
+
+#### Package Structure
+
+```text
+transport/
+├── partials/
+│   ├── with_core/
+│   │   ├── vehicle_base.py
+│   │   └── vehicle_base_interface.py
+│   │
+│   ├── with_engine/
+│   │   ├── engine_base.py
+│   │   ├── engine_base_interface.py
+│   │   ├── vehicle_partial.py
+│   │   └── vehicle_partial_interface.py
+│   │
+│   ├── with_fuel/
+│   │   ├── vehicle_partial.py
+│   │   ├── vehicle_partial_interface.py
+│   │   └── engine_partial.py
+│       └── engine_partial_interface.py
+│
+└── classes/
+    ├── vehicle.py
+    ├── vehicle_interface.py
+    ├── engine.py
+    └── engine_interface.py
+```
+
+#### Core Partial: `with_core`
+
+**`VehicleBase` Interface**
+
+```python
+# partials/with_core/vehicle_base_interface.py
+from typing import Protocol
+
+class VehicleBaseInterface(Protocol):
+    def start(self) -> None: ...
+    def stop(self) -> None: ...
+```
+
+**`VehicleBase` Implementation**
+
+```python
+# partials/with_core/vehicle_base.py
+from .vehicle_base_interface import VehicleBaseInterface as ImplementsInterface
+
+class VehicleBase(ImplementsInterface):
+    _is_running: bool = False
+
+    def start(self) -> None:
+        self._is_running = True
+
+    def stop(self) -> None:
+        self._is_running = False
+```
+
+#### Partial: `with_engine`
+
+Introduces an `EngineBase` class and extends `Vehicle` to include an engine.
+
+**`EngineBase` Interface**
+
+```python
+# partials/with_engine/engine_base_interface.py
+from typing import Protocol
+
+class EngineBaseInterface(Protocol):
+    def ignite(self) -> None: ...
+    def shutdown(self) -> None: ...
+```
+
+**`EngineBase` Implementation**
+
+```python
+# partials/with_engine/engine_base.py
+from .engine_base_interface import EngineBaseInterface as ImplementsInterface
+
+class EngineBase(ImplementsInterface):
+    _is_running: bool = False
+
+    def ignite(self) -> None:
+        self._is_running = True
+
+    def shutdown(self) -> None:
+        self._is_running = False
+```
+
+**`VehiclePartial` Interface**
+
+```python
+# partials/with_engine/vehicle_partial_interface.py
+from ..with_core.vehicle_base_interface import VehicleBaseInterface as WithBaseInterface
+from .engine_base_interface import EngineBaseInterface
+from typing import Protocol
+
+class VehiclePartialInterface(
+    EngineBaseInterface,    # New base class interface
+    WithBaseInterface,      # Original base interface
+    Protocol,
 ):
-  # the rest of the class remains the same
+    def get_engine(self) -> EngineBaseInterface: ...
+    def start(self) -> None    # Overriding start method
+    def stop(self) -> None     # Overriding stop method
 ```
 
-Each base class must have two files on `classes`: one for the concrete class and another for the corresponding interface).
+**`VehiclePartial` Implementation**
 
 ```python
-# classes/todo_items_interface.py
-from ..partials.with_core.todo_items_interface import (
-  TodoItemsInterface as WithBaseInterface,
-)
+# partials/with_engine/vehicle_partial.py
+from .vehicle_partial_interface import VehiclePartialInterface as ImplementsInterface
+from .engine_base import EngineBase
 
-class TodoItemsInterface(
-  WithBaseInterface,
-  Protocol,
+class VehiclePartial(ImplementsInterface):
+    def __init__(self):
+        super().__init__()
+        self._engine = EngineBase()
+
+    def get_engine(self) -> EngineBase:
+        return self._engine
+
+    def start(self) -> None:
+        self._engine.ignite()
+        super().start()
+
+    def stop(self) -> None:
+        self._engine.shutdown()
+        super().stop()
+```
+
+#### Partial: `with_fuel`
+
+Extends both `Vehicle` and `Engine` to add fuel management.
+
+**`EnginePartial` Interface**
+
+```python
+# partials/with_fuel/engine_partial_interface.py
+from ..with_engine.engine_base_interface import EngineBaseInterface as WithBaseInterface
+from typing import Protocol
+
+class EnginePartialInterface(
+    WithBaseInterface,
+    Protocol,
 ):
-  pass
+    def consume_fuel(self, amount: float) -> None: ...
+    def get_fuel_level(self) -> float: ...
 ```
 
-```python
-# classes/todo_items.py
-from ..partials.with_core.todo_items import (
-  TodoItems as WithBase,
-)
-from .todo_items_interface import (
-  TodoItemsInterface as ImplementsInterface,
-)
+**`EnginePartial` Implementation**
 
-class TodoItems(
-  WithBase,
-  ImplementsInterface,
+```python
+# partials/with_fuel/engine_partial.py
+from .engine_partial_interface import EnginePartialInterface as ImplementsInterface
+
+class EnginePartial(ImplementsInterface):
+    _fuel_level: float = 0.0
+
+    def consume_fuel(self, amount: float) -> None:
+        if self._fuel_level >= amount:
+            self._fuel_level -= amount
+        else:
+            raise RuntimeError("Not enough fuel.")
+
+    def get_fuel_level(self) -> float:
+        return self._fuel_level
+
+    def refuel(self, amount: float) -> None:
+        self._fuel_level += amount
+
+    def ignite(self) -> None:
+        if self._fuel_level <= 0:
+            raise RuntimeError("Cannot ignite engine: no fuel.")
+        super().ignite()
+```
+
+**`VehiclePartial` Interface**
+
+```python
+# partials/with_fuel/vehicle_partial_interface.py
+from ..with_engine.vehicle_partial_interface import VehiclePartialInterface as WithEngineInterface
+from typing import Protocol
+
+class VehiclePartialInterface(
+    WithEngineInterface,
+    Protocol,
 ):
-  pass
+    def refuel(self, amount: float) -> None: ...
+    def get_fuel_level(self) -> float: ...
 ```
 
-We do the same for `Todoable` and its interface on `classes`:
+**`VehiclePartial` Implementation**
 
 ```python
-# classes/todoable_interface.py
-from ..partials.with_core.todoable_interface import (
-  TodoableInterface as WithBaseInterface,
-)
+# partials/with_fuel/vehicle_partial.py
+from .vehicle_partial_interface import VehiclePartialInterface as ImplementsInterface
 
-class TodoableInterface(
-  WithBaseInterface,
-  Protocol,
+class VehiclePartial(ImplementsInterface):
+    def refuel(self, amount: float) -> None:
+        self.get_engine().refuel(amount)
+
+    def get_fuel_level(self) -> float:
+        return self.get_engine().get_fuel_level()
+
+    def start(self) -> None:
+        self.get_engine().consume_fuel(1.0)  # Consume 1 unit of fuel on start
+        super().start()
+```
+
+#### Composed Classes
+
+**`EngineInterface`**
+
+```python
+# classes/engine_interface.py
+from ..partials.with_fuel.engine_partial_interface import EnginePartialInterface as WithFuelInterface
+from ..partials.with_engine.engine_base_interface import EngineBaseInterface as WithBaseInterface
+from typing import Protocol
+
+class EngineInterface(
+    WithFuelInterface,
+    WithBaseInterface,
+    Protocol,
 ):
-  pass
+    pass
 ```
 
-```python
-# classes/todoable.py
-from ..partials.with_core.todoable import (
-  Todoable as WithBase,
-)
-from .todoable_interface import (
-  TodoableInterface as ImplementsInterface,
-)
+**`Engine`**
 
-class Todoable(
-  WithBase,
-  ImplementsInterface,
+```python
+# classes/engine.py
+from ..partials.with_fuel.engine_partial import EnginePartial as WithFuel
+from ..partials.with_engine.engine_base import EngineBase as WithBase
+from .engine_interface import EngineInterface as ImplementsInterface
+
+class Engine(
+    WithFuel,
+    WithBase,
+    ImplementsInterface,
 ):
-  pass
+    pass
 ```
 
-Done. We have the MVP implemented, however, it doesn't do much yet. It only returns an empty list.
-
-Let's implement the "with_crud_todo_list" partial. This partial will add CRUD functionality to the todo list.
-
-First, we need to define which other partials our "with_crud_todo_list" partial depends on. Here, the partial depends on the "with_core" partial. As we known, all partials depend on at least the "with_core" partial - the exception is the "with_core" partial, which doesn't depends on any other partial.
-
-Now that we know the partial's dependencies, we can start implementing it:
+**`VehicleInterface`**
 
 ```python
-# partials/with_crud_todo_list/todo_items_interface_mixin.py
-from ..with_core.todo_items_interface import (
-  TodoItemsInterface as WithBaseInterface,
-)
+# classes/vehicle_interface.py
+from ..partials.with_fuel.vehicle_partial_interface import VehiclePartialInterface as WithFuelInterface
+from ..partials.with_engine.vehicle_partial_interface import VehiclePartialInterface as WithEngineInterface
+from ..partials.with_core.vehicle_base_interface import VehicleBaseInterface as WithBaseInterface
+from typing import Protocol
 
-class TodoItemsInterfaceMixin(
-  WithBaseInterface,
-  Protocol,
+class VehicleInterface(
+    WithFuelInterface,
+    WithEngineInterface,
+    WithBaseInterface,
+    Protocol,
 ):
-  def create(self, item: str): ...
-  def list_items(self):
-  def read(self, index: int): ...
-  def update(self, index: int, item: str): ...
-  def delete(self, index: int): ...
+    pass
 ```
 
-On a partial interface, we import all mixins from the other partials that this partial depends on (related to the same base interface). We use these imported interfaces to compose the local interface mixin.
-
-We always rename the imported mixins to the same name as the partial folder they are from. That's because they all have the same name. Notice that "WithBaseInterface" is a base class, not a mixin. That's why it was not renamed to "WithCore". For imported interfaces, we follow the same logic, plus "Interface".
-
-After declaring the interfaces, let's implement their methods:
+**`Vehicle`**
 
 ```python
-# partials/with_crud_todo_list/todo_items_mixin.py
-from .todo_items_interface_mixin import (
-  TodoItemsInterfaceMixin as ImplementsInterface,
-)
+# classes/vehicle.py
+from ..partials.with_fuel.vehicle_partial import VehiclePartial as WithFuel
+from ..partials.with_engine.vehicle_partial import VehiclePartial as WithEngine
+from ..partials.with_core.vehicle_base import VehicleBase as WithBase
+from .vehicle_interface import VehicleInterface as ImplementsInterface
 
-class TodoItemsMixin(ImplementsInterface):
-  def create(self, item: str):
-    self._get_items().append(item)
-
-  def list_items(self):
-    return self._get_items()
-
-  def read(self, index: int):
-    return self._get_items()[index]
-
-  def update(self, index: int, item: str):
-    self._get_items()[index] = item
-
-  def delete(self, index: int):
-    del self._get_items()[index]
-```
-
-We always import the interface mixin from the same folder. We rename this local imported interface to the same name as the base interface. This local interface contains the methods that we need to implement plus the methods that are available to use.
-
-Usually, a concrete mixin class only inherits `ImplementsInterface`. However, in rare cases, it may inherit other classes. For example, when the partial applies an external trait. The implementation is achieved by adding the concrete version of the trait instead of actually coding the methods.
-
-Now we have the partial implemented, we can add it to the composition on `classes`:
-
-```python
-# classes/todo_items_interface.py
-from ..partials.with_core.todo_items_interface import (
-  TodoItemsInterface as WithBaseInterface,
-)
-from ..partials.with_crud_todo_list.todo_items_interface_mixin import (
-  TodoItemsInterfaceMixin as WithCrudTodoListInterface,
-)
-
-class TodoItemsInterface(
-  WithCrudTodoListInterface,
-  WithBaseInterface,
-  Protocol,
+class Vehicle(
+    WithFuel,
+    WithEngine,
+    WithBase,
+    ImplementsInterface,
 ):
-  pass
+    pass
 ```
+
+#### Usage Example
 
 ```python
-# classes/todo_items.py
-from ..partials.with_core.todo_items import (
-  TodoItems as WithBase,
-)
-from ..partials.with_crud_todo_list.todo_items_mixin import (
-  TodoItemsMixin as WithCrudTodoList,
-)
-from .todo_items_interface import (
-  TodoItemsInterface as ImplementsInterface,
-)
-
-class TodoItems(
-  WithCrudTodoList,
-  WithBase,
-  ImplementsInterface,
-):
-  pass
+vehicle = Vehicle()
+vehicle.refuel(10.0)  # Add 10 units of fuel
+vehicle.start()
+print(f"Fuel level: {vehicle.get_fuel_level()} units")
+vehicle.stop()
 ```
 
-There's no need to change the `Todoable` class on `classes`, as there's no mixin for it on the "with_crud_todo_list" partial.
+**Output:**
+
+```
+Fuel level: 9.0 units
+```
