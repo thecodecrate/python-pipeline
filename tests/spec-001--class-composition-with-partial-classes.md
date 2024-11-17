@@ -6,7 +6,7 @@ This document is language-agnostic and can be applied to any programming languag
 
 ## Background
 
-Partial classes are a construct used to split a class definition across multiple source files.
+In this specification, partial classes are a construct used to split a class definition across multiple source files.
 
 Each partial class contains a section of the overall class definition. All parts are then combined into a single, complete class.
 
@@ -46,6 +46,8 @@ While both partial classes and traits allow you to split a class's functionality
 Some languages, like C#, have built-in support for partial classes. In C#, you can define a class in multiple files using the `partial` keyword.
 
 Other languages, like Python, don't have built-in support for partial classes. However, you can achieve similar functionality by using traits, mixins, multiple inheritance, or with a single inheritance composition.
+
+This specification achieves the same goal of partial classes in languages that don't have built-in support by using class inheritance.
 
 ## Specification
 
@@ -145,7 +147,7 @@ class CatBase
 └── +get_name()      # implementation
 ```
 
-Alternatively, you can have the base class empty and move the core functionality to a partial class. This approach is useful when you want to keep the base class clean.
+Alternatively, you can have the base class empty and move the core functionality to a partial class. The empty base class works as a marker. This approach is useful when you want to keep the base class clean.
 
 ```pseudo
 class CatBaseInterface
