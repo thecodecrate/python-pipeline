@@ -1,24 +1,24 @@
-# Partial Classes
+# TCS1: A Convention for Partial Classes
 
-Partial classes allow you to split a class definition across multiple source files.
+A partial class is a construct used to split a class definition across multiple source files.
 
 Each partial class contains a section of the overall class definition. All parts are then combined into a single, complete class.
 
 ```text
 class Partial1
-├── method1
-└── method2
+├── + method1()
+└── + method2()
 
 class Partial2
-├── method3
-└── method4
+├── + method3()
+└── + method4()
 
 ...
 
 class ClassA
-├── Partial1
+├── extends Partial1
 ├── ...
-└── PartialN
+└── extends PartialN
 ```
 
 There are several situations when splitting a class definition is desirable:
@@ -41,9 +41,9 @@ Some languages, like C#, have built-in support for partial classes. In C#, you c
 
 Other languages, like Python, don't have built-in support for partial classes. However, you can achieve similar functionality by using traits, mixins, multiple inheritance, or a chained single inheritance pattern.
 
-## A Convention for Implementing Partial Classes in Python
+## TCS1: TheCodeCrate's Standard 1
 
-This section introduces a convention for implementing partial classes in Python, focusing on simple, individual classes. In later sections, we'll explore how to extend this approach horizontally across groups of classes, which is particularly useful when partials represent features in a project or package.
+This document introduces a convention for implementing partial classes, focusing on simple, individual classes. In later sections, we'll explore how to extend this approach horizontally across groups of classes, which is particularly useful when partials represent features in a project or package.
 
 The approach consists of three main components:
 
@@ -51,98 +51,126 @@ The approach consists of three main components:
 2. **Partials**: Partial classes that add additional functionality.
 3. **Composed Class**: Combines the base class and partials into a single class.
 
+A composed class typically looks like this:
+
+```bash
+# Base class
+class CatBase
+├── + set_name(name)
+└── + get_name()
+
+# Partial 1
+class WithAge
+├── + set_age(age)
+└── + get_age()
+
+# Partial 2
+class WithAgility
+├── + set_agility(agility)
+└── + get_agility()
+
+# Composed Class: Partials + Base
+class Cat
+├── extends WithAgility
+├── extends WithAge
+└── extends CatBase
+```
+
 The recommended file structure is:
 
 ```text
 <class_name>/
-├── <class_name>_base.py       # Base class with core functionality
+├── <class_name>_base.lang     # Base class with core functionality
+│
 ├── partials/                  # Folder containing all partial implementations
-│   ├── with_<partial1>.py
-│   ├── with_<partial2>.py
+│   ├── with_<partial1>.lang
 │   ├── ...
-│   └── with_<partialN>.py
-└── <class_name>.py            # Composed class: base + partials
+│   └── with_<partialN>.lang
+│
+└── <class_name>.lang          # Composed class: base + partials
 ```
+
+This document is language-agnostic, so `.lang` represents the language-specific file extension (e.g., `.py` for Python, `.cs` for C#).
 
 In this convention, the base class is considered a special kind of partial that contains the core functionality. Partial classes are named using the pattern `With<PartialName>` and are stored in the `partials` folder.
 
-Each class also has a corresponding interface, defined as a protocol, to enforce the expected behavior:
+You must adapt the casing style (pascal case, snake case, etc) to match the conventions of your programming language.
+
+## One-to-One Interface Mapping
+
+Each class must have a corresponding interface to help with type hinting and ensure that all methods are implemented correctly.
 
 ```text
 <class_name>/
 ├── ...                                  # Previous structure
 ├── <class_name>_base_interface.py       # Interface for the base class
+│
 ├── partials/                            # Folder containing all partial interfaces
 │   ├── with_<partial1>_interface.py
-│   ├── with_<partial2>_interface.py
 │   ├── ...
 │   └── with_<partialN>_interface.py
+│
 └── <class_name>_interface.py            # Composed interface: base + partial interfaces
 ```
 
-By following this convention, you can organize your code for better modularity and maintainability when working with simple classes.
+Interfaces are named using the pattern `<ClassName>Interface`.
 
-### Rules for Importing and Renaming
+## Rules for Importing and Renaming
 
 Before diving into the example, let's outline the import and renaming conventions used in this approach:
 
-1. **Concrete Classes and Their Interfaces**: Each concrete class—whether it's base, partial, or composed—has a corresponding interface. A concrete class must always import its corresponding interface. When importing, rename the interface to `ImplementsInterface`.
+1. **Implementing Interfaces**: When writing a concrete class for an interface, you must import the interface and rename it to `ImplementsInterface`. The concrete class must inherit from the renamed interface.
 
-    ```python
-    # partials/with_partial1_interface.py
-    from typing import Protocol
+    ```pseudo
+    class WithPartial1Interface
+    ├── + method1()
+    └── + method2()
 
-    class WithPartial1Interface(Protocol):
-        # ... list of methods
+    ImplementsInterface = aliasTo(WithPartial1Interface)
+
+    class WithPartial1
+    ├── extends ImplementsInterface
+    │
+    ├── + method1()
+    └── + method2()
     ```
 
-    ```python
-    # partials/with_partial1.py
-    from .with_partial1_interface import WithPartial1Interface as ImplementsInterface
+    If the concrete class is composed of multiple parents, the `ImplementsInterface` must be the at the bottom of the chain, so it can be overridden by the other classes.
 
-    class WithPartial1(ImplementsInterface):
-        # ... implementation
+    ```text
+    class MyClass
+    └── class ThirdClass
+        └── class SecondClass
+            └── class ImplementsInterface
     ```
 
-    `ImplementsInterface` must always be the last item in the inheritance list to avoid MRO conflicts.
+    This rule applies to all types of concrete classes:
 
-    ```python
-    # cat.py
-    from .partials.with_partial1 import WithPartial1
-    from .cat_base import CatBase as WithBase
-    from .cat_interface import CatInterface as ImplementsInterface
+    - Base classes;
+    - Partials;
+    - Composed classes;
 
-    class Cat(
-        WithPartial1,
-        WithBase,
-        ImplementsInterface,  # Must be the last item
-    ):
-        ...
+2. **Importing Base Classes**: When importing a base class or its interface, rename them to `WithBase` and `WithBaseInterface`, respectively. This distinguishes the base class from other components and maintains naming consistency.
+
+    ```text
+    WithBaseInterface = aliasTo(CatBaseInterface)
+
+    class CatInterface
+    ├── extends WithBaseInterface
+    │
+    └── <...implementation>
     ```
 
-2. **Importing Base Classes**: When importing a base class or its interface into another module, rename them to `WithBase` and `WithBaseInterface`, respectively. This distinguishes the base class from other components and maintains naming consistency.
+    ```text
+    WithBase = aliasTo(CatBase)
 
-    ```python
-    # cat_interface.py
-    from .cat_base_interface import CatBaseInterface as WithBaseInterface
+    ImplementsInterface = aliasTo(CatInterface)
 
-    class CatInterface(
-        WithBaseInterface,  # Renamed to WithBaseInterface
-        Protocol,
-    ):
-        ...
-    ```
-
-    ```python
-    # cat.py
-    from .cat_base import CatBase as WithBase
-    from .cat_interface import CatInterface as ImplementsInterface
-
-    class Cat(
-        WithBase,  # Renamed to WithBase
-        ImplementsInterface,
-    ):
-        ...
+    class Cat
+    ├── extends WithBase
+    ├── extends ImplementsInterface
+    │
+    └── <...implementation>
     ```
 
 3. **Partial Interface Inheritance List**: A partial interface must import the interfaces of any other partials it depends on. This ensures that all necessary methods and attributes are available. It also must import the base interface and `Protocol`.
