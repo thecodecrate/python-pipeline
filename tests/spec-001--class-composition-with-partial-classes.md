@@ -1,6 +1,6 @@
-# \[spec-001\] Partial Classes for Individual Classes
+# \[spec-001\] Class Composition with Partial Classes
 
-This document introduces a convention for implementing partial classes, focusing on simple, individual classes. In another spec, we'll explore how to extend this approach horizontally across groups of classes, which is particularly useful when partials represent features in a project or package.
+This document introduces a convention for class structuring using partial classes, focusing on simple, individual classes. In a different specification, we'll explore how to extend this approach horizontally across groups of classes, which is particularly useful when partials represent features in a project or package.
 
 This document is language-agnostic and can be applied to any programming language that supports object-oriented programming.
 
@@ -12,12 +12,12 @@ Each partial class contains a section of the overall class definition. All parts
 
 ```pseudo
 class Partial1
-├── + method1()
-└── + method2()
+├── +method1()
+└── +method2()
 
 class Partial2
-├── + method3()
-└── + method4()
+├── +method3()
+└── +method4()
 
 ...
 
@@ -45,14 +45,14 @@ While both partial classes and traits allow you to split a class's functionality
 
 Some languages, like C#, have built-in support for partial classes. In C#, you can define a class in multiple files using the `partial` keyword.
 
-Other languages, like Python, don't have built-in support for partial classes. However, you can achieve similar functionality by using traits, mixins, multiple inheritance, or a chained single inheritance pattern.
+Other languages, like Python, don't have built-in support for partial classes. However, you can achieve similar functionality by using traits, mixins, multiple inheritance, or with a single inheritance composition.
 
-## A Convention for Partial Classes
+## Specification
 
-The approach consists of three main components:
+This specification consists of three main components:
 
 1. **Base Class**: Defines the core functionality of the class.
-2. **Partials**: Partial classes that add additional functionality.
+2. **Partials**: Partial classes that add extra functionality.
 3. **Composed Class**: Combines the base class and partials into a single class.
 
 A composed class typically looks like this:
@@ -60,18 +60,18 @@ A composed class typically looks like this:
 ```pseudo
 # Base class
 class CatBase
-├── + set_name(name)
-└── + get_name()
+├── +set_name(name)
+└── +get_name()
 
 # Partial 1
 class WithAge
-├── + set_age(age)
-└── + get_age()
+├── +set_age(age)
+└── +get_age()
 
 # Partial 2
 class WithAgility
-├── + set_agility(agility)
-└── + get_agility()
+├── +set_agility(agility)
+└── +get_agility()
 
 # Composed Class: Partials + Base
 class Cat
@@ -79,6 +79,8 @@ class Cat
 ├── extends WithAge
 └── extends CatBase
 ```
+
+In this convention, the base class is a special kind of partial that contains the core functionality. Partial classes are named using the pattern `With<PartialName>`.
 
 The recommended file structure is:
 
@@ -91,14 +93,10 @@ The recommended file structure is:
 │   ├── ...
 │   └── with_<partialN>.lang
 │
-└── <class_name>.lang          # Composed class: base + partials
+└── <class_name>.lang          # Composed class: base +partials
 ```
 
-The `.lang` represents the language-specific file extension (e.g., `.py` for Python, `.cs` for C#).
-
-In this convention, the base class is considered a special kind of partial that contains the core functionality. Partial classes are named using the pattern `With<PartialName>` and are stored in the `partials` folder.
-
-You must adapt the casing style (PascalCase, snake_case, etc.) to match the conventions of your programming language.
+The `.lang` represents the language-specific file extension (e.g., `.py` for Python, `.cs` for C#). You must adapt the casing style (PascalCase, snake_case, etc.) to match the conventions of your programming language.
 
 ### One-to-One Interface Mapping
 
@@ -114,26 +112,28 @@ Each class must have a corresponding interface to help with type hinting and ens
 │   ├── ...
 │   └── with_<partialN>_interface.lang
 │
-└── <class_name>_interface.lang          # Composed interface: base + partial interfaces
+└── <class_name>_interface.lang          # Composed interface: base +partial interfaces
 ```
 
-Interfaces are named using the pattern `<ClassName>Interface`.
+The interfaces have the same name as their concrete classes plus `Interface`, e.g. `CatInterface`, `CatBaseInterface`, `WithAgeInterface`, etc.
 
 ### Implementation Details
 
 #### Base Class
 
-The base class contains the core functionality. The concrete class should be named `<ClassName>Base`. The corresponding interface should be named `<ClassName>BaseInterface`.
+The base class is a special partial that contains the core functionality for the composed class.
 
-The base interface lists the signatures of the methods that the base class should implement. It must not contain any method implementations.
+Interfaces must not contain any concrete implementation. An interface must only contain a list of method signatures to be implemented by its concrete class. This rule is valid for all interfaces, not just base class interfaces.
+
+Base interfaces must be named `<ClassName>BaseInterface`.
 
 ```pseudo
 class CatBaseInterface
-├── + set_name(name)  # signature
-└── + get_name()      # signature
+├── +set_name(name)  # signature
+└── +get_name()      # signature
 ```
 
-When writing a concrete class for an interface, you must import the interface and rename it to `ImplementsInterface`. The concrete class must inherit from the renamed interface.
+Whenever you write a concrete class in this specification, you must import its interface and rename it to `ImplementsInterface`. The concrete class must inherit from the renamed interface.
 
 ```pseudo
 ImplementsInterface = aliasTo(CatBaseInterface)
@@ -141,15 +141,15 @@ ImplementsInterface = aliasTo(CatBaseInterface)
 class CatBase
 ├── extends ImplementsInterface
 │
-├── + set_name(name)  # implementation
-└── + get_name()      # implementation
+├── +set_name(name)  # implementation
+└── +get_name()      # implementation
 ```
 
 Alternatively, you can have the base class empty and move the core functionality to a partial class. This approach is useful when you want to keep the base class clean.
 
 ```pseudo
 class CatBaseInterface
-└── <empty>
+└──
 
 ImplementsInterface = aliasTo(CatBaseInterface)
 
@@ -159,9 +159,9 @@ class CatBase
 
 #### Partials
 
-Partials contain additional functionality. Each partial class should be named `With<PartialName>` and stored in the `partials` folder. The corresponding interface should be named `With<PartialName>Interface`.
+Partials add extra functionality to the composed class.
 
-All partial interfaces must import the base interface. When importing the base interface, rename it to `WithBaseInterface` to distinguish the base class from other components and maintain naming consistency.
+Partial interfaces must always import the base interface. When importing, they must be renamed as `WithBaseInterface` to distinguish the base class from other components and maintain naming consistency. Partial interfaces are named `With<PartialName>Interface`.
 
 ```pseudo
 WithBaseInterface = aliasTo(CatBaseInterface)
@@ -169,11 +169,11 @@ WithBaseInterface = aliasTo(CatBaseInterface)
 class WithAgeInterface
 ├── extends WithBaseInterface
 │
-├── + set_age(age)
-└── + get_age()
+├── +set_age(age)
+└── +get_age()
 ```
 
-The concrete version of the partial class must import its interface (renamed to `ImplementsInterface`, as established before). Usually, that's the only import used by the partial class. The partial class must not import the base class or other partial classes, even if it uses their methods.
+The concrete version of the partial class must import its own interface (`ImplementsInterface`). Usually, that's the only import used by the partial class. The partial class must not import the base class or other partial classes, even if it uses their methods. It must be named `With<PartialName>`.
 
 ```pseudo
 ImplementsInterface = aliasTo(WithAgeInterface)
@@ -181,11 +181,11 @@ ImplementsInterface = aliasTo(WithAgeInterface)
 class WithAge
 ├── extends ImplementsInterface
 │
-├── + set_age(age)
-└── + get_age()
+├── +set_age(age)
+└── +get_age()
 ```
 
-The partial interface must also import the interfaces of any other partials it depends on. This ensures that all necessary methods and attributes are available.
+A partial interface must import the interfaces of any other partials it depends on. This ensures that all necessary methods and attributes are available.
 
 In this next trait, `WithAgility`, we import the interface of `WithAgeInterface` because it depends on its methods.
 
@@ -196,11 +196,11 @@ class WithAgilityInterface
 ├── extends WithAgeInterface
 ├── extends WithBaseInterface
 │
-├── + set_agility(agility)
-└── + get_agility()
+├── +set_agility(agility)
+└── +get_agility()
 ```
 
-As before, the concrete class of the partial should import its interface and nothing else.
+As before, the concrete class of the partial should import its interface (`ImplementsInterface`) and nothing else.
 
 ```pseudo
 ImplementsInterface = aliasTo(WithAgilityInterface)
@@ -208,8 +208,8 @@ ImplementsInterface = aliasTo(WithAgilityInterface)
 class WithAgility
 ├── extends ImplementsInterface
 │
-├── + set_agility(agility)
-└── + get_agility()
+├── +set_agility(agility)
+└── +get_agility()
 ```
 
 Concrete partial classes often only inherit `ImplementsInterface`; however, they can inherit other classes, as long as they are external and concrete (e.g., traits).
@@ -219,14 +219,14 @@ class WithPartial3
 ├── extends SomeTrait
 ├── extends ImplementsInterface
 │
-├── ... methods
+└── ... methods
 ```
 
 #### Composed Class
 
-The composed class combines the base class and partials into a single class.
+A composed class combines the base class and partials into a single class.
 
-The composed interface must import all partial interfaces and the base interface. It must be named `<ClassName>Interface`.
+A composed interface must import all partial interfaces plus the base interface. It must be named `<ClassName>Interface`.
 
 ```pseudo
 WithBaseInterface = aliasTo(CatBaseInterface)
@@ -255,20 +255,7 @@ The composed class and its interface should be empty. They only serve to combine
 
 ### Additional Considerations
 
-When defining the inheritance list for a class or interface, follow these rules:
-
-1. When importing partials (concrete classes or their interfaces), they must be ordered from the most specific (newer dependencies) to the most general (base dependencies).
-
-    ```pseudo
-    class Cat
-    └── class WithAgility
-        └── class WithAge
-            └── class WithBase
-    ```
-
-    The base class (concrete or interface) is always at the bottom of the list of partials.
-
-2. In a concrete class, its interface `ImplementsInterface` must be at the bottom of the chain. This allows it to be overridden by other classes.
+1. When importing the interface `ImplementsInterface`, it must be placed at the bottom of the inheritance chain. This allows it to be overridden by other classes.
 
     ```pseudo
     class MyClass
@@ -282,3 +269,13 @@ When defining the inheritance list for a class or interface, follow these rules:
     - Base classes
     - Partials
     - Composed classes
+
+1. When importing partials and their interfaces, they must be ordered from the highest-level to the lowest-level (base dependencies). The base class (`WithBase` or `WithBaseInterface`) is always the most basic dependency.
+
+    ```pseudo
+    class Cat
+    └── class WithAgility
+        └── class WithAge
+            └── class WithBase
+                └── class ImplementsInterface
+    ```
