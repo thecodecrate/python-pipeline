@@ -1,6 +1,6 @@
 # TCS1: A Convention for Partial Classes
 
-A partial class is a construct used to split a class definition across multiple source files.
+Partial classes are a construct used to split a class definition across multiple source files.
 
 Each partial class contains a section of the overall class definition. All parts are then combined into a single, complete class.
 
