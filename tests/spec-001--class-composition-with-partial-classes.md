@@ -188,14 +188,21 @@ class CatBase
 
 Partial interfaces must always import the base interface, renaming it to `WithBaseInterface` to maintain consistency and distinction. Partial interfaces are named `With<PartialName>Interface`. For example:
 
-```pseudo
-WithBaseInterface = aliasTo(CatBaseInterface)
+```mermaid
+classDiagram
+    note for WithBaseInterface "WithBaseInterface = aliasTo(CatBaseInterface)"
 
-class WithAgeInterface
-├── extends WithBaseInterface
-│
-├── +set_age(age)
-└── +get_age()
+    class WithBaseInterface {
+        <<interface>>
+    }
+
+    class WithAgeInterface {
+        <<interface>>
+        + set_age(age)
+        + get_age()
+    }
+
+    WithBaseInterface <|-- WithAgeInterface : extends
 ```
 
 For the concrete partial class:
