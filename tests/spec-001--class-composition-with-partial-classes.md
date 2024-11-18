@@ -141,19 +141,24 @@ Interfaces are named by appending `Interface` to its corresponding class name. F
 
 #### Base Class
 
-The base class is a special partial that contains the core functionality for the composed class.
+The **base class** serves as a special partial containing the core functionality of the composed class.
 
-Interfaces must not contain any concrete implementation. An interface must only contain a list of method signatures to be implemented by its concrete class. This rule is valid for all interfaces, not just base class interfaces.
+**Interfaces** should not contain any concrete implementations; they should only list method signatures that the concrete classes will implement. This rule applies to all interfaces, including base class interfaces.
 
-Base interfaces must be named `<ClassName>BaseInterface`.
+Name base interfaces using the pattern `<ClassName>BaseInterface`. For example:
 
 ```pseudo
 class CatBaseInterface
-├── +set_name(name)  # signature
-└── +get_name()      # signature
+├── +set_name(name)  # method signature
+└── +get_name()      # method signature
 ```
 
-Whenever you write a concrete class in this specification, you must import its interface and rename it to `ImplementsInterface`. The concrete class must inherit from the renamed interface.
+When writing a concrete class:
+
+- Import its interface and rename it to `ImplementsInterface`.
+- The concrete class must inherit from `ImplementsInterface`.
+
+Example:
 
 ```pseudo
 ImplementsInterface = aliasTo(CatBaseInterface)
@@ -165,11 +170,11 @@ class CatBase
 └── +get_name()      # implementation
 ```
 
-Alternatively, you can have the base class empty and move the core functionality to a partial class. The empty base class works as a marker. This approach is useful when you want to keep the base class clean.
+Alternatively, you can keep the base class empty and move core functionalities to a partial class, using the empty base class as a marker:
 
 ```pseudo
 class CatBaseInterface
-└──
+└──  # empty interface
 
 ImplementsInterface = aliasTo(CatBaseInterface)
 
@@ -179,9 +184,9 @@ class CatBase
 
 #### Partials
 
-Partials add extra functionality to the composed class.
+**Partials** add additional functionalities to the composed class.
 
-Partial interfaces must always import the base interface. When importing, they must be renamed as `WithBaseInterface` to distinguish the base class from other components and maintain naming consistency. Partial interfaces are named `With<PartialName>Interface`.
+Partial interfaces must always import the base interface, renaming it to `WithBaseInterface` to maintain consistency and distinction. Partial interfaces are named `With<PartialName>Interface`. For example:
 
 ```pseudo
 WithBaseInterface = aliasTo(CatBaseInterface)
@@ -193,7 +198,13 @@ class WithAgeInterface
 └── +get_age()
 ```
 
-The concrete version of the partial class must import its own interface (`ImplementsInterface`). Usually, that's the only import used by the partial class. The partial class must not import the base class or other partial classes, even if it uses their methods. It must be named `With<PartialName>`.
+For the concrete partial class:
+
+- Import its own interface as `ImplementsInterface`.
+- Inherit from `ImplementsInterface`.
+- Do not import the base class or other partial classes, even if their methods are used.
+
+Example:
 
 ```pseudo
 ImplementsInterface = aliasTo(WithAgeInterface)
@@ -201,13 +212,11 @@ ImplementsInterface = aliasTo(WithAgeInterface)
 class WithAge
 ├── extends ImplementsInterface
 │
-├── +set_age(age)
-└── +get_age()
+├── +set_age(age)  # implementation
+└── +get_age()     # implementation
 ```
 
-A partial interface must import the interfaces of any other partials it depends on. This ensures that all necessary methods and attributes are available.
-
-In this next trait, `WithAgility`, we import the interface of `WithAgeInterface` because it depends on its methods.
+If a partial depends on other partials, its interface must import those partials' interfaces. For example, `WithAgilityInterface` depends on `WithAgeInterface`:
 
 ```pseudo
 WithBaseInterface = aliasTo(CatBaseInterface)
@@ -220,7 +229,7 @@ class WithAgilityInterface
 └── +get_agility()
 ```
 
-As before, the concrete class of the partial should import its interface (`ImplementsInterface`) and nothing else.
+The concrete class:
 
 ```pseudo
 ImplementsInterface = aliasTo(WithAgilityInterface)
@@ -228,25 +237,25 @@ ImplementsInterface = aliasTo(WithAgilityInterface)
 class WithAgility
 ├── extends ImplementsInterface
 │
-├── +set_agility(agility)
-└── +get_agility()
+├── +set_agility(agility)  # implementation
+└── +get_agility()         # implementation
 ```
 
-Concrete partial classes often only inherit `ImplementsInterface`; however, they can inherit other classes, as long as they are external and concrete (e.g., traits).
+Concrete partial classes typically inherit only from `ImplementsInterface`, but they can also inherit from external concrete classes like traits:
 
 ```pseudo
 class WithPartial3
 ├── extends SomeTrait
 ├── extends ImplementsInterface
 │
-└── ... methods
+└── ...  # methods
 ```
 
 #### Composed Class
 
-A composed class combines the base class and partials into a single class.
+The **composed class** combines the base class and all partials into one.
 
-A composed interface must import all partial interfaces plus the base interface. It must be named `<ClassName>Interface`.
+Its interface must import all partial interfaces and the base interface and is named `<ClassName>Interface`:
 
 ```pseudo
 WithBaseInterface = aliasTo(CatBaseInterface)
@@ -257,11 +266,17 @@ class CatInterface
 └── extends WithBaseInterface
 ```
 
-The concrete composed class must import the concrete classes of all partials, the concrete base class (`WithBase`), and its own composed interface (`ImplementsInterface`). It must be named `<ClassName>`.
+The concrete composed class must:
+
+- Import and inherit from the concrete classes of all partials.
+- Import the concrete base class (`WithBase`).
+- Import its own interface as `ImplementsInterface`.
+- Inherit from `ImplementsInterface`.
+
+Example:
 
 ```pseudo
 WithBase = aliasTo(CatBase)
-
 ImplementsInterface = aliasTo(CatInterface)
 
 class Cat
@@ -271,31 +286,29 @@ class Cat
 └── extends ImplementsInterface
 ```
 
-The composed class and its interface should be empty. They only serve to combine the base class and partial classes. If you need to add additional methods or attributes, consider creating a new partial.
+The composed class and its interface should remain empty, serving only to combine components. For additional methods or attributes, create a new partial.
 
 ### Additional Considerations
 
-1. When importing the interface `ImplementsInterface`, it must be placed at the bottom of the inheritance chain. This allows it to be overridden by other classes.
+1. **Inheritance Order**
+
+    When importing `ImplementsInterface`, place it at the bottom of the inheritance chain to allow overriding by other classes:
 
     ```pseudo
     class MyClass
-    └── class ThirdClass
-        └── class SecondClass
-            └── class ImplementsInterface
+    └── extends ThirdClass
+         └── extends SecondClass
+              └── extends ImplementsInterface
     ```
 
-    This rule applies to all types of concrete classes:
+2. **Dependency Ordering**
 
-    - Base classes
-    - Partials
-    - Composed classes
-
-1. When importing partials and their interfaces, they must be ordered from the highest-level to the lowest-level (base dependencies). The base class (`WithBase` or `WithBaseInterface`) is always the most basic dependency.
+    When importing partials and their interfaces, order them from highest-level dependencies to the base. The base class (`WithBase` or `WithBaseInterface`) is the most fundamental dependency:
 
     ```pseudo
     class Cat
-    └── class WithAgility
-        └── class WithAge
-            └── class WithBase
-                └── class ImplementsInterface
+    ├── extends WithAgility
+    ├── extends WithAge
+    ├── extends WithBase
+    └── extends ImplementsInterface
     ```
