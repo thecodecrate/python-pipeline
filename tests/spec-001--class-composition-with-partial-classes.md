@@ -15,9 +15,16 @@ info
 ```
 
 ```mermaid
+flowchart LR
+    classDef blue color:#fff,fill:#0d5caa
+    Lorem
+    class Lorem blue
+```
+
+```mermaid
 classDiagram
-    class Animal:::someclass
     classDef someclass fill:#f96
+    class Animal:::someclass
 ```
 
 ```mermaid
