@@ -20,7 +20,7 @@
         "github.copilot-chat",
         "github.vscode-github-actions",
         "mikestead.dotenv",
-        "tamasfe.even-better-toml"
+        "bierner.github-markdown-preview"
       ],
       "settings": {
         "editor.linkedEditing": true,
@@ -32,6 +32,9 @@
         "editor.guides.bracketPairs": true,
         "editor.guides.highlightActiveIndentation": true,
         "explorer.sortOrderLexicographicOptions": "upper",
+        "markdown.styles": [
+          ".github/css/markdown-mermaid-styles.css"
+        ],
         "python.condaPath": "/opt/conda/bin/conda",
         "python.defaultInterpreterPath": "/opt/conda/envs/venv/bin/python",
         "python.analysis.autoImportCompletions": true,

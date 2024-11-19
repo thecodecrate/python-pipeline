@@ -17,26 +17,27 @@ config:
         hideEmptyMembersBox: true
 ---
 classDiagram
-    class Partial1 {
+    class Partial1:::partial {
         +method1()
         +method2()
     }
 
-    class Partial2 {
+    class Partial2:::partial {
         +method3()
         +method4()
     }
 
-    class PartialN {
-        +...
+    class PartialN:::partial {
+        +...()
         +methodN()
     }
 
-    class ClassA
+    class ClassA:::composed {
+    }
 
-    ClassA --|> Partial1
-    ClassA --|> Partial2
-    ClassA --|> PartialN
+    Partial1 <|-- ClassA
+    Partial2 <|-- ClassA
+    PartialN <|-- ClassA
 ```
 
 Using partial classes is beneficial in several scenarios:
@@ -71,27 +72,40 @@ This specification introduces a convention for structuring classes using partial
 
 An example of a composed class is:
 
-```pseudo
-# Base class
-class CatBase
-├── +set_name(name)
-└── +get_name()
+```mermaid
+---
+config:
+    class:
+        hideEmptyMembersBox: true
+---
+classDiagram
+    class CatBase:::base {
+        <<base class>>
+        +set_name(name)
+        +get_name()
+    }
 
-# Partial class: WithAge
-class WithAge
-├── +set_age(age)
-└── +get_age()
+    class WithAge:::partial {
+        <<partial>>
+        +set_age(age)
+        +get_age()
+    }
 
-# Partial class: WithAgility
-class WithAgility
-├── +set_agility(agility)
-└── +get_agility()
+    class WithAgility:::partial {
+        <<partial>>
+        +set_agility(agility)
+        +get_agility()
+    }
 
-# Composed class: Cat
-class Cat
-├── extends WithAgility
-├── extends WithAge
-└── extends CatBase
+    class Cat:::composed {
+        <<composed class>>
+    }
+
+    CatBase <|-- Cat : extends
+    WithAgility <|-- Cat : extends
+    WithAge <|-- Cat : extends
+
+    class CatBase:::dashed
 ```
 
 In this convention:
@@ -331,3 +345,10 @@ The composed class and its interface should remain empty, serving only to combin
     ├── extends WithBase
     └── extends ImplementsInterface
     ```
+
+<!-- markdownlint-disable MD033 -->
+<style>
+.github-markdown-body .partial {
+    stroke-dasharray: 5px;
+}
+</style>
