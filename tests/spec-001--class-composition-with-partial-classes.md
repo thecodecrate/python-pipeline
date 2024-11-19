@@ -15,6 +15,19 @@ info
 ```
 
 ```mermaid
+classDiagram
+    classDef green fill:#9f6,stroke:#333,stroke-width:2px;
+    classDef red fill:#f96,stroke:#333,stroke-width:2px;
+
+    ClassA <|-- ClassB
+    ClassA : methodA()
+    ClassB : methodB()
+
+    class ClassA green
+    class ClassB red
+```
+
+```mermaid
 ---
 config:
     class:
