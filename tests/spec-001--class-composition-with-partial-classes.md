@@ -11,67 +11,40 @@ Partial classes enable you to split a single class definition across multiple so
 Example:
 
 ```mermaid
-classDiagram
-    class PartialClassA
-    class PartialClassB
-    class FinalClass
-    class BaseClass
-    class InterfaceI
-
-    %% Class Members
-    PartialClassA : +partialMethodA()
-    PartialClassB : +partialMethodB()
-    FinalClass : +finalMethod()
-    BaseClass : +baseMethod()
-    InterfaceI : +interfaceMethod()
-
-    %% Relationships
-    PartialClassA --> FinalClass
-    PartialClassB --> FinalClass
-    FinalClass --|> BaseClass
-    FinalClass ..|> InterfaceI
-
-    %% Apply Styles
-    style PartialClassA color2:#111, stroke-dasharray: 5 5
-    style PartialClassB color2:#111, stroke-dasharray: 5 5
-    style FinalClass fill:#e0f7fa,stroke-width:2px
-    style BaseClass color:#ffff0080, fill:#ffff0010, stroke:yellow, stroke-dasharray: 5 5
-    style InterfaceI color:red,stroke-dasharray: 2 2
-```
-
-```mermaid
 ---
 config:
     class:
         hideEmptyMembersBox: true
 ---
 classDiagram
-    class Partial1["🧩 Partial1"] {
+    class Partial1["Partial1"] {
         +method1()
         +method2()
     }
 
-    class Partial2["🧩 Partial2"] {
+    class Partial2["Partial2"] {
         +method3()
         +method4()
     }
 
-    class PartialN["🧩 PartialN"] {
+    class Partial3["PartialN"] {
         +...()
         +methodN()
     }
 
-    class ClassA["🏁 ClassA"] {
+    class Composed["ClassA"] {
     }
 
-    Partial1 <|-- ClassA
-    Partial2 <|-- ClassA
-    PartialN <|-- ClassA
+    %% Relationships
+    Partial1 <|-- Composed
+    Partial2 <|-- Composed
+    Partial3 <|-- Composed
 
+    %% Apply Styles
     style Partial1 bugfix:1, stroke-dasharray: 5 5, stroke-width:1px
     style Partial2 bugfix:1, stroke-dasharray: 5 5, stroke-width:1px
-    style PartialN bugfix:1, stroke-dasharray: 5 5, stroke-width:1px
-    style ClassA bugfix:1, font-weight: bold, stroke-width:2px
+    style Partial3 bugfix:1, stroke-dasharray: 5 5, stroke-width:1px
+    style Composed bugfix:1, font-weight: bold, stroke-width:2px
 ```
 
 Using partial classes is beneficial in several scenarios:
@@ -100,9 +73,9 @@ It's important to note that while traditional partial classes are combined durin
 
 This specification introduces a convention for structuring classes using partial classes. It involves three main components:
 
-1. **Base Class**: Contains the core functionality of the class.
-2. **Partials**: Partial classes that add additional functionality.
-3. **Composed Class**: Combines the base class and partials into a single class.
+1. **🧬 Base Class**: Contains the core functionality of the class.
+2. **🥬 Partial Classes**: Partial classes that add additional functionality.
+3. **🥗 Composed Class**: Combines the base class and partials into a single class.
 
 An example of a composed class is:
 
@@ -113,39 +86,40 @@ config:
         hideEmptyMembersBox: true
 ---
 classDiagram
-    class CatBase {
-        <<base class>>
+    class Base["🧬 CatBase"] {
+        <<base>>
         +set_name(name)
         +get_name()
     }
 
-    class WithAge {
+    class Partial1["🥬 WithAge"] {
         <<partial>>
         +set_age(age)
         +get_age()
     }
 
-    class WithAgility {
+    class Partial2["🥬 WithAgility"] {
         <<partial>>
         +set_agility(agility)
         +get_agility()
     }
 
-    class Cat {
-        <<composed class>>
+    class Composed["🥗 Cat"] {
+        <<composed>>
     }
 
-    CatBase <|-- Cat : extends
-    WithAgility <|-- Cat : extends
-    WithAge <|-- Cat : extends
+    %% Relationships
+    Base <|-- Composed : extends
+    Partial1 <|-- Composed : extends
+    Partial2 <|-- Composed : extends
 
-    class CatBase {
-    }
-
-    style Animal fill:#f9f,stroke:#333,stroke-width:4px
-    style Cat fill:#bbf,stroke:#f66,stroke-width:2px,color:#fff,stroke-dasharray: 5 5
-
-    classDef partial fill:#bbf,stroke:#f66,stroke-width:2px,color:#fff,stroke-dasharray: 5 5
+    %% Apply Styles
+    style Base fill:#ffff0010, stroke-dasharray: 5 5
+    style Composed bugfix:#111, stroke-width:2px, font-weight: bold
+    style Partial1 bugfix:#111, stroke-dasharray: 5 5
+    style Partial2 bugfix:#111, stroke-dasharray: 5 5
+    style Partial3 bugfix:#111, stroke-dasharray: 5 5
+    style Interface1 color:red, stroke-dasharray: 2 2
 ```
 
 In this convention:
