@@ -11,6 +11,11 @@ Partial classes enable you to split a single class definition across multiple so
 Example:
 
 ```mermaid
+---
+  config:
+    class:
+      hideEmptyMembersBox: true
+---
 classDiagram
     class Partial1 {
         +method1()
@@ -22,9 +27,8 @@ classDiagram
         +method4()
     }
 
-    %% Continue with other partial classes as needed
-
     class PartialN {
+        +...
         +methodN()
     }
 
@@ -32,7 +36,6 @@ classDiagram
 
     ClassA --|> Partial1
     ClassA --|> Partial2
-    %% Continue inheritance arrows for other partials
     ClassA --|> PartialN
 ```
 
