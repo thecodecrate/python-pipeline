@@ -114,12 +114,12 @@ classDiagram
     Partial2 <|-- Composed : extends
 
     %% Apply Styles
-    style Base fill:#ffff0010, stroke-dasharray: 5 5
+    style Base fill:#ffff6020, stroke-dasharray: 5 5
     style Composed bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1 bugfix:#111, stroke-dasharray: 5 5
     style Partial2 bugfix:#111, stroke-dasharray: 5 5
     style Partial3 bugfix:#111, stroke-dasharray: 5 5
-    style Interface1 color:red, stroke-dasharray: 2 2
+    style Interface1 fill:#ff606020, stroke-dasharray: 2 2
 ```
 
 In this convention:
@@ -155,7 +155,7 @@ Notes:
 To enhance type safety and ensure consistent implementation of methods, each class in this convention must have a corresponding interface. This one-to-one mapping applies to:
 
 - **Base Class**
-- **Each Partial Class**
+- **Partial Classes**
 - **Composed Class**
 
 ```pseudo
@@ -187,39 +187,69 @@ The **base class** serves as a special partial containing the core functionality
 
 Name base interfaces using the pattern `<ClassName>BaseInterface`. For example:
 
-```pseudo
-class CatBaseInterface
-├── +set_name(name)  # method signature
-└── +get_name()      # method signature
+```mermaid
+classDiagram
+    class Interface1["🫥 CatBaseInterface"] {
+        <<base interface>>
+        +set_name(name)
+        +get_name()
+    }
+
+    %% Apply Styles
+    style Base fill:#ffff6020, stroke-dasharray: 5 5
+    style Composed bugfix:#111, stroke-width:2px, font-weight: bold
+    style Partial1 bugfix:#111, stroke-dasharray: 5 5
+    style Partial2 bugfix:#111, stroke-dasharray: 5 5
+    style Partial3 bugfix:#111, stroke-dasharray: 5 5
+    style Interface1 fill:#ff606020, stroke-dasharray: 2 2
 ```
 
-When writing a concrete class:
+**Concrete** classes should inherit from their interfaces, after renaming them as `ImplementsInterface`. This rule applies to all concrete classes, including base classes.
 
-- Import its interface and rename it to `ImplementsInterface`.
-- The concrete class must inherit from `ImplementsInterface`.
+```mermaid
+classDiagram
+    %% note for Base "ImplementsInterface = aliasTo(CatBaseInterface)"
 
-Example:
+    class Interface1["🫥 ImplementsInterface<br>hello"] {
+        <<aliasOf CatBaseInterface>>
+        +set_name(name)
+        +get_name()
+    }
 
-```pseudo
-ImplementsInterface = aliasTo(CatBaseInterface)
+    class Base["🧬 CatBase"] {
+        <<base>>
+        +set_name(name)
+        +get_name()
+    }
 
-class CatBase
-├── extends ImplementsInterface
-│
-├── +set_name(name)  # implementation
-└── +get_name()      # implementation
+    %% Relationships
+    Interface1 <|-- Base : implements
+
+    %% Apply Styles
+    style Base fill:#ffff6020, stroke-dasharray: 5 5
+    style Composed bugfix:#111, stroke-width:2px, font-weight: bold
+    style Partial1 bugfix:#111, stroke-dasharray: 5 5
+    style Partial2 bugfix:#111, stroke-dasharray: 5 5
+    style Partial3 bugfix:#111, stroke-dasharray: 5 5
+    style Interface1 fill:#ff606020, stroke-dasharray: 2 2
 ```
 
 Alternatively, you can keep the base class empty and move core functionalities to a partial class, using the empty base class as a marker:
 
-```pseudo
-class CatBaseInterface
-└──  # empty interface
+```mermaid
+classDiagram
+    note for CatBase "ImplementsInterface = aliasTo(CatBaseInterface)"
 
-ImplementsInterface = aliasTo(CatBaseInterface)
+    class CatBaseInterface {
+        <<interface>>
+        %% Empty interface
+    }
 
-class CatBase
-└── extends ImplementsInterface
+    class CatBase {
+        %% Empty class
+    }
+
+    CatBase --|> CatBaseInterface : implements
 ```
 
 #### Partials
