@@ -11,23 +11,32 @@ Partial classes enable you to split a single class definition across multiple so
 Example:
 
 ```mermaid
-info
-```
-
-```mermaid
-flowchart LR
-    classDef blue color:#fff,fill:#0d5caa
-    Lorem
-    class Lorem blue
-```
-
-```mermaid
 classDiagram
-    classDef someclass fill:#f96
-    class Animal:::someclass
+    class PartialClassA
+    class PartialClassB
+    class FinalClass
+    class BaseClass
+    class InterfaceI
 
-    classDef blue color:#fff,fill:#0d5caa
-    class Lorem blue
+    %% Class Members
+    PartialClassA : +partialMethodA()
+    PartialClassB : +partialMethodB()
+    FinalClass : +finalMethod()
+    BaseClass : +baseMethod()
+    InterfaceI : +interfaceMethod()
+
+    %% Relationships
+    PartialClassA --> FinalClass
+    PartialClassB --> FinalClass
+    FinalClass --|> BaseClass
+    FinalClass ..|> InterfaceI
+
+    %% Apply Styles
+    style PartialClassA color2:#111, stroke-dasharray: 5 5
+    style PartialClassB color2:#111, stroke-dasharray: 5 5
+    style FinalClass fill:#e0f7fa,stroke-width:2px
+    style BaseClass color:#ffff0080, fill:#ffff0010, stroke:yellow, stroke-dasharray: 5 5
+    style InterfaceI color:red,stroke-dasharray: 2 2
 ```
 
 ```mermaid
@@ -37,27 +46,32 @@ config:
         hideEmptyMembersBox: true
 ---
 classDiagram
-    class Partial1:::partial {
+    class Partial1 {
         +method1()
         +method2()
     }
 
-    class Partial2:::partial {
+    class Partial2 {
         +method3()
         +method4()
     }
 
-    class PartialN:::partial {
+    class PartialN {
         +...()
         +methodN()
     }
 
-    class ClassA:::composed {
+    class ClassA {
     }
 
     Partial1 <|-- ClassA
     Partial2 <|-- ClassA
     PartialN <|-- ClassA
+
+    style Partial1 bugfix:1, stroke-dasharray: 5 5, stroke-width:1px
+    style Partial2 bugfix:1, stroke-dasharray: 5 5, stroke-width:1px
+    style PartialN bugfix:1, stroke-dasharray: 5 5, stroke-width:1px
+    style ClassA bugfix:1, stroke-width:2px
 ```
 
 Using partial classes is beneficial in several scenarios:
@@ -99,25 +113,25 @@ config:
         hideEmptyMembersBox: true
 ---
 classDiagram
-    class CatBase:::base {
+    class CatBase {
         <<base class>>
         +set_name(name)
         +get_name()
     }
 
-    class WithAge:::partial {
+    class WithAge {
         <<partial>>
         +set_age(age)
         +get_age()
     }
 
-    class WithAgility:::partial {
+    class WithAgility {
         <<partial>>
         +set_agility(agility)
         +get_agility()
     }
 
-    class Cat:::composed {
+    class Cat {
         <<composed class>>
     }
 
@@ -125,7 +139,7 @@ classDiagram
     WithAgility <|-- Cat : extends
     WithAge <|-- Cat : extends
 
-    class CatBase:::dashed {
+    class CatBase {
     }
 
     style Animal fill:#f9f,stroke:#333,stroke-width:4px
