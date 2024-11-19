@@ -25,6 +25,9 @@ flowchart LR
 classDiagram
     classDef someclass fill:#f96
     class Animal:::someclass
+
+    classDef blue color:#fff,fill:#0d5caa
+    class Lorem blue
 ```
 
 ```mermaid
