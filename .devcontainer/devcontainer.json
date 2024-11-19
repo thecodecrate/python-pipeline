@@ -20,7 +20,13 @@
         "github.copilot-chat",
         "github.vscode-github-actions",
         "mikestead.dotenv",
-        "bierner.github-markdown-preview"
+        "bierner.github-markdown-preview",
+        "bierner.markdown-preview-github-styles",
+        "bierner.markdown-emoji",
+        "bierner.markdown-checkbox",
+        "bierner.markdown-yaml-preamble",
+        "bierner.markdown-footnotes",
+        "bierner.markdown-mermaid"
       ],
       "settings": {
         "editor.linkedEditing": true,
