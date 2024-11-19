@@ -11,6 +11,10 @@ Partial classes enable you to split a single class definition across multiple so
 Example:
 
 ```mermaid
+info
+```
+
+```mermaid
 ---
 config:
     class:
@@ -105,10 +109,13 @@ classDiagram
     WithAgility <|-- Cat : extends
     WithAge <|-- Cat : extends
 
-    class CatBase:::dashed
+    class CatBase:::dashed {
+    }
 
     style Animal fill:#f9f,stroke:#333,stroke-width:4px
     style Cat fill:#bbf,stroke:#f66,stroke-width:2px,color:#fff,stroke-dasharray: 5 5
+
+    classDef partial fill:#bbf,stroke:#f66,stroke-width:2px,color:#fff,stroke-dasharray: 5 5
 ```
 
 In this convention:
@@ -348,10 +355,3 @@ The composed class and its interface should remain empty, serving only to combin
     ├── extends WithBase
     └── extends ImplementsInterface
     ```
-
-<!-- markdownlint-disable MD033 -->
-<style>
-.github-markdown-body .partial {
-    stroke-dasharray: 5px;
-}
-</style>

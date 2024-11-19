@@ -32,9 +32,6 @@
         "editor.guides.bracketPairs": true,
         "editor.guides.highlightActiveIndentation": true,
         "explorer.sortOrderLexicographicOptions": "upper",
-        "markdown.styles": [
-          ".github/css/markdown-mermaid-styles.css"
-        ],
         "python.condaPath": "/opt/conda/bin/conda",
         "python.defaultInterpreterPath": "/opt/conda/envs/venv/bin/python",
         "python.analysis.autoImportCompletions": true,
