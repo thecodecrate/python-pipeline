@@ -16,15 +16,8 @@ info
 
 ```mermaid
 classDiagram
-    classDef green fill:#9f6,stroke:#333;
-    classDef red fill:#f96,stroke:#333;
-
-    ClassA <|-- ClassB
-    ClassA : methodA()
-    ClassB : methodB()
-
-    class ClassA green
-    class ClassB red
+    class Animal:::someclass
+    classDef someclass fill:#f96
 ```
 
 ```mermaid
