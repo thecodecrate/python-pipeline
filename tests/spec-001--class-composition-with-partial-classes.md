@@ -16,8 +16,8 @@ info
 
 ```mermaid
 classDiagram
-    classDef green fill:#9f6;
-    classDef red fill:#f96;
+    classDef green fill:#9f6,stroke:#333;
+    classDef red fill:#f96,stroke:#333;
 
     ClassA <|-- ClassB
     ClassA : methodA()
