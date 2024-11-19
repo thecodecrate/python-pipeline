@@ -46,22 +46,22 @@ config:
         hideEmptyMembersBox: true
 ---
 classDiagram
-    class Partial1 {
+    class Partial1["🧩 Partial1"] {
         +method1()
         +method2()
     }
 
-    class Partial2 {
+    class Partial2["🧩 Partial2"] {
         +method3()
         +method4()
     }
 
-    class PartialN {
+    class PartialN["🧩 PartialN"] {
         +...()
         +methodN()
     }
 
-    class ClassA {
+    class ClassA["🏁 ClassA"] {
     }
 
     Partial1 <|-- ClassA
@@ -71,7 +71,7 @@ classDiagram
     style Partial1 bugfix:1, stroke-dasharray: 5 5, stroke-width:1px
     style Partial2 bugfix:1, stroke-dasharray: 5 5, stroke-width:1px
     style PartialN bugfix:1, stroke-dasharray: 5 5, stroke-width:1px
-    style ClassA bugfix:1, stroke-width:2px
+    style ClassA bugfix:1, font-weight: bold, stroke-width:2px
 ```
 
 Using partial classes is beneficial in several scenarios:
