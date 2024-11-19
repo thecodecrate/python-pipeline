@@ -15,7 +15,6 @@ info
 ```
 
 ```mermaid
-```mermaid
 classDiagram
     classDef green fill:#9f6,stroke:#333,stroke-width:2;
     classDef red fill:#f96,stroke:#333,stroke-width:2;
