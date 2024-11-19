@@ -12,9 +12,9 @@ Example:
 
 ```mermaid
 ---
-  config:
+config:
     class:
-      hideEmptyMembersBox: true
+        hideEmptyMembersBox: true
 ---
 classDiagram
     class Partial1 {
