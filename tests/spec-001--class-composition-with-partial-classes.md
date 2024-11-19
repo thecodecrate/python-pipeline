@@ -10,21 +10,30 @@ Partial classes enable you to split a single class definition across multiple so
 
 Example:
 
-```pseudo
-class Partial1
-├── +method1()
-└── +method2()
+```mermaid
+classDiagram
+    class Partial1 {
+        +method1()
+        +method2()
+    }
 
-class Partial2
-├── +method3()
-└── +method4()
+    class Partial2 {
+        +method3()
+        +method4()
+    }
 
-...
+    %% Continue with other partial classes as needed
 
-class ClassA
-├── extends Partial1
-├── ...
-└── extends PartialN
+    class PartialN {
+        +methodN()
+    }
+
+    class ClassA
+
+    ClassA --|> Partial1
+    ClassA --|> Partial2
+    %% Continue inheritance arrows for other partials
+    ClassA --|> PartialN
 ```
 
 Using partial classes is beneficial in several scenarios:
