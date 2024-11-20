@@ -211,7 +211,7 @@ classDiagram
     %% note for Base "ImplementsInterface = aliasTo(CatBaseInterface)"
 
     class Interface1["🫥 ImplementsInterface"] {
-        <<*aliasOf CatBaseInterface*>>
+        <<_aliasOf CatBaseInterface_>>
         +set_name(name)
         +get_name()
     }
