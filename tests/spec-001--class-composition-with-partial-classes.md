@@ -115,7 +115,7 @@ classDiagram
 
     %% Apply Styles
     style Base fill:#ffff6020, stroke-dasharray: 5 5
-    style Composed bugfix:#111, stroke-width:2px, font-weight: bold
+    style Composed bugfix:#111, stroke-width:2px
     style Partial1 bugfix:#111, stroke-dasharray: 5 5
     style Partial2 bugfix:#111, stroke-dasharray: 5 5
     style Partial3 bugfix:#111, stroke-dasharray: 5 5
@@ -208,20 +208,20 @@ classDiagram
 
 ```mermaid
 classDiagram
-    class Interface1["🫥 ImplementsInterface"] {
-        <<aliasOf CatBaseInterface>>
+    class Interface1["✨ CatBaseInterface"] {
+        <<base interface>>
         +set_name(name)
         +get_name()
     }
 
     class Base["✨ CatBase"] {
-        <<base>>
+        <<base concrete>>
         +set_name(name)
         +get_name()
     }
 
     %% Relationships
-    Interface1 <|-- Base : implements
+    Interface1 <|-- Base : _implements_ "ImplementsInterface"
 
     %% Apply Styles
     style Base fill:#ffff6020, stroke-dasharray: 5 5
@@ -236,12 +236,15 @@ Alternatively, you can keep the base class empty and move core functionalities t
 
 ```mermaid
 classDiagram
-    class Interface1["🫥 ImplementsInterface"] {
-        <<aliasOf CatBaseInterface>>
-        %% Empty interface
+    namespace CatBaseInterface {
+        class Interface1["✨ ImplementsInterface"] {
+            <<empty>>
+            %% Empty interface
+        }
     }
 
     class Base["✨ CatBase"] {
+        <<empty>>
         %% Empty class
     }
 
