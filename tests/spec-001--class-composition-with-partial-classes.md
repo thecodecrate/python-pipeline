@@ -134,14 +134,14 @@ The recommended file structure is:
 
 ```pseudo
 <class_name>/
-├── <class_name>_base.lang       # Base class with core functionality
+├── ✨ <class_name>_base.lang       # Base class with core functionality
 │
-├── partials/                    # Folder containing all partial implementations
-│   ├── with_<partial1>.lang     # Partial 1
-│   ├── ...                      # Additional partial classes
-│   └── with_<partialN>.lang     # Partial N
+├── 📁 partials/                    # Folder containing all partial implementations
+│   ├── 🍅 with_<partial1>.lang     # Partial 1
+│   ├── ...                         # Additional partial classes
+│   └── 🍅 with_<partialN>.lang     # Partial N
 │
-└── <class_name>.lang            # Composed class: base + partials
+└── 🥗 <class_name>.lang            # Composed class: base + partials
 ```
 
 Notes:
@@ -160,15 +160,15 @@ To enhance type safety and ensure consistent implementation of methods, each cla
 
 ```pseudo
 <class_name>/
-├── ...                                  # Previous structure
-├── <class_name>_base_interface.lang     # Interface for the base class
+├── ...                                     # Previous structure
+├── ✨ <class_name>_base_interface.lang     # Interface for the base class
 │
-├── partials/                            # Folder containing all partial interfaces
-│   ├── with_<partial1>_interface.lang
+├── 📁 partials/                            # Folder containing all partial interfaces
+│   ├── 🍅 with_<partial1>_interface.lang
 │   ├── ...
-│   └── with_<partialN>_interface.lang
+│   └── 🍅 with_<partialN>_interface.lang
 │
-└── <class_name>_interface.lang          # Composed interface: base +partial interfaces
+└── 🥗 <class_name>_interface.lang          # Composed interface: base +partial interfaces
 ```
 
 Interfaces are named by appending `Interface` to its corresponding class name. For example:
@@ -183,14 +183,16 @@ Interfaces are named by appending `Interface` to its corresponding class name. F
 
 The **base class** serves as a special partial containing the core functionality of the composed class.
 
+##### Base Class Interface
+
 **Interfaces** should not contain any concrete implementations; they should only list method signatures that the concrete classes will implement. This rule applies to all interfaces, including base class interfaces.
 
-Name base interfaces using the pattern `<ClassName>BaseInterface`. For example:
+Base interfaces are named using the pattern `<ClassName>BaseInterface`. For example:
 
 ```mermaid
 classDiagram
     class Interface1["✨ CatBaseInterface"] {
-        <<base interface>>
+        <<interface>>
         +set_name(name)
         +get_name()
     }
@@ -203,25 +205,29 @@ classDiagram
     style Partial3 bugfix:#111, stroke-dasharray: 5 5
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
 ```
+
+##### Concrete Base Class
 
 **Concrete** classes should inherit from their interfaces, after renaming them as `ImplementsInterface`. This rule applies to all concrete classes, including base classes.
 
 ```mermaid
 classDiagram
-    class Interface1["✨ CatBaseInterface"] {
-        <<base interface>>
-        +set_name(name)
-        +get_name()
+    namespace Interface {
+        class Interface1["✨ CatBaseInterface"] {
+            <<interface>>
+            +set_name(name)
+            +get_name()
+        }
     }
 
     class Base["✨ CatBase"] {
-        <<base concrete>>
+        <<base>>
         +set_name(name)
         +get_name()
     }
 
     %% Relationships
-    Interface1 <|-- Base : _implements_ "ImplementsInterface"
+    Interface1 <|-- Base : as "ImplementsInterface"
 
     %% Apply Styles
     style Base fill:#ffff6020, stroke-dasharray: 5 5
@@ -232,12 +238,14 @@ classDiagram
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
 ```
 
-Alternatively, you can keep the base class empty and move core functionalities to a partial class, using the empty base class as a marker:
+##### Base Class as Marker
+
+Instead of having the core functionality on the base class, you can have the base class empty and move core functionalities to a partial class, using the empty base class as a marker:
 
 ```mermaid
 classDiagram
-    namespace CatBaseInterface {
-        class Interface1["✨ ImplementsInterface"] {
+    namespace Interface {
+        class Interface1["✨ CatBaseInterface"] {
             <<empty>>
             %% Empty interface
         }
@@ -249,7 +257,7 @@ classDiagram
     }
 
     %% Relationships
-    Interface1 <|-- Base : implements
+    Interface1 <|-- Base : as "ImplementsInterface"
 
     %% Apply Styles
     style Base fill:#ffff6020, stroke-dasharray: 5 5
@@ -264,22 +272,28 @@ classDiagram
 
 **Partials** add additional functionalities to the composed class.
 
-Partial interfaces must always import the base interface, renaming it to `WithBaseInterface` to maintain consistency and distinction. Partial interfaces are named `With<PartialName>Interface`. For example:
+##### Partial Interfaces
+
+Partial interfaces must always import the base interface, renaming it to `WithBaseInterface` to maintain consistency. Partial interfaces are named `With<PartialName>Interface`. For example:
 
 ```mermaid
 classDiagram
-    class Interface1["✨ WithBaseInterface"] {
-        <<base interface>>
+    namespace Base {
+        class Interface1["✨ CatBaseInterface"] {
+            <<interface>>
+            + set_name(name)
+            + get_name()
+        }
     }
 
     class Interface2["🍅 WithAgeInterface"] {
-        <<partial interface>>
+        <<interface>>
         + set_age(age)
         + get_age()
     }
 
     %% Relationships
-    Interface1 <|-- Interface2 : extends
+    Interface1 <|-- Interface2 : as "WithBaseInterface"
 
     %% Apply Styles
     style Base fill:#ffff6020, stroke-dasharray: 5 5
@@ -291,57 +305,188 @@ classDiagram
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
 ```
 
-For the concrete partial class:
+##### Dependency on Other Partials
 
-- Import its own interface as `ImplementsInterface`.
-- Inherit from `ImplementsInterface`.
-- Do not import the base class or other partial classes, even if their methods are used.
+If a partial depends on other partials, its interface must also import those partials' interfaces. For example, `WithAgilityInterface` depends on `WithAgeInterface`:
 
-Example:
+```mermaid
+classDiagram
+    namespace Base {
+        class Interface1["✨ CatBaseInterface"] {
+            <<interface>>
+            + set_name(name)
+            + get_name()
+        }
+    }
 
-```pseudo
-ImplementsInterface = aliasTo(WithAgeInterface)
+    namespace Partial1 {
+        class Interface2["🍅 WithAgeInterface"] {
+            <<interface>>
+            + set_age(age)
+            + get_age()
+        }
+    }
 
-class WithAge
-├── extends ImplementsInterface
-│
-├── +set_age(age)  # implementation
-└── +get_age()     # implementation
+    namespace PartialN {
+        class Interface3["🍅 With...Interface"] {
+            <<interface>>
+            + ...()
+        }
+    }
+
+    class Interface4["🍅 WithAgilityInterface"] {
+        <<interface>>
+        + set_agility(agility)
+        + get_agility()
+    }
+
+    %% Relationships
+    Interface1 <|-- Interface4 : as "WithBaseInterface"
+    Interface2 <|-- Interface4 : extends
+    Interface3 <|-- Interface4 : extends
+
+    %% Apply Styles
+    style Base fill:#ffff6020, stroke-dasharray: 5 5
+    style Composed bugfix:#111, stroke-width:2px, font-weight: bold
+    style Partial1 bugfix:#111, stroke-dasharray: 5 5
+    style Partial2 bugfix:#111, stroke-dasharray: 5 5
+    style Partial3 bugfix:#111, stroke-dasharray: 5 5
+    style Partial4 bugfix:#111, stroke-dasharray: 5 5
+    style Interface1 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface2 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface3 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface4 fill:#ff606020, stroke-dasharray: 2 2
 ```
 
-If a partial depends on other partials, its interface must import those partials' interfaces. For example, `WithAgilityInterface` depends on `WithAgeInterface`:
+##### Concrete Partial Classes
 
-```pseudo
-WithBaseInterface = aliasTo(CatBaseInterface)
+For the concrete partial class, inherit its own interface as `ImplementsInterface`.
 
-class WithAgilityInterface
-├── extends WithAgeInterface
-├── extends WithBaseInterface
-│
-├── +set_agility(agility)
-└── +get_agility()
+```mermaid
+classDiagram
+    namespace Interface {
+        class Interface1["🍅 WithAgeInterface"] {
+            <<interface>>
+            + set_age(age)
+            + get_age()
+        }
+    }
+
+    class Partial1["🍅 WithAge"] {
+        <<partial>>
+        + set_age(age)
+        + get_age()
+    }
+
+    %% Relationships
+    Interface1 <|-- Partial1 : as "ImplementsInterface"
+
+    %% Apply Styles
+    style Base fill:#ffff6020, stroke-dasharray: 5 5
+    style Composed bugfix:#111, stroke-width:2px, font-weight: bold
+    style Partial1 bugfix:#111, stroke-dasharray: 5 5
+    style Partial2 bugfix:#111, stroke-dasharray: 5 5
+    style Partial3 bugfix:#111, stroke-dasharray: 5 5
+    style Partial4 bugfix:#111, stroke-dasharray: 5 5
+    style Interface1 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface2 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface3 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface4 fill:#ff606020, stroke-dasharray: 2 2
 ```
 
-The concrete class:
+##### Concrete Partial with Dependencies on Other Partials
 
-```pseudo
-ImplementsInterface = aliasTo(WithAgilityInterface)
+If the partial depends on other partials, DO NOT inherit the base class or the other partial classes. Just like in the previous example, you must only inherit its own `ImplementsInterface`.
 
-class WithAgility
-├── extends ImplementsInterface
-│
-├── +set_agility(agility)  # implementation
-└── +get_agility()         # implementation
+```mermaid
+classDiagram
+    namespace Interface {
+        class Interface1["✨ CatBaseInterface"] {
+            <<interface>>
+        }
+
+        class Interface2["🍅 WithAgeInterface"] {
+            <<interface>>
+        }
+
+        class Interface3["🍅 With...Interface"] {
+            <<interface>>
+        }
+
+        class Interface4["🍅 WithAgilityInterface"] {
+            <<interface>>
+            + set_agility(agility)
+            + get_agility()
+        }
+    }
+
+    class Partial1["🍅 WithAgility"] {
+        <<partial>>
+        + set_agility(agility)
+        + get_agility()
+    }
+
+    %% Relationships
+    Interface1 <|-- Interface4 : as "WithBaseInterface"
+    Interface2 <|-- Interface4 : extends
+    Interface3 <|-- Interface4 : extends
+    Interface4 <|-- Partial1 : as "ImplementsInterface"
+
+    %% Apply Styles
+    style Base fill:#ffff6020, stroke-dasharray: 5 5
+    style Composed bugfix:#111, stroke-width:2px, font-weight: bold
+    style Partial1 bugfix:#111, stroke-dasharray: 5 5
+    style Partial2 bugfix:#111, stroke-dasharray: 5 5
+    style Partial3 bugfix:#111, stroke-dasharray: 5 5
+    style Partial4 bugfix:#111, stroke-dasharray: 5 5
+    style Interface1 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface2 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface3 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface4 fill:#ff606020, stroke-dasharray: 2 2
 ```
 
-Concrete partial classes typically inherit only from `ImplementsInterface`, but they can also inherit from external concrete classes like traits:
+##### Concrete Partial with Dependencies on External Classes
 
-```pseudo
-class WithPartial3
-├── extends SomeTrait
-├── extends ImplementsInterface
-│
-└── ...  # methods
+Concrete partial classes typically inherit only from `ImplementsInterface`, but they can also inherit from external concrete classes like traits.
+
+```mermaid
+classDiagram
+    namespace SomeExternalLibrary {
+        class External1["🌐 SomeTrait"] {
+            + some_method()
+        }
+    }
+
+    namespace Interface {
+        class Interface1["🍅 WithPartial3"] {
+            <<interface>>
+            + set_agility(agility)
+            + get_agility()
+        }
+    }
+
+    class Partial1["🍅 WithAgility"] {
+        <<partial>>
+        + set_agility(agility)
+        + get_agility()
+    }
+
+    %% Relationships
+    Interface1 <|-- Partial1 : as "ImplementsInterface"
+    External1 <|-- Partial1 : extends
+
+    %% Apply Styles
+    style Base fill:#ffff6020, stroke-dasharray: 5 5
+    style Composed bugfix:#111, stroke-width:2px, font-weight: bold
+    style External1 bugfix:#111, stroke-width:2px, font-weight: bold
+    style Partial1 bugfix:#111, stroke-dasharray: 5 5
+    style Partial2 bugfix:#111, stroke-dasharray: 5 5
+    style Partial3 bugfix:#111, stroke-dasharray: 5 5
+    style Partial4 bugfix:#111, stroke-dasharray: 5 5
+    style Interface1 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface2 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface3 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface4 fill:#ff606020, stroke-dasharray: 2 2
 ```
 
 #### Composed Class
