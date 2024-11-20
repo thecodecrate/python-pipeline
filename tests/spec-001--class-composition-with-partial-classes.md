@@ -227,7 +227,7 @@ classDiagram
     }
 
     %% Relationships
-    Interface1 <|-- Base : as "ImplementsInterface"
+    Interface1 <|-- Base : implements "ImplementsInterface"
 
     %% Apply Styles
     style Base fill:#ffff6020, stroke-dasharray: 5 5
@@ -257,7 +257,7 @@ classDiagram
     }
 
     %% Relationships
-    Interface1 <|-- Base : as "ImplementsInterface"
+    Interface1 <|-- Base : implements "ImplementsInterface"
 
     %% Apply Styles
     style Base fill:#ffff6020, stroke-dasharray: 5 5
@@ -293,7 +293,7 @@ classDiagram
     }
 
     %% Relationships
-    Interface1 <|-- Interface2 : as "WithBaseInterface"
+    Interface1 <|-- Interface2 : extends "WithBaseInterface"
 
     %% Apply Styles
     style Base fill:#ffff6020, stroke-dasharray: 5 5
@@ -341,7 +341,7 @@ classDiagram
     }
 
     %% Relationships
-    Interface1 <|-- Interface4 : as "WithBaseInterface"
+    Interface1 <|-- Interface4 : extends "WithBaseInterface"
     Interface2 <|-- Interface4 : extends
     Interface3 <|-- Interface4 : extends
 
@@ -379,7 +379,7 @@ classDiagram
     }
 
     %% Relationships
-    Interface1 <|-- Partial1 : as "ImplementsInterface"
+    Interface1 <|-- Partial1 : implements "ImplementsInterface"
 
     %% Apply Styles
     style Base fill:#ffff6020, stroke-dasharray: 5 5
@@ -427,10 +427,10 @@ classDiagram
     }
 
     %% Relationships
-    Interface1 <|-- Interface4 : as "WithBaseInterface"
+    Interface1 <|-- Interface4 : extends "WithBaseInterface"
     Interface2 <|-- Interface4 : extends
     Interface3 <|-- Interface4 : extends
-    Interface4 <|-- Partial1 : as "ImplementsInterface"
+    Interface4 <|-- Partial1 : implements "ImplementsInterface"
 
     %% Apply Styles
     style Base fill:#ffff6020, stroke-dasharray: 5 5
@@ -472,7 +472,7 @@ classDiagram
     }
 
     %% Relationships
-    Interface1 <|-- Partial1 : as "ImplementsInterface"
+    Interface1 <|-- Partial1 : implements "ImplementsInterface"
     External1 <|-- Partial1 : extends
 
     %% Apply Styles
@@ -493,35 +493,119 @@ classDiagram
 
 The **composed class** combines the base class and all partials into one.
 
-Its interface must import all partial interfaces and the base interface and is named `<ClassName>Interface`:
+##### Composed Class Interface
 
-```pseudo
-WithBaseInterface = aliasTo(CatBaseInterface)
+The composed class interface must be named `<ClassName>Interface`. It must import all partial interfaces and the base interface.
 
-class CatInterface
-├── extends WithAgilityInterface
-├── extends WithAgeInterface
-└── extends WithBaseInterface
+```mermaid
+classDiagram
+    namespace Base {
+        class Interface1["✨ CatBaseInterface"] {
+            <<interface>>
+            + set_name(name)
+            + get_name()
+        }
+    }
+
+    namespace Partial1 {
+        class Interface2["🍅 WithAgeInterface"] {
+            <<interface>>
+            + set_age(age)
+            + get_age()
+        }
+    }
+
+    namespace Partial2 {
+        class Interface3["🍅 WithAgilityInterface"] {
+            <<interface>>
+            + set_agility(agility)
+            + get_agility()
+        }
+    }
+
+    class Interface4["🥗 CatInterface"] {
+        <<empty>>
+    }
+
+    %% Relationships
+    Interface1 <|-- Interface4 : extends "WithBaseInterface"
+    Interface2 <|-- Interface4 : extends
+    Interface3 <|-- Interface4 : extends
+
+    %% Apply Styles
+    style Base fill:#ffff6020, stroke-dasharray: 5 5
+    style Composed bugfix:#111, stroke-width:2px, font-weight: bold
+    style Partial1 bugfix:#111, stroke-dasharray: 5 5
+    style Partial2 bugfix:#111, stroke-dasharray: 5 5
+    style Partial3 bugfix:#111, stroke-dasharray: 5 5
+    style Partial4 bugfix:#111, stroke-dasharray: 5 5
+    style Interface1 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface2 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface3 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface4 fill:#ff606020, stroke-dasharray: 2 2
 ```
+
+##### Concrete Composed Class
 
 The concrete composed class must:
 
 - Import and inherit from the concrete classes of all partials.
 - Import the concrete base class (`WithBase`).
-- Import its own interface as `ImplementsInterface`.
-- Inherit from `ImplementsInterface`.
+- Inherit its own interface as `ImplementsInterface`.
 
-Example:
+```mermaid
+classDiagram
+    namespace Base {
+        class Base_["✨ CatBase"] {
+            <<base>>
+            + set_name(name)
+            + get_name()
+        }
+    }
 
-```pseudo
-WithBase = aliasTo(CatBase)
-ImplementsInterface = aliasTo(CatInterface)
+    namespace Partial1 {
+        class Partial1_["🍅 WithAge"] {
+            <<partial>>
+            + set_age(age)
+            + get_age()
+        }
+    }
 
-class Cat
-├── extends WithAgility
-├── extends WithAge
-├── extends WithBase
-└── extends ImplementsInterface
+    namespace Partial2 {
+        class Partial2_["🍅 WithAgility"] {
+            <<partial>>
+            + set_agility(agility)
+            + get_agility()
+        }
+    }
+
+    namespace Interface {
+        class Interface1["🥗 CatInterface"] {
+            <<interface>>
+        }
+    }
+
+    class Composed["🥗 Cat"] {
+        <<composed>>
+    }
+
+    %% Relationships
+    Base_ <|-- Composed : extends "WithBaseInterface"
+    Partial1_ <|-- Composed : extends
+    Partial2_ <|-- Composed : extends
+    Interface1 <|-- Composed : implements "ImplementsInterface"
+
+    %% Apply Styles
+    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Composed bugfix:#111, stroke-width:2px, font-weight: bold
+    style Partial1_ bugfix:#111, stroke-dasharray: 5 5
+    style Partial2_ bugfix:#111, stroke-dasharray: 5 5
+    style Partial3_ bugfix:#111, stroke-dasharray: 5 5
+    style Partial4_ bugfix:#111, stroke-dasharray: 5 5
+    style Interface1 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface2 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface3 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface4 fill:#ff606020, stroke-dasharray: 2 2
 ```
 
 The composed class and its interface should remain empty, serving only to combine components. For additional methods or attributes, create a new partial.
@@ -545,8 +629,8 @@ The composed class and its interface should remain empty, serving only to combin
 
     ```pseudo
     class Cat
-    ├── extends WithAgility
-    ├── extends WithAge
-    ├── extends WithBase
-    └── extends ImplementsInterface
+    ├── WithAgility
+    ├── WithAge
+    ├── WithBase
+    └── ImplementsInterface
     ```
