@@ -73,7 +73,7 @@ It's important to note that while traditional partial classes are combined durin
 
 This specification introduces a convention for structuring classes using partial classes. It involves three main components:
 
-1. **🧬 Base Class**: Contains the core functionality of the class.
+1. **✨ Base Class**: Contains the core functionality of the class.
 2. **🍅 Partial Classes**: Partial classes that add additional functionality.
 3. **🥗 Composed Class**: Combines the base class and partials into a single class.
 
@@ -86,7 +86,7 @@ config:
         hideEmptyMembersBox: true
 ---
 classDiagram
-    class Base["🧬 CatBase"] {
+    class Base["✨ CatBase"] {
         <<base>>
         +set_name(name)
         +get_name()
@@ -216,7 +216,7 @@ classDiagram
         +get_name()
     }
 
-    class Base["🧬 CatBase"] {
+    class Base["✨ CatBase"] {
         <<base>>
         +set_name(name)
         +get_name()
