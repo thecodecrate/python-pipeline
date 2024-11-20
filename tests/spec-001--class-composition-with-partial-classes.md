@@ -87,25 +87,25 @@ config:
 ---
 classDiagram
     class Base["🧬 CatBase"] {
-        <<base>>
+        <<*base*>>
         +set_name(name)
         +get_name()
     }
 
     class Partial1["🥬 WithAge"] {
-        <<partial>>
+        <<*partial*>>
         +set_age(age)
         +get_age()
     }
 
     class Partial2["🥬 WithAgility"] {
-        <<partial>>
+        <<*partial*>>
         +set_agility(agility)
         +get_agility()
     }
 
     class Composed["🥗 Cat"] {
-        <<composed>>
+        <<*composed*>>
     }
 
     %% Relationships
@@ -190,7 +190,7 @@ Name base interfaces using the pattern `<ClassName>BaseInterface`. For example:
 ```mermaid
 classDiagram
     class Interface1["🫥 CatBaseInterface"] {
-        <<base interface>>
+        <<*base interface*>>
         +set_name(name)
         +get_name()
     }
@@ -210,14 +210,14 @@ classDiagram
 classDiagram
     %% note for Base "ImplementsInterface = aliasTo(CatBaseInterface)"
 
-    class Interface1["🫥 ImplementsInterface<br>hello"] {
-        <<aliasOf CatBaseInterface>>
+    class Interface1["🫥 ImplementsInterface"] {
+        <<*aliasOf CatBaseInterface*>>
         +set_name(name)
         +get_name()
     }
 
     class Base["🧬 CatBase"] {
-        <<base>>
+        <<*base*>>
         +set_name(name)
         +get_name()
     }
@@ -241,7 +241,7 @@ classDiagram
     note for CatBase "ImplementsInterface = aliasTo(CatBaseInterface)"
 
     class CatBaseInterface {
-        <<interface>>
+        <<*interface*>>
         %% Empty interface
     }
 
@@ -263,11 +263,11 @@ classDiagram
     note for WithBaseInterface "WithBaseInterface = aliasTo(CatBaseInterface)"
 
     class WithBaseInterface {
-        <<interface>>
+        <<*interface*>>
     }
 
     class WithAgeInterface {
-        <<interface>>
+        <<*interface*>>
         + set_age(age)
         + get_age()
     }
