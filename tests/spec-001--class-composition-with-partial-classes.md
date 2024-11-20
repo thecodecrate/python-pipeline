@@ -74,7 +74,7 @@ It's important to note that while traditional partial classes are combined durin
 This specification introduces a convention for structuring classes using partial classes. It involves three main components:
 
 1. **🧬 Base Class**: Contains the core functionality of the class.
-2. **🥬 Partial Classes**: Partial classes that add additional functionality.
+2. **🍅 Partial Classes**: Partial classes that add additional functionality.
 3. **🥗 Composed Class**: Combines the base class and partials into a single class.
 
 An example of a composed class is:
@@ -92,13 +92,13 @@ classDiagram
         +get_name()
     }
 
-    class Partial1["🥬 WithAge"] {
+    class Partial1["🍅 WithAge"] {
         <<partial>>
         +set_age(age)
         +get_age()
     }
 
-    class Partial2["🥬 WithAgility"] {
+    class Partial2["🍅 WithAgility"] {
         <<partial>>
         +set_agility(agility)
         +get_agility()
