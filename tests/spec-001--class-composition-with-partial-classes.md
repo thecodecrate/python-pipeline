@@ -189,7 +189,7 @@ Name base interfaces using the pattern `<ClassName>BaseInterface`. For example:
 
 ```mermaid
 classDiagram
-    class Interface1["🫥 CatBaseInterface"] {
+    class Interface1["✨ CatBaseInterface"] {
         <<base interface>>
         +set_name(name)
         +get_name()
@@ -208,8 +208,6 @@ classDiagram
 
 ```mermaid
 classDiagram
-    %% note for Base "ImplementsInterface = aliasTo(CatBaseInterface)"
-
     class Interface1["🫥 ImplementsInterface"] {
         <<aliasOf CatBaseInterface>>
         +set_name(name)
@@ -238,18 +236,25 @@ Alternatively, you can keep the base class empty and move core functionalities t
 
 ```mermaid
 classDiagram
-    note for CatBase "ImplementsInterface = aliasTo(CatBaseInterface)"
-
-    class CatBaseInterface {
-        <<interface>>
+    class Interface1["🫥 ImplementsInterface"] {
+        <<aliasOf CatBaseInterface>>
         %% Empty interface
     }
 
-    class CatBase {
+    class Base["✨ CatBase"] {
         %% Empty class
     }
 
-    CatBase --|> CatBaseInterface : implements
+    %% Relationships
+    Interface1 <|-- Base : implements
+
+    %% Apply Styles
+    style Base fill:#ffff6020, stroke-dasharray: 5 5
+    style Composed bugfix:#111, stroke-width:2px, font-weight: bold
+    style Partial1 bugfix:#111, stroke-dasharray: 5 5
+    style Partial2 bugfix:#111, stroke-dasharray: 5 5
+    style Partial3 bugfix:#111, stroke-dasharray: 5 5
+    style Interface1 fill:#ff606020, stroke-dasharray: 2 2
 ```
 
 #### Partials
@@ -260,19 +265,27 @@ Partial interfaces must always import the base interface, renaming it to `WithBa
 
 ```mermaid
 classDiagram
-    note for WithBaseInterface "WithBaseInterface = aliasTo(CatBaseInterface)"
-
-    class WithBaseInterface {
-        <<interface>>
+    class Interface1["✨ WithBaseInterface"] {
+        <<base interface>>
     }
 
-    class WithAgeInterface {
-        <<interface>>
+    class Interface2["🍅 WithAgeInterface"] {
+        <<partial interface>>
         + set_age(age)
         + get_age()
     }
 
-    WithBaseInterface <|-- WithAgeInterface : extends
+    %% Relationships
+    Interface1 <|-- Interface2 : extends
+
+    %% Apply Styles
+    style Base fill:#ffff6020, stroke-dasharray: 5 5
+    style Composed bugfix:#111, stroke-width:2px, font-weight: bold
+    style Partial1 bugfix:#111, stroke-dasharray: 5 5
+    style Partial2 bugfix:#111, stroke-dasharray: 5 5
+    style Partial3 bugfix:#111, stroke-dasharray: 5 5
+    style Interface1 fill:#ff606020, stroke-dasharray: 2 2
+    style Interface2 fill:#ff606020, stroke-dasharray: 2 2
 ```
 
 For the concrete partial class:
