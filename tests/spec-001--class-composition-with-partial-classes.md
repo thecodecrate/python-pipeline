@@ -194,6 +194,11 @@ Interfaces should only list method signatures without any concrete implementatio
 Base interfaces are named using `<ClassName>BaseInterface`. For example:
 
 ```mermaid
+---
+config:
+    class:
+        hideEmptyMembersBox: true
+---
 classDiagram
     class Interface1["✨ CatBaseInterface"] {
         <<interface>>
@@ -220,6 +225,11 @@ classDiagram
 Concrete classes inherit from their interface, renamed as `ImplementsInterface`. This applies to all concrete classes, including the base class.
 
 ```mermaid
+---
+config:
+    class:
+        hideEmptyMembersBox: true
+---
 classDiagram
     namespace Interface {
         class Interface1["✨ CatBaseInterface"] {
@@ -257,6 +267,11 @@ classDiagram
 Alternatively, the base class can be left empty, acting as a marker, with core functionalities moved to a partial class:
 
 ```mermaid
+---
+config:
+    class:
+        hideEmptyMembersBox: true
+---
 classDiagram
     namespace Interface {
         class Interface1["✨ CatBaseInterface"] {
@@ -296,6 +311,11 @@ classDiagram
 Partial interfaces must import the base interface, renaming it to `WithBaseInterface` for consistency. They are named `With<PartialName>Interface`:
 
 ```mermaid
+---
+config:
+    class:
+        hideEmptyMembersBox: true
+---
 classDiagram
     namespace Base {
         class Interface1["✨ CatBaseInterface"] {
@@ -333,6 +353,11 @@ classDiagram
 If a partial depends on other partials, its interface must also import those partials' interfaces. For example, `WithAgilityInterface` depends on `WithAgeInterface`:
 
 ```mermaid
+---
+config:
+    class:
+        hideEmptyMembersBox: true
+---
 classDiagram
     namespace Base {
         class Interface1["✨ CatBaseInterface"] {
@@ -387,6 +412,11 @@ classDiagram
 Concrete partial classes inherit only from their own `ImplementsInterface`:
 
 ```mermaid
+---
+config:
+    class:
+        hideEmptyMembersBox: true
+---
 classDiagram
     namespace Interface {
         class Interface1["🍅 WithAgeInterface"] {
@@ -424,6 +454,11 @@ classDiagram
 For partials depending on other partials, inherit only from `ImplementsInterface`:
 
 ```mermaid
+---
+config:
+    class:
+        hideEmptyMembersBox: true
+---
 classDiagram
     namespace Interface {
         class Interface1["✨ CatBaseInterface"] {
@@ -476,6 +511,11 @@ classDiagram
 Concrete partial classes can also inherit from external concrete classes like traits:
 
 ```mermaid
+---
+config:
+    class:
+        hideEmptyMembersBox: true
+---
 classDiagram
     namespace SomeExternalLibrary {
         class External1["🌐 SomeTrait"] {
@@ -524,6 +564,11 @@ The **composed class** combines the base class and all partials.
 The composed class interface, named `<ClassName>Interface`, imports all partial interfaces and the base interface:
 
 ```mermaid
+---
+config:
+    class:
+        hideEmptyMembersBox: true
+---
 classDiagram
     namespace Base {
         class Interface1["✨ CatBaseInterface"] {
@@ -581,6 +626,11 @@ The concrete composed class:
 - Inherits its own interface as `ImplementsInterface`.
 
 ```mermaid
+---
+config:
+    class:
+        hideEmptyMembersBox: true
+---
 classDiagram
     namespace Base {
         class Base_["✨ CatBase"] {
