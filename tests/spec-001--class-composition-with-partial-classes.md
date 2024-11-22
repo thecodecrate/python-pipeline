@@ -12,6 +12,7 @@ Example:
 
 ```mermaid
 ---
+title: "Class = Partial1 + Partial2 + ... + PartialN"
 config:
     class:
         hideEmptyMembersBox: true
@@ -41,13 +42,14 @@ classDiagram
     Partial3_ <|-- Composed_
 
     %% Apply Styles
-    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Base_ fill:#6060ff20, stroke-dasharray: 5 5
     style Composed_ bugfix:#111, stroke-width:2px, font-weight: bold
     style External1 bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1_ bugfix:#111, stroke-dasharray: 5 5
     style Partial2_ bugfix:#111, stroke-dasharray: 5 5
     style Partial3_ bugfix:#111, stroke-dasharray: 5 5
     style Partial4_ bugfix:#111, stroke-dasharray: 5 5
+    style InterfaceBase_ fill:#ff60ff20, stroke-dasharray: 2 2
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
     style Interface3 fill:#ff606020, stroke-dasharray: 2 2
@@ -72,7 +74,7 @@ In this specification, "partial classes" refers to splitting a class into multip
 
 This convention introduces a method for structuring classes using partial classes, involving three main components:
 
-1. **✨ Base Class**: Contains the core functionality.
+1. **🥣 Base Class**: Contains the core functionality.
 2. **🍅 Partial Classes**: Add additional functionalities.
 3. **🥗 Composed Class**: Combines the base class and partials into a single class.
 
@@ -80,12 +82,13 @@ An example of a composed class:
 
 ```mermaid
 ---
+title: "🥗 Composed = 🥣 Base + 🍅 Partial1 + 🍅 Partial2 + ... + 🍅 PartialN"
 config:
     class:
         hideEmptyMembersBox: true
 ---
 classDiagram
-    class Base_["✨ CatBase"] {
+    class Base_["🥣 CatBase"] {
         <<base>>
         +set_name(name)
         +get_name()
@@ -113,13 +116,14 @@ classDiagram
     Partial2_ <|-- Composed_ : extends
 
     %% Apply Styles
-    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Base_ fill:#6060ff20, stroke-dasharray: 5 5
     style Composed_ bugfix:#111, stroke-width:2px, font-weight: bold
     style External1 bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial2_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial3_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial4_ fill:#60ff6020, stroke-dasharray: 5 5
+    style InterfaceBase_ fill:#ff60ff20, stroke-dasharray: 2 2
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
     style Interface3 fill:#ff606020, stroke-dasharray: 2 2
@@ -138,7 +142,7 @@ The recommended file structure:
 
 ```pseudo
 <class_name>/
-├── ✨ <class_name>_base.lang       # Base class with core functionality
+├── 🥣 <class_name>_base.lang       # Base class with core functionality
 │
 ├── 📁 partials/                    # Contains all partial implementations
 │   ├── 🍅 with_<partial1>.lang     # Partial 1
@@ -165,7 +169,7 @@ To enhance type safety and ensure consistent method implementation, each class m
 ```pseudo
 <class_name>/
 ├── ...
-├── ✨ <class_name>_base_interface.lang     # Interface for the base class
+├── 🥣 <class_name>_base_interface.lang     # Interface for the base class
 │
 ├── 📁 partials/
 │   ├── 🍅 with_<partial1>_interface.lang   # Partial 1 interface
@@ -200,20 +204,21 @@ config:
         hideEmptyMembersBox: true
 ---
 classDiagram
-    class Interface1["✨ CatBaseInterface"] {
+    class InterfaceBase_["🥣 CatBaseInterface"] {
         <<interface>>
         +set_name(name)
         +get_name()
     }
 
     %% Apply Styles
-    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Base_ fill:#6060ff20, stroke-dasharray: 5 5
     style Composed_ bugfix:#111, stroke-width:2px, font-weight: bold
     style External1 bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial2_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial3_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial4_ fill:#60ff6020, stroke-dasharray: 5 5
+    style InterfaceBase_ fill:#ff60ff20, stroke-dasharray: 2 2
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
     style Interface3 fill:#ff606020, stroke-dasharray: 2 2
@@ -232,14 +237,14 @@ config:
 ---
 classDiagram
     namespace Interface {
-        class Interface1["✨ CatBaseInterface"] {
+        class InterfaceBase_["🥣 CatBaseInterface"] {
             <<interface>>
             +set_name(name)
             +get_name()
         }
     }
 
-    class Base_["✨ CatBase"] {
+    class Base_["🥣 CatBase"] {
         <<base>>
         +set_name(name)
         +get_name()
@@ -249,13 +254,14 @@ classDiagram
     Interface1 <|-- Base_ : implements "ImplementsInterface"
 
     %% Apply Styles
-    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Base_ fill:#6060ff20, stroke-dasharray: 5 5
     style Composed_ bugfix:#111, stroke-width:2px, font-weight: bold
     style External1 bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial2_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial3_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial4_ fill:#60ff6020, stroke-dasharray: 5 5
+    style InterfaceBase_ fill:#ff60ff20, stroke-dasharray: 2 2
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
     style Interface3 fill:#ff606020, stroke-dasharray: 2 2
@@ -274,28 +280,32 @@ config:
 ---
 classDiagram
     namespace Interface {
-        class Interface1["✨ CatBaseInterface"] {
+        class InterfaceBase_["🥣 CatBaseInterface"] {
             <<empty>>
             %% Empty interface
         }
     }
 
-    class Base_["✨ CatBase"] {
+    class Base_["🥣 CatBase"] {
         <<empty>>
         %% Empty class
     }
+
+    %% Notes
+    note "The base class (both concrete and interface) does not contain any methods."
 
     %% Relationships
     Interface1 <|-- Base_ : implements "ImplementsInterface"
 
     %% Apply Styles
-    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Base_ fill:#6060ff20, stroke-dasharray: 5 5
     style Composed_ bugfix:#111, stroke-width:2px, font-weight: bold
     style External1 bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial2_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial3_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial4_ fill:#60ff6020, stroke-dasharray: 5 5
+    style InterfaceBase_ fill:#ff60ff20, stroke-dasharray: 2 2
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
     style Interface3 fill:#ff606020, stroke-dasharray: 2 2
@@ -318,7 +328,7 @@ config:
 ---
 classDiagram
     namespace Base {
-        class Interface1["✨ CatBaseInterface"] {
+        class InterfaceBase_["🥣 CatBaseInterface"] {
             <<interface>>
             +set_name(name)
             +get_name()
@@ -332,16 +342,17 @@ classDiagram
     }
 
     %% Relationships
-    Interface1 <|-- Interface2 : extends "WithBaseInterface"
+    InterfaceBase_ <|-- Interface2 : extends "WithBaseInterface"
 
     %% Apply Styles
-    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Base_ fill:#6060ff20, stroke-dasharray: 5 5
     style Composed_ bugfix:#111, stroke-width:2px, font-weight: bold
     style External1 bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial2_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial3_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial4_ fill:#60ff6020, stroke-dasharray: 5 5
+    style InterfaceBase_ fill:#ff60ff20, stroke-dasharray: 2 2
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
     style Interface3 fill:#ff606020, stroke-dasharray: 2 2
@@ -360,7 +371,7 @@ config:
 ---
 classDiagram
     namespace Base {
-        class Interface1["✨ CatBaseInterface"] {
+        class InterfaceBase_["🥣 CatBaseInterface"] {
             <<interface>>
             +set_name(name)
             +get_name()
@@ -389,18 +400,19 @@ classDiagram
     }
 
     %% Relationships
-    Interface1 <|-- Interface4 : extends "WithBaseInterface"
+    InterfaceBase_ <|-- Interface4 : extends "WithBaseInterface"
     Interface2 <|-- Interface4 : extends
     Interface3 <|-- Interface4 : extends
 
     %% Apply Styles
-    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Base_ fill:#6060ff20, stroke-dasharray: 5 5
     style Composed_ bugfix:#111, stroke-width:2px, font-weight: bold
     style External1 bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial2_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial3_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial4_ fill:#60ff6020, stroke-dasharray: 5 5
+    style InterfaceBase_ fill:#ff60ff20, stroke-dasharray: 2 2
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
     style Interface3 fill:#ff606020, stroke-dasharray: 2 2
@@ -436,13 +448,14 @@ classDiagram
     Interface1 <|-- Partial1_ : implements "ImplementsInterface"
 
     %% Apply Styles
-    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Base_ fill:#6060ff20, stroke-dasharray: 5 5
     style Composed_ bugfix:#111, stroke-width:2px, font-weight: bold
     style External1 bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial2_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial3_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial4_ fill:#60ff6020, stroke-dasharray: 5 5
+    style InterfaceBase_ fill:#ff60ff20, stroke-dasharray: 2 2
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
     style Interface3 fill:#ff606020, stroke-dasharray: 2 2
@@ -461,7 +474,7 @@ config:
 ---
 classDiagram
     namespace Interface {
-        class Interface1["✨ CatBaseInterface"] {
+        class InterfaceBase_["🥣 CatBaseInterface"] {
             <<interface>>
         }
 
@@ -487,19 +500,20 @@ classDiagram
     }
 
     %% Relationships
-    Interface1 <|-- Interface4 : extends "WithBaseInterface"
+    InterfaceBase_ <|-- Interface4 : extends "WithBaseInterface"
     Interface2 <|-- Interface4 : extends
     Interface3 <|-- Interface4 : extends
     Interface4 <|-- Partial1_ : implements "ImplementsInterface"
 
     %% Apply Styles
-    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Base_ fill:#6060ff20, stroke-dasharray: 5 5
     style Composed_ bugfix:#111, stroke-width:2px, font-weight: bold
     style External1 bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial2_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial3_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial4_ fill:#60ff6020, stroke-dasharray: 5 5
+    style InterfaceBase_ fill:#ff60ff20, stroke-dasharray: 2 2
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
     style Interface3 fill:#ff606020, stroke-dasharray: 2 2
@@ -542,13 +556,14 @@ classDiagram
     External1 <|-- Partial1_ : extends
 
     %% Apply Styles
-    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Base_ fill:#6060ff20, stroke-dasharray: 5 5
     style Composed_ bugfix:#111, stroke-width:2px, font-weight: bold
     style External1 bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial2_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial3_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial4_ fill:#60ff6020, stroke-dasharray: 5 5
+    style InterfaceBase_ fill:#ff60ff20, stroke-dasharray: 2 2
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
     style Interface3 fill:#ff606020, stroke-dasharray: 2 2
@@ -571,7 +586,7 @@ config:
 ---
 classDiagram
     namespace Base {
-        class Interface1["✨ CatBaseInterface"] {
+        class InterfaceBase_["🥣 CatBaseInterface"] {
             <<interface>>
             +set_name(name)
             +get_name()
@@ -604,13 +619,14 @@ classDiagram
     Interface3 <|-- Interface4 : extends
 
     %% Apply Styles
-    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Base_ fill:#6060ff20, stroke-dasharray: 5 5
     style Composed_ bugfix:#111, stroke-width:2px, font-weight: bold
     style External1 bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial2_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial3_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial4_ fill:#60ff6020, stroke-dasharray: 5 5
+    style InterfaceBase_ fill:#ff60ff20, stroke-dasharray: 2 2
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
     style Interface3 fill:#ff606020, stroke-dasharray: 2 2
@@ -633,7 +649,7 @@ config:
 ---
 classDiagram
     namespace Base {
-        class Base_["✨ CatBase"] {
+        class Base_["🥣 CatBase"] {
             <<base>>
             +set_name(name)
             +get_name()
@@ -673,13 +689,14 @@ classDiagram
     Interface1 <|-- Composed : implements "ImplementsInterface"
 
     %% Apply Styles
-    style Base_ fill:#ffff6020, stroke-dasharray: 5 5
+    style Base_ fill:#6060ff20, stroke-dasharray: 5 5
     style Composed_ bugfix:#111, stroke-width:2px, font-weight: bold
     style External1 bugfix:#111, stroke-width:2px, font-weight: bold
     style Partial1_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial2_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial3_ fill:#60ff6020, stroke-dasharray: 5 5
     style Partial4_ fill:#60ff6020, stroke-dasharray: 5 5
+    style InterfaceBase_ fill:#ff60ff20, stroke-dasharray: 2 2
     style Interface1 fill:#ff606020, stroke-dasharray: 2 2
     style Interface2 fill:#ff606020, stroke-dasharray: 2 2
     style Interface3 fill:#ff606020, stroke-dasharray: 2 2
