@@ -1,9 +1,3 @@
 # Aliases for GIT shortcuts (https://laracasts.com/series/how-to-contribute-to-open-source/episodes/5)
 alias wip='git add . && git commit -m '\''Work in progress'\'
 alias nope='git reset --hard && git clean -f -d && git checkout HEAD'
-
-# Alias for publishing the package to pypi
-alias clean_dist='rm -rf dist/*'
-alias bump='bumpver update --minor'
-alias build='clean_dist && python -m build'
-alias deploy='twine upload dist/*'

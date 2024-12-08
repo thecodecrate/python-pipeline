@@ -1,39 +1,37 @@
 {
   "name": "Library python-pipeline",
-  "dockerComposeFile": [
-    "../docker/local/docker-compose.yml"
-  ],
-  "service": "python",
-  "workspaceFolder": "/app",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-python.python",
-        "ms-python.vscode-pylance",
-        "ms-python.black-formatter",
-        "oderwat.indent-rainbow",
-        "ms-python.isort",
-        "ms-python.debugpy",
-        "ms-toolsai.jupyter",
+        "charliermarsh.ruff",
         "DavidAnson.vscode-markdownlint",
-        "GitHub.copilot",
-        "GitHub.copilot-chat",
+        "github.copilot",
+        "github.copilot-chat",
+        "github.vscode-github-actions",
         "mikestead.dotenv",
-        "ms-python.flake8",
-        "tamasfe.even-better-toml",
-        "github.vscode-github-actions"
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "pkief.material-icon-theme",
+        "redhat.vscode-yaml",
+        "tamasfe.even-better-toml"
       ],
       "settings": {
-        "terminal.integrated.shell.linux": "/bin/bash",
-        "editor.defaultFormatter": "ms-python.black-formatter",
-        "indentRainbow.indicatorStyle": "light",
+        "editor.linkedEditing": true,
         "editor.formatOnSave": true,
-        "python.condaPath": "/opt/conda/bin/conda",
-        "python.defaultInterpreterPath": "/opt/conda/envs/venv/bin/python",
-        "python.analysis.autoImportCompletions": true,
-        "python.analysis.typeCheckingMode": "strict",
-        "python.analysis.diagnosticMode": "workspace",
+        "editor.rulers": [
+          80,
+          100
+        ],
+        "editor.guides.bracketPairs": true,
+        "editor.guides.highlightActiveIndentation": true,
         "explorer.sortOrderLexicographicOptions": "upper",
+        "files.insertFinalNewline": true,
+        "files.trimTrailingWhitespace": true,
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        "ruff.nativeServer": "on",
+        "terminal.integrated.shell.linux": "/bin/zsh",
+        "workbench.iconTheme": "material-icon-theme",
         "[toml]": {
           "editor.defaultFormatter": "tamasfe.even-better-toml",
           "editor.formatOnSave": true
@@ -45,6 +43,9 @@
     }
   },
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
-  }
+    "ghcr.io/thecodecrate/devcontainer-features/bash-aliases:1": {},
+    "ghcr.io/thecodecrate/devcontainer-features/uv:1": {}
+  },
+  "remoteUser": "vscode",
+  "postCreateCommand": "zsh -i .devcontainer/scripts/post-create.sh"
 }

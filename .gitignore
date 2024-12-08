@@ -100,3 +100,6 @@ Thumbs.db
 
 # docker
 docker-compose.override.yml
+
+# UV
+.uv_cache/
