@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# .env
+.env
+
 # Distribution / packaging
 .Python
 build/
@@ -20,19 +23,21 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
-# PyInstaller
-# Usually these files are written by a python script from a template
-# before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+# Virtual environment directories
+env/
+venv/
+ENV/
+env.bak/
+venv.bak
+.venv/
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
@@ -44,62 +49,16 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
+*.py,cover
 .hypothesis/
-.pytest_cache/
+pytest_cache/
 cover/
 
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Pyenv
+# python version
 .python-version
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# profiling data
-.prof
-
-# vscode
-.vscode/
-
-# Operating System Files
-.DS_Store
-Thumbs.db
-
-# IDE specific files
-.idea/
-*.swp
-
-# docker
-docker-compose.override.yml
 
 # UV
 .uv_cache/
