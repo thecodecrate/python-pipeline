@@ -1,7 +1,6 @@
 import pytest
 from thecodecrate_pipeline import (
     PipelineFactory,
-    StageCallable,
     ChainedProcessor,
     Stage,
     StageCollection,
@@ -36,7 +35,8 @@ async def test_parameter_immutability():
     assert result == "result is 12"
 
     # let's try to change the stages list
-    add_excitement: StageCallable = lambda x: f"{x}!!!"
+    def add_excitement(x: str) -> str:
+        return f"{x}!!!"
     pipeline_factory.add_stage(add_excitement)
 
     # the original "some_stages" list should not be affected
@@ -54,7 +54,8 @@ async def test_immutability():
     assert result == "result is 12"
 
     # adding another stage after the pipeline has been created
-    add_excitement: StageCallable = lambda x: f"{x}!!!"
+    def add_excitement(x: str) -> str:
+        return f"{x}!!!"
     pipeline_factory.add_stage(add_excitement)
 
     # the original pipeline is not affected
