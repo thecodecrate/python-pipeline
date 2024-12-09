@@ -4,13 +4,16 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "aaron-bond.better-comments",
         "charliermarsh.ruff",
         "DavidAnson.vscode-markdownlint",
         "github.copilot",
         "github.copilot-chat",
         "github.vscode-github-actions",
         "mikestead.dotenv",
+        "ms-python.debugpy",
         "ms-python.python",
+        "ms-python.vscode-pylance",
         "ms-toolsai.jupyter",
         "pkief.material-icon-theme",
         "redhat.vscode-yaml",
@@ -28,21 +31,43 @@
         "explorer.sortOrderLexicographicOptions": "upper",
         "files.insertFinalNewline": true,
         "files.trimTrailingWhitespace": true,
-        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
         "ruff.nativeServer": "on",
         "terminal.integrated.shell.linux": "/bin/zsh",
         "workbench.iconTheme": "material-icon-theme",
+        // Python settings
+        "python.analysis.autoSearchPaths": true,
+        "python.analysis.diagnosticSeverityOverrides": {
+          "reportMissingImports": "none"
+        },
+        "python.analysis.extraPaths": [
+          "${workspaceFolder}/src"
+        ],
+        "python.envFile": "${workspaceFolder}/.env",
+        "python.terminal.activateEnvironment": true,
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        // Test settings
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "python.testing.cwd": "${workspaceFolder}/tests",
+        "python.testing.pytestPath": "${workspaceFolder}/.venv/bin/pytest",
+        "python.testing.autoTestDiscoverOnSaveEnabled": true,
+        // Per-filetype settings
         "[toml]": {
           "editor.defaultFormatter": "tamasfe.even-better-toml",
           "editor.formatOnSave": true
         },
         "[markdown]": {
-          "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+          "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+          "editor.formatOnSave": true,
+          "editor.wordWrap": "on"
         }
       }
     }
   },
   "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "configureZshAsDefaultShell": true
+    },
     "ghcr.io/thecodecrate/devcontainer-features/bash-aliases:1": {},
     "ghcr.io/thecodecrate/devcontainer-features/uv:1": {}
   },
