@@ -27,7 +27,7 @@ jobs:
           pip install ruff
 
       - name: Run ruff format
-        run: ruff format --output-format=github .
+        run: ruff format .
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
