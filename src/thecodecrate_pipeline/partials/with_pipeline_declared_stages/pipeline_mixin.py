@@ -33,8 +33,7 @@ class PipelineMixin(
 
     def _instantiate_stages(self) -> Self:
         instances = tuple(
-            stage() if isinstance(stage, type) else stage
-            for stage in self.stages
+            stage() if isinstance(stage, type) else stage for stage in self.stages
         )
 
         return self._set_items(instances)

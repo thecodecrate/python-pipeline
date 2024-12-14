@@ -31,6 +31,4 @@ class ProcessorInterface(
     ) -> Any: ...
 
 
-TProcessor = TypeVar(
-    "TProcessor", bound=ProcessorInterface, infer_variance=True
-)
+TProcessor = TypeVar("TProcessor", bound=ProcessorInterface, infer_variance=True)

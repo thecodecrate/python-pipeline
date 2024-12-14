@@ -37,6 +37,7 @@ async def test_parameter_immutability():
     # let's try to change the stages list
     def add_excitement(x: str) -> str:
         return f"{x}!!!"
+
     pipeline_factory.add_stage(add_excitement)
 
     # the original "some_stages" list should not be affected
@@ -56,6 +57,7 @@ async def test_immutability():
     # adding another stage after the pipeline has been created
     def add_excitement(x: str) -> str:
         return f"{x}!!!"
+
     pipeline_factory.add_stage(add_excitement)
 
     # the original pipeline is not affected

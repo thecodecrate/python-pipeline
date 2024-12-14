@@ -21,11 +21,7 @@ async def stage2(stream: AsyncIterator[int]) -> AsyncIterator[str]:
 
 
 # Create the pipeline
-pipeline = (
-    Pipeline[AsyncIterator[int], AsyncIterator[str]]()
-    .pipe(stage1)
-    .pipe(stage2)
-)
+pipeline = Pipeline[AsyncIterator[int], AsyncIterator[str]]().pipe(stage1).pipe(stage2)
 
 
 # Define the input stream
