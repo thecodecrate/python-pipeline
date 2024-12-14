@@ -241,9 +241,7 @@ async def test_custom_args_on_stages():
         async def __call__(self, payload: str, index: int) -> str:
             return f"{payload}: {index}"
 
-    pipeline = (
-        (IndexedPipeline[str]()).pipe(MyIndexedStage()).pipe(MyIndexedStage())
-    )
+    pipeline = (IndexedPipeline[str]()).pipe(MyIndexedStage()).pipe(MyIndexedStage())
 
     assert await pipeline.process("test") == "test: 0: 1"
     assert pipeline.processor_instance.__class__ == IndexedProcessor

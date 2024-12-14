@@ -19,9 +19,7 @@ class PipelineMixin(
         self,
         processor_class: Optional[type[ProcessorInterface]] = None,
         processor_instance: Optional[ProcessorInterface] = None,
-        processor: Optional[
-            type[ProcessorInterface] | ProcessorInterface
-        ] = None,
+        processor: Optional[type[ProcessorInterface] | ProcessorInterface] = None,
         *args: Any,
         **kwds: Any,
     ) -> None:
@@ -57,9 +55,7 @@ class PipelineMixin(
 
         return self.with_processor_instance(processor)
 
-    def with_processor_instance(
-        self, processor_instance: ProcessorInterface
-    ) -> Self:
+    def with_processor_instance(self, processor_instance: ProcessorInterface) -> Self:
         return self.clone(
             {
                 "processor_class": processor_instance.__class__,
@@ -67,9 +63,7 @@ class PipelineMixin(
             }
         )
 
-    def with_processor_class(
-        self, processor_class: type[ProcessorInterface]
-    ) -> Self:
+    def with_processor_class(self, processor_class: type[ProcessorInterface]) -> Self:
         return self.clone({"processor_class": processor_class})
 
     def _make_processor(self) -> ProcessorInterface:

@@ -16,9 +16,7 @@ class PipelineFactoryInterfaceMixin(
         self,
         processor_class: Optional[type[ProcessorInterface]] = None,
         processor_instance: Optional[ProcessorInterface] = None,
-        processor: Optional[
-            type[ProcessorInterface] | ProcessorInterface
-        ] = None,
+        processor: Optional[type[ProcessorInterface] | ProcessorInterface] = None,
         *args: Any,
         **kwds: Any,
     ) -> None: ...

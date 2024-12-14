@@ -19,9 +19,7 @@ class PipelineInterfaceMixin(
         self,
         processor_class: Optional[type[ProcessorInterface]] = None,
         processor_instance: Optional[ProcessorInterface] = None,
-        processor: Optional[
-            type[ProcessorInterface] | ProcessorInterface
-        ] = None,
+        processor: Optional[type[ProcessorInterface] | ProcessorInterface] = None,
         *args: Any,
         **kwds: Any,
     ) -> None: ...
@@ -40,6 +38,4 @@ class PipelineInterfaceMixin(
 
     def _make_processor(self) -> ProcessorInterface: ...
 
-    async def process(
-        self, payload: T_in, *args: Any, **kwds: Any
-    ) -> T_out: ...
+    async def process(self, payload: T_in, *args: Any, **kwds: Any) -> T_out: ...
