@@ -1,0 +1,7 @@
+alias _rm_python_cache='find . -type d -name "__pycache__" -exec rm -rf {} +'
+alias _rm_pytest_cache='find . -type d -name ".pytest_cache" -exec rm -rf {} +'
+alias _rm_egginfo='find . -type f -name "*.egg-info" -exec rm -rf {} +'
+alias _rm_dist='find . -type d -name "dist" -exec rm -rf {} +'
+alias _rm_uv_cache='uv cache clean'
+alias _rm_ruff_cache='ruff clean'
+alias clean='_rm_python_cache; _rm_pytest_cache; _rm_egginfo; _rm_dist; _rm_uv_cache; _rm_ruff_cache'

@@ -52,10 +52,12 @@ coverage.xml
 *.py,cover
 .hypothesis/
 pytest_cache/
+.pytest_cache/
 cover/
 
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# UV
+# UV / Ruff
 .uv_cache/
+.ruff_cache/
