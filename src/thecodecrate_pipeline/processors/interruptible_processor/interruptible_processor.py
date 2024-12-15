@@ -1,9 +1,9 @@
 import inspect
 from typing import Any, Awaitable, Callable, cast
 
-from ...classes.processor import Processor
-from ...classes.stage_callable import StageInstanceCollection
-from ...classes.types import T_in, T_out
+from ...core.final.processor import Processor
+from ...core.final.stage_callable import StageInstanceCollection
+from ...core.final.types import T_in, T_out
 
 CheckCallable = Callable[[T_in], bool | Awaitable[bool]]
 
