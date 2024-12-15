@@ -1,5 +1,5 @@
-from ...classes.pipeline import Pipeline
-from ...classes.types import T_in, T_out
+from ...core.final.pipeline import Pipeline
+from ...core.final.types import T_in, T_out
 from .chained_processor import ChainedProcessor
 
 

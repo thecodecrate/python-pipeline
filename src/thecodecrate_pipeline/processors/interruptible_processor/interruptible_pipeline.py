@@ -1,8 +1,8 @@
 from typing import Any
 
-from ...classes.pipeline import Pipeline
-from ...classes.types import T_in, T_out
-from .interruptible_processor import InterruptibleProcessor, CheckCallable
+from ...core.final.pipeline import Pipeline
+from ...core.final.types import T_in, T_out
+from .interruptible_processor import CheckCallable, InterruptibleProcessor
 
 
 class InterruptiblePipeline(Pipeline[T_in, T_out]):
