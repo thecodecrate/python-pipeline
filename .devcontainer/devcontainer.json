@@ -45,9 +45,6 @@
         "python.analysis.diagnosticMode": "workspace",
         "python.analysis.importFormat": "relative",
         "python.analysis.autoImportCompletions": true,
-        "python.analysis.diagnosticSeverityOverrides": {
-          "reportMissingImports": "none"
-        },
         "python.analysis.extraPaths": [
           "${containerWorkspaceFolder}/src"
         ],

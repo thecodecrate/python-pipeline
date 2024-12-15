@@ -1,8 +1,8 @@
 from typing import Any, cast
 
-from ...classes.stage_callable import StageInstanceCollection
-from ...classes.types import T_in, T_out
-from ...classes.processor import Processor
+from ...core.final.processor import Processor
+from ...core.final.stage_callable import StageInstanceCollection
+from ...core.final.types import T_in, T_out
 
 
 class ChainedProcessor(Processor[T_in, T_out]):
