@@ -14,8 +14,6 @@ class ChainedProcessor(Processor[T_in, T_out]):
         **kwds: Any,
     ) -> T_out:
         for stage in stages:
-            payload = await self._call(
-                stage=stage, payload=payload, *args, **kwds
-            )
+            payload = await self._call(stage=stage, payload=payload, *args, **kwds)
 
         return cast(T_out, payload)

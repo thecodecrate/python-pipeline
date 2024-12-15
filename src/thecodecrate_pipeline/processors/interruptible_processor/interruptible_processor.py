@@ -1,9 +1,9 @@
 import inspect
 from typing import Any, Awaitable, Callable, cast
 
+from ...classes.processor import Processor
 from ...classes.stage_callable import StageInstanceCollection
 from ...classes.types import T_in, T_out
-from ...classes.processor import Processor
 
 CheckCallable = Callable[[T_in], bool | Awaitable[bool]]
 
@@ -24,9 +24,7 @@ class InterruptibleProcessor(Processor[T_in, T_out]):
         **kwds: Any,
     ) -> T_out:
         for stage in stages:
-            payload = await self._call(
-                stage=stage, payload=payload, *args, **kwds
-            )
+            payload = await self._call(stage=stage, payload=payload, *args, **kwds)
 
             if not await self._call_check(payload):
                 return cast(T_out, payload)

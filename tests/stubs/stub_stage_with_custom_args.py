@@ -37,9 +37,7 @@ class IndexedProcessor(Processor[T_in, T_out]):
         index = 0
 
         for stage in stages:
-            payload = await self._call(
-                stage=stage, payload=payload, index=index
-            )
+            payload = await self._call(stage=stage, payload=payload, index=index)
 
             index += 1
 
