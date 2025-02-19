@@ -17,7 +17,9 @@
         "ms-toolsai.jupyter",
         "pkief.material-icon-theme",
         "redhat.vscode-yaml",
-        "tamasfe.even-better-toml"
+        "tamasfe.even-better-toml",
+        "ms-vscode.vscode-websearchforcopilot",
+        "ms-vscode.vscode-commander"
       ],
       "settings": {
         "editor.linkedEditing": true,
@@ -57,6 +59,19 @@
         "python.testing.cwd": "${containerWorkspaceFolder}/tests",
         "python.testing.pytestPath": "${containerWorkspaceFolder}/.venv/bin/pytest",
         "python.testing.autoTestDiscoverOnSaveEnabled": true,
+        // MkDocs schema for the YAML extension
+        "yaml.schemas": {
+          "https://squidfunk.github.io/mkdocs-material/schema.json": "mkdocs.yml"
+        },
+        "yaml.customTags": [
+          "!ENV scalar",
+          "!ENV sequence",
+          "!relative scalar",
+          "tag:yaml.org,2002:python/name:material.extensions.emoji.to_svg",
+          "tag:yaml.org,2002:python/name:material.extensions.emoji.twemoji",
+          "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format",
+          "tag:yaml.org,2002:python/object/apply:pymdownx.slugs.slugify mapping"
+        ],
         // Settings per file type
         "[toml]": {
           "editor.defaultFormatter": "tamasfe.even-better-toml",
@@ -86,5 +101,8 @@
     "ghcr.io/thecodecrate/devcontainer-features/uv:1": {}
   },
   "remoteUser": "vscode",
-  "postCreateCommand": "zsh -i .devcontainer/scripts/post-create.sh"
+  "postCreateCommand": "zsh -i .devcontainer/scripts/post-create.sh",
+  "containerEnv": {
+    "PYTHONPATH": "${containerWorkspaceFolder}/src"
+  }
 }

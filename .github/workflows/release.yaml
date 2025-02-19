@@ -6,6 +6,8 @@ on:
     tags:
       - '*'
 
+permissions: {}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
