@@ -7,7 +7,7 @@ __version__ = "1.23.0"
 
 # ruff: noqa
 from .core import (
-    ChainedProcessor,
+    __all__ as _core_all,
     Pipeline,
     PipelineFactory,
     PipelineFactoryInterface,
@@ -24,17 +24,14 @@ from .core import (
     T_in,
     T_out,
 )
-from .core import (
-    __all__ as _core_all,
-)
 
 # ruff: noqa
 from .processors import (
+    __all__ as _processor_all,
     ChainedProcessor,
     ChainedPipeline,
     InterruptibleProcessor,
     InterruptiblePipeline,
-    __all__ as _processor_all,
 )
 
 __all__ = (*_core_all, *_processor_all)

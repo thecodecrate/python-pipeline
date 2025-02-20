@@ -1,13 +1,13 @@
 # ruff: noqa
 from .chained_processor import (
+    __all__ as _chained_processor_all,
     ChainedProcessor,
     ChainedPipeline,
-    __all__ as _chained_processor_all,
 )
 from .interruptible_processor import (
+    __all__ as _interruptible_processor_all,
     InterruptibleProcessor,
     InterruptiblePipeline,
-    __all__ as _interruptible_processor_all,
 )
 
 __all__ = (

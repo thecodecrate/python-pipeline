@@ -1,12 +1,17 @@
 from abc import ABC
 
-from ..partials.step06_pipeline_processor import Processor_Base
+# extends: outside base
+from ..plugins._06_with_pipeline_processor import Processor as ProcessorBase
+
+# implements: self-interface
 from .processor_interface import ProcessorInterface as ImplementsInterface
+
+# uses: bridge interface
 from .types import T_in, T_out
 
 
 class Processor(
-    Processor_Base[T_in, T_out],
+    ProcessorBase[T_in, T_out],
     ImplementsInterface[T_in, T_out],
     ABC,
 ):

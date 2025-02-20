@@ -1,0 +1,9 @@
+name = "_99_with_pipeline_default_processor"
+dependencies = [
+    "_01_with_base",
+    "_02_with_pipeline_as_list",
+    "_04_with_pipeline_declared_stages",
+    "_05_with_pipeline_factory",
+    "_06_with_pipeline_processor",
+    "_08_with_pipeline_as_stage",
+]

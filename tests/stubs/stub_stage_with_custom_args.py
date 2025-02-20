@@ -16,6 +16,7 @@ class IndexedStage(Stage[T_in, T_out]):
     async def __call__(
         self,
         payload: T_in,
+        /,
         tag: int,
     ) -> T_out:
         pass
@@ -37,7 +38,7 @@ class IndexedProcessor(Processor[T_in, T_out]):
         index = 0
 
         for stage in stages:
-            payload = await self._call(stage=stage, payload=payload, index=index)
+            payload = await self._call(callable=stage, payload=payload, index=index)
 
             index += 1
 
