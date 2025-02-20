@@ -22,5 +22,4 @@ class ChainedProcessorInterface(
         stages: StageInstanceCollection,
         *args: Any,
         **kwds: Any,
-    ) -> T_out:
-        pass
+    ) -> T_out: ...
