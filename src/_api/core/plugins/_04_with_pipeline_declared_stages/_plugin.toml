@@ -1,0 +1,2 @@
+name = "_04_with_pipeline_declared_stages"
+dependencies = ["_01_with_base", "_02_with_pipeline_as_list"]

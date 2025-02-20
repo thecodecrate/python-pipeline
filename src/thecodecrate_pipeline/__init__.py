@@ -7,6 +7,7 @@ __version__ = "1.23.0"
 
 # ruff: noqa
 from _api import (
+    __all__ as _api_all,
     ChainedPipeline,
     ChainedProcessor,
     InterruptiblePipeline,
@@ -26,9 +27,6 @@ from _api import (
     StageInterface,
     T_in,
     T_out,
-)
-from _api import (
-    __all__ as _api_all,
 )
 
 __all__ = (*_api_all,)

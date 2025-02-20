@@ -1,5 +1,6 @@
 # ruff: noqa
 from .final import (
+    __all__ as _final_all,
     ChainedProcessor,
     Pipeline,
     PipelineFactory,
@@ -16,9 +17,6 @@ from .final import (
     StageInterface,
     T_in,
     T_out,
-)
-from .final import (
-    __all__ as _final_all,
 )
 
 __all__ = (*_final_all,)

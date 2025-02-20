@@ -1,10 +1,11 @@
-from .chained_processor import ChainedProcessor
 from .pipeline import Pipeline
 from .pipeline_factory import PipelineFactory
 from .pipeline_factory_interface import PipelineFactoryInterface
 from .pipeline_interface import PipelineInterface
 from .processor import Processor
 from .processor_interface import ProcessorInterface
+from .processors.chained_processor import ChainedProcessor
+from .processors.chained_processor_interface import ChainedProcessorInterface
 from .stage import Stage
 from .stage_callable import (
     StageCallable,
@@ -33,4 +34,5 @@ __all__ = (
     "StageClassOrInstance",
     "StageCollection",
     "ChainedProcessor",
+    "ChainedProcessorInterface",
 )

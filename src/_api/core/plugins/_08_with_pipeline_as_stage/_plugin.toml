@@ -1,0 +1,7 @@
+name = "_08_with_pipeline_as_stage"
+dependencies = [
+    "_01_with_base",
+    "_02_with_pipeline_as_list",
+    "_03_with_stage_as_callable",
+    "_06_with_pipeline_processor",
+]

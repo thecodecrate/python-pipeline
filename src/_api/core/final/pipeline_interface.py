@@ -1,27 +1,39 @@
-from typing import Protocol
+from typing import Protocol, TypeVar
 
-from ..partials.step01_base import Pipeline_Base_Interface
-from ..partials.step02_pipeline_as_list import Pipeline_WithPipelineAsList_Interface
-from ..partials.step04_pipeline_declared_stages import (
-    Pipeline_WithPipelineDeclaredStages_Interface,
+# extends: outside base
+from ..plugins._01_with_base import PipelineInterface as PipelineBaseInterface
+
+# extends: outside mixins
+from ..plugins._02_with_pipeline_as_list import (
+    PipelineInterfaceMixin as _02_WithPipelineAsListInterface,
 )
-from ..partials.step06_pipeline_processor import (
-    Pipeline_WithPipelineProcessor_Interface,
+from ..plugins._04_with_pipeline_declared_stages import (
+    PipelineInterfaceMixin as _04_WithPipelineDeclaredStagesInterface,
 )
-from ..partials.step07_pipeline_default_processor import (
-    Pipeline_WithPipelineDefaultProcessor_Interface,
+from ..plugins._06_with_pipeline_processor import (
+    PipelineInterfaceMixin as _06_WithPipelineProcessorInterface,
 )
-from ..partials.step08_pipeline_as_stage import Pipeline_WithPipelineAsStage_Interface
+from ..plugins._08_with_pipeline_as_stage import (
+    PipelineInterfaceMixin as _08_WithPipelineAsStageInterface,
+)
+from ..plugins._99_with_pipeline_default_processor import (
+    PipelineInterfaceMixin as _99_WithPipelineDefaultProcessorInterface,
+)
+
+# uses: bridge interface
 from .types import T_in, T_out
 
 
 class PipelineInterface(
-    Pipeline_WithPipelineAsStage_Interface[T_in, T_out],
-    Pipeline_WithPipelineDefaultProcessor_Interface[T_in, T_out],
-    Pipeline_WithPipelineProcessor_Interface[T_in, T_out],
-    Pipeline_WithPipelineDeclaredStages_Interface,
-    Pipeline_WithPipelineAsList_Interface,
-    Pipeline_Base_Interface,
+    _99_WithPipelineDefaultProcessorInterface[T_in, T_out],
+    _08_WithPipelineAsStageInterface[T_in, T_out],
+    _06_WithPipelineProcessorInterface[T_in, T_out],
+    _04_WithPipelineDeclaredStagesInterface,
+    _02_WithPipelineAsListInterface,
+    PipelineBaseInterface,
     Protocol[T_in, T_out],
 ):
     pass
+
+
+TPipeline = TypeVar("TPipeline", bound=PipelineInterface, infer_variance=True)

@@ -1,17 +1,20 @@
 from typing import Protocol
 
-from ..partials.step01_base import (
-    StageCallable_Base,
+# extends: outside base
+from ..plugins._01_with_base import StageCallable as StageCallableBase
+from ..plugins._01_with_base import (
     StageClassOrInstance,
     StageCollection,
     StageInstance,
     StageInstanceCollection,
 )
+
+# uses: bridge interface
 from .types import T_in, T_out
 
 
 class StageCallable(
-    StageCallable_Base[T_in, T_out],
+    StageCallableBase[T_in, T_out],
     Protocol[T_in, T_out],
 ):
     pass
@@ -19,8 +22,8 @@ class StageCallable(
 
 __all__ = (
     "StageCallable",
-    "StageCollection",
     "StageInstance",
     "StageInstanceCollection",
     "StageClassOrInstance",
+    "StageCollection",
 )
