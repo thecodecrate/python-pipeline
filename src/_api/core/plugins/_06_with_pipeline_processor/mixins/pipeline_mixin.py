@@ -14,8 +14,8 @@ class PipelineMixin(
     ImplementsInterface[T_in, T_out],
     Generic[T_in, T_out],
 ):
-    processor_class: Optional[type[ProcessorInterface]]
-    processor_instance: Optional[ProcessorInterface]
+    processor_class: Optional[type[ProcessorInterface[T_in, T_out]]]
+    processor_instance: Optional[ProcessorInterface[T_in, T_out]]
 
     def __init__(
         self,
@@ -28,7 +28,7 @@ class PipelineMixin(
         super().__init__(*args, **kwds)  # type: ignore
 
         if not hasattr(self, "processor_class"):
-            self.processor_class = None
+            self.processor_class = self._get_default_processor_class()
 
         if not hasattr(self, "processor_instance"):
             self.processor_instance = None
@@ -93,3 +93,12 @@ class PipelineMixin(
         return await self.processor_instance.process(
             payload=payload, stages=self._get_items(), *args, **kwds
         )
+
+    def _get_default_processor_class(self) -> Optional[type[ProcessorInterface]]:
+        return None
+
+    def get_processor_instance(self) -> Optional[ProcessorInterface]:
+        return self.processor_instance
+
+    def get_processor_class(self) -> Optional[type[ProcessorInterface]]:
+        return self.processor_class

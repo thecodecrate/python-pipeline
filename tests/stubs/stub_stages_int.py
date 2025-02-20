@@ -11,6 +11,11 @@ class AddOneStage(Stage[int]):
         return payload + 1
 
 
+class InvalidStage(Stage[int]):
+    async def __call__(self, payload: str) -> int:
+        return len(payload)
+
+
 class TimesThreeStage(Stage[int]):
     async def __call__(self, payload: int) -> int:
         return payload * 3
