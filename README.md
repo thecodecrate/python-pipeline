@@ -250,3 +250,20 @@ except ZeroDivisionError as e:
     # Handle the exception.
     pass
 ```
+
+## Architecture
+
+All code is located in the `src/_api` directory and follows the Static-Plugin Design (SPD) pattern. This architectural approach ensures:
+
+- Clear separation of concerns through static plugins
+- Full static analysis capabilities
+- Predictable code execution paths
+- Zero runtime overhead
+
+The project utilizes class composition rather than dynamic plugins, making the codebase easier to maintain and debug while preserving extensibility.
+
+### Project's Specs and Guidelines
+
+- [spec2: Static-Plugin Design](https://github.com/thecodecrate/guidelines/blob/main/specs/spec-002--static-plugin-design/README.md)
+- [spec3: SPD Manifest Files](https://github.com/thecodecrate/guidelines/blob/main/specs/spec-003--spd-manifest-files/README.md)
+- [spec4: SPD Naming Convention](https://github.com/thecodecrate/guidelines/blob/main/specs/spec-004--spd-naming-convention/README.md)

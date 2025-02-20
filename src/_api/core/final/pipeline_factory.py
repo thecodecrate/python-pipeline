@@ -1,21 +1,29 @@
-from typing import Generic, Optional
+from typing import Generic
 
-from ..partials.step01_base.pipeline_interface import TPipeline
-from ..partials.step05_pipeline_factory import PipelineFactory_Base
-from ..partials.step06_pipeline_processor import PipelineFactory_WithPipelineProcessor
-from ..partials.step07_pipeline_default_processor import (
-    PipelineFactory_WithPipelineDefaultProcessor,
+# extends: outside base
+from ..plugins._05_with_pipeline_factory import PipelineFactory as PipelineFactoryBase
+
+# extends: outside mixins
+from ..plugins._06_with_pipeline_processor import (
+    PipelineFactoryMixin as _06_WithPipelineProcessor,
 )
-from .pipeline import Pipeline
+from ..plugins._99_with_pipeline_default_processor import (
+    PipelineFactoryMixin as _99_WithPipelineDefaultProcessor,
+)
+
+# implements: self-interface
 from .pipeline_factory_interface import PipelineFactoryInterface as ImplementsInterface
+
+# uses: bridge interface
+from .pipeline_interface import PipelineInterface
 from .types import T_in, T_out
 
 
 class PipelineFactory(
-    PipelineFactory_WithPipelineDefaultProcessor[T_in, T_out],
-    PipelineFactory_WithPipelineProcessor[T_in, T_out],
-    PipelineFactory_Base,
+    _99_WithPipelineDefaultProcessor[T_in, T_out],
+    _06_WithPipelineProcessor[T_in, T_out],
+    PipelineFactoryBase[PipelineInterface[T_in, T_out]],
     ImplementsInterface[T_in, T_out],
     Generic[T_in, T_out],
 ):
-    _model_class: Optional[type[TPipeline]] = Pipeline
+    pass

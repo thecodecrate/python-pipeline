@@ -1,13 +1,20 @@
 from typing import Protocol
 
-from ..partials.step01_base import Stage_Base_Interface
-from ..partials.step03_stage_as_callable import Stage_WithStageAsCallable_Interface
+# extends: outside base
+from ..plugins._01_with_base import StageInterface as StageBaseInterface
+
+# extends: outside mixins
+from ..plugins._03_with_stage_as_callable import (
+    StageInterfaceMixin as _03_WithStageAsCallableInterface,
+)
+
+# uses: bridge interface
 from .types import T_in, T_out
 
 
 class StageInterface(
-    Stage_WithStageAsCallable_Interface[T_in, T_out],
-    Stage_Base_Interface,
+    _03_WithStageAsCallableInterface[T_in, T_out],
+    StageBaseInterface,
     Protocol[T_in, T_out],
 ):
     pass

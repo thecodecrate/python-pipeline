@@ -19,7 +19,8 @@
         "redhat.vscode-yaml",
         "tamasfe.even-better-toml",
         "ms-vscode.vscode-websearchforcopilot",
-        "ms-vscode.vscode-commander"
+        "ms-vscode.vscode-commander",
+        "ms-python.mypy-type-checker"
       ],
       "settings": {
         "editor.linkedEditing": true,
