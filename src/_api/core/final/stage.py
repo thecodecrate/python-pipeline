@@ -1,15 +1,21 @@
-from abc import ABC
+# extends: outside base
+from ..plugins._01_with_base import Stage as StageBase
 
-from ..partials.step01_base import Stage_Base
-from ..partials.step03_stage_as_callable import Stage_WithStageAsCallable
+# extends: outside mixins
+from ..plugins._03_with_stage_as_callable import (
+    StageMixin as _03_WithStageAsCallable,
+)
+
+# implements: self-interface
 from .stage_interface import StageInterface as ImplementsInterface
+
+# uses: bridge
 from .types import T_in, T_out
 
 
 class Stage(
-    Stage_WithStageAsCallable[T_in, T_out],
-    Stage_Base,
+    _03_WithStageAsCallable[T_in, T_out],
+    StageBase,
     ImplementsInterface[T_in, T_out],
-    ABC,
 ):
     pass

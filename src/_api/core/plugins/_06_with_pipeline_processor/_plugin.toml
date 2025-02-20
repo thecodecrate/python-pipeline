@@ -1,0 +1,6 @@
+name = "_06_with_pipeline_processor"
+dependencies = [
+    "_01_with_base",
+    "_02_with_pipeline_as_list",
+    "_05_with_pipeline_factory",
+]

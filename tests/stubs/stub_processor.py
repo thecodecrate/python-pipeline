@@ -7,10 +7,10 @@ from thecodecrate_pipeline import (
 class StubProcessor(Processor[int]):
     async def process(
         self,
-        stages: StageInstanceCollection,
         payload: int,
+        stages: StageInstanceCollection,
     ) -> int:
         for stage in stages:
-            payload = await self._call(stage=stage, payload=payload)
+            payload = await self._call(callable=stage, payload=payload)
 
         return payload * 10
