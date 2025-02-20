@@ -1,0 +1,5 @@
+{
+    "typeCheckingMode": "strict",
+    "include": ["**/*.py"],
+    "exclude": ["**/node_modules", "**/__pycache__", ".uv_cache", ".venv", ".git", ".vscode"]
+}
