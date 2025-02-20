@@ -31,7 +31,7 @@ class PipelineFactory(
             self.stages = tuple()
 
         if not hasattr(self, "pipeline_class"):
-            self.pipeline_class = None
+            self.pipeline_class = self._get_default_pipeline_class()
 
         if stages:
             self.stages = stages
@@ -54,7 +54,10 @@ class PipelineFactory(
         return self._set_items(self.stages + (item,))
 
     # ActAsFactory
-    def _get_model_class(self):
+    def _get_model_class(self) -> type[TPipeline]:
+        if self.pipeline_class is None:
+            raise ValueError("Pipeline class not set in factory.")
+
         return self.pipeline_class
 
     # ActAsFactory
@@ -74,3 +77,6 @@ class PipelineFactory(
         Adds a collection of stages to the pipeline.
         """
         return self._set_items(stages)
+
+    def _get_default_pipeline_class(self) -> Optional[type[TPipeline]]:
+        return None

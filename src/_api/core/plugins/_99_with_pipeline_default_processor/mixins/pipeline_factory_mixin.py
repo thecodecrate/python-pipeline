@@ -1,7 +1,6 @@
-from typing import Generic, Optional
+from typing import Generic
 
 # uses: bridge interface
-from ..bridges.pipeline_interface import TPipeline
 from ..bridges.types import T_in, T_out
 
 # implements: self-interface
@@ -17,4 +16,5 @@ class PipelineFactoryMixin(
     ImplementsInterface[T_in, T_out],
     Generic[T_in, T_out],
 ):
-    pipeline_class: Optional[type[TPipeline]] = Pipeline[T_in, T_out]
+    def _get_default_pipeline_class(self) -> type[Pipeline[T_in, T_out]]:
+        return Pipeline[T_in, T_out]

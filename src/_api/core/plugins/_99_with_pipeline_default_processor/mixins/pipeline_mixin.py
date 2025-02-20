@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import Optional
 
 # uses: base concrete
 from ..bases.processors.chained_processor import ChainedProcessor
@@ -8,7 +7,6 @@ from ..bases.processors.chained_processor import ChainedProcessor
 from ..bridges.pipeline import Pipeline
 
 # uses: bridge interface
-from ..bridges.processor_interface import ProcessorInterface
 from ..bridges.types import T_in, T_out
 
 # implements: self-interface
@@ -20,4 +18,5 @@ class PipelineMixin(
     ImplementsInterface[T_in, T_out],
     ABC,
 ):
-    processor_class: Optional[type[ProcessorInterface]] = ChainedProcessor[T_in, T_out]
+    def _get_default_processor_class(self) -> type[ChainedProcessor[T_in, T_out]]:
+        return ChainedProcessor[T_in, T_out]
