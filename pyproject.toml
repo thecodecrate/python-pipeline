@@ -65,3 +65,6 @@ push = false
 
 [tool.setuptools.package-data]
 "thecodecrate_pipeline" = ["py.typed"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/thecodecrate_pipeline", "src/_api"]
