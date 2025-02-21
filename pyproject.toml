@@ -20,7 +20,7 @@ requires-python = ">=3.13"
 
 [project.urls]
 repository = "https://github.com/thecodecrate/python-pipeline"
-documentation = "https://github.com/thecodecrate/python-pipeline"
+documentation = "https://thecodecrate.github.io/python-pipeline/"
 
 [dependency-groups]
 dev = [
