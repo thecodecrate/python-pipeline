@@ -4,6 +4,8 @@ This package provides a pipeline pattern implementation.
 
 The implementation is inspired by the excellent [PHP League Pipeline](https://github.com/thephpleague/pipeline) package.
 
+Full documentation can be found at [https://thecodecrate.github.io/python-pipeline/](https://thecodecrate.github.io/python-pipeline/).
+
 ## Installation
 
 ```bash

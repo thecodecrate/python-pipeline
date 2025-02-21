@@ -1,6 +1,6 @@
 [project]
 name = "thecodecrate-pipeline"
-version = "1.25.0"
+version = "1.26.0"
 description = "This package provides a pipeline pattern implementation"
 readme = "README.md"
 authors = [{ name = "TheCodeCrate", email = "loureiro.rg@gmail.com" }]
@@ -20,7 +20,7 @@ requires-python = ">=3.13"
 
 [project.urls]
 repository = "https://github.com/thecodecrate/python-pipeline"
-documentation = "https://github.com/thecodecrate/python-pipeline"
+documentation = "https://thecodecrate.github.io/python-pipeline/"
 
 [dependency-groups]
 dev = [
@@ -48,7 +48,7 @@ build-backend = "hatchling.build"
 line-length = 79
 
 [tool.bumpver]
-current_version = "1.25.0"
+current_version = "1.26.0"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message = "🚀 feat: bump version {old_version} -> {new_version}"
 tag_message = "{new_version}"

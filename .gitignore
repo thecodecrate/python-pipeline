@@ -61,3 +61,6 @@ cover/
 # UV / Ruff
 .uv_cache/
 .ruff_cache/
+
+# mkdocs site
+/site
