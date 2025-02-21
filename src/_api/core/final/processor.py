@@ -15,4 +15,6 @@ class Processor(
     ImplementsInterface[T_in, T_out],
     ABC,
 ):
+    """Processor Class"""
+
     pass

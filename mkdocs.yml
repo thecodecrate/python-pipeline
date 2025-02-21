@@ -2,14 +2,17 @@ site_name: "TheCodeCrate's Pipeline"
 site_url: "https://thecodecrate.github.io/python-pipeline"
 repo_url: "https://github.com/thecodecrate/python-pipeline"
 
+watch:
+  - src
+
 extra_css:
   - assets/css/extra.css
   - assets/css/extra-pymdownx.css
 
 theme:
   name: material
-  logo: assets/images/logo.svg
-  favicon: assets/images/favicon.png
+  # logo: assets/images/logo.svg
+  # favicon: assets/images/favicon.png
   font:
     text: Roboto
     code: Roboto Mono
@@ -103,19 +106,21 @@ plugins:
       default_handler: python
       handlers:
         python:
-          paths: [src]
+          paths: ["src"]
           options:
+            show_if_no_docstring: true
             docstring_options:
               ignore_init_summary: true
+              trim_doctest_flags: true
             docstring_section_style: list
             # docstring_section_style: spacy
-            filters: ["!^_"]
+            filters:
+              - "!^_"
             heading_level: 1
-            inherited_members: true
             merge_init_into_class: true
             parameter_headings: true
             allow_inspection: true
-            # preload_modules: [mkdocstrings]
+            preload_modules: ["_api", "thecodecrate_pipeline",]
             relative_crossrefs: true
             scoped_crossrefs: true
             separate_signature: true
@@ -129,7 +134,7 @@ plugins:
             show_symbol_type_heading: true
             show_symbol_type_toc: true
             signature_crossrefs: true
-            summary: true
+            summary: false
             unwrap_annotated: true
 
 extra:
@@ -138,13 +143,16 @@ extra:
       link: https://github.com/thecodecrate/python-pipeline
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/thecodecrate-pipeline/
+
 validation:
   omitted_files: warn
   absolute_links: warn
   unrecognized_links: warn
   anchors: warn
+
 nav:
   - Home: index.md
   - API Reference:
     - core: api/core.md
+    - types: api/types.md
     - processors: api/processors.md

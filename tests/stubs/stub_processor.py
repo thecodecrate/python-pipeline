@@ -1,7 +1,5 @@
-from thecodecrate_pipeline import (
-    Processor,
-    StageInstanceCollection,
-)
+from thecodecrate_pipeline import Processor
+from thecodecrate_pipeline.types import StageInstanceCollection
 
 
 class StubProcessor(Processor[int]):

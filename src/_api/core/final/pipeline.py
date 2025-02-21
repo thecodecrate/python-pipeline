@@ -37,4 +37,6 @@ class Pipeline(
     ImplementsInterface[T_in, T_out],
     Generic[T_in, T_out],
 ):
+    """Pipeline Class"""
+
     pass

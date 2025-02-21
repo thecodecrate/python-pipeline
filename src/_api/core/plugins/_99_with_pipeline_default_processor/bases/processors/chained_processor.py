@@ -24,6 +24,18 @@ class ChainedProcessor(
         *args: Any,
         **kwds: Any,
     ) -> T_out:
+        """
+        Process the given payload through the provided stages.
+
+        Args:
+            payload (T_in): The input payload to process.
+            stages (StageInstanceCollection): The collection of stages to process the payload through.
+            *args (Any): Additional positional arguments.
+            **kwds (Any): Additional keyword arguments.
+
+        Returns:
+            T_out: The processed output.
+        """
         for stage in stages:
             payload = await self._call(callable=stage, payload=payload, *args, **kwds)
 

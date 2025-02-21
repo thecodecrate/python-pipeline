@@ -15,6 +15,8 @@ class ProcessorInterface(
     ClonableInterface,
     Protocol[T_in, T_out],
 ):
+    def __init__(self, *args: Any, **kwds: Any) -> None: ...
+
     @abstractmethod
     async def process(
         self,

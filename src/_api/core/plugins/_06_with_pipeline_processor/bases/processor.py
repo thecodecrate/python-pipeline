@@ -18,6 +18,10 @@ class Processor(
     Clonable,
     ImplementsInterface[T_in, T_out],
 ):
+    def __init__(self, *args: Any, **kwds: Any) -> None:
+        """Constructor."""
+        pass
+
     @abstractmethod
     async def process(
         self,
@@ -28,6 +32,15 @@ class Processor(
     ) -> T_out:
         """
         Process the given payload through the provided stages.
+
+        Args:
+            payload (T_in): The input payload to process.
+            stages (StageInstanceCollection): The collection of stages to process the payload through.
+            *args (Any): Additional positional arguments.
+            **kwds (Any): Additional keyword arguments.
+
+        Returns:
+            T_out: The processed output.
         """
         pass
 

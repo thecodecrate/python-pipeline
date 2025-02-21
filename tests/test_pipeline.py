@@ -1,11 +1,11 @@
 import pytest
-from thecodecrate_pipeline import (
-    Pipeline,
-    StageCollection,
-    StageInstanceCollection,
-)
 
-from tests.stubs.stub_stage_with_custom_args import (
+from thecodecrate_pipeline import Pipeline
+from thecodecrate_pipeline.types import StageCollection, StageInstanceCollection
+
+from .stubs.stub_processor import StubProcessor
+from .stubs.stub_stage import StubStage
+from .stubs.stub_stage_with_custom_args import (
     IndexedPipeline,
     IndexedProcessor,
     IndexedStage,
@@ -15,8 +15,6 @@ from .stubs.stub_stages_int import (
     TimesThreeStage,
     TimesTwoStage,
 )
-from .stubs.stub_stage import StubStage
-from .stubs.stub_processor import StubProcessor
 
 
 @pytest.mark.asyncio

@@ -1,14 +1,8 @@
 from abc import abstractmethod
 from typing import Awaitable, Callable, Concatenate, cast
 
-from thecodecrate_pipeline import (
-    Pipeline,
-    Processor,
-    Stage,
-    StageInstanceCollection,
-    T_in,
-    T_out,
-)
+from thecodecrate_pipeline import Pipeline, Processor, Stage
+from thecodecrate_pipeline.types import StageInstanceCollection, T_in, T_out
 
 
 class IndexedStage(Stage[T_in, T_out]):
