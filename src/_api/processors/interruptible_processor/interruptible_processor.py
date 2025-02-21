@@ -7,9 +7,38 @@ CheckCallable = Callable[[T_in], bool | Awaitable[bool]]
 
 
 class InterruptibleProcessor(Processor[T_in, T_out]):
+    """Processor with conditional interruption."""
+
     check: CheckCallable[T_in]
+    """Callable for processing interruption. Useful for declarative subclassing.
+
+    Example:
+        ```python
+        class MaxValueProcessor(InterruptibleProcessor[int, int]):
+            # interrupt if value exceeds 100
+            check = lambda x: x > 100
+        ```
+    """
 
     def __init__(self, check: CheckCallable[T_in]) -> None:
+        """Constructor.
+
+        Parameters:
+            check: Callable for processing interruption.
+
+        Example:
+            ```python
+            # Interrupts when payload value exceeds 100
+            def check_value(payload: int) -> bool:
+                return payload > 100
+
+            # Create processor with the check
+            processor = InterruptibleProcessor(check_value)
+
+            # Process payload - will stop if value exceeds 100
+            result = await processor.process(initial_payload, stages)
+            ```
+        """
         super().__init__()
 
         self.check = check
@@ -24,7 +53,7 @@ class InterruptibleProcessor(Processor[T_in, T_out]):
         for stage in stages:
             payload = await self._call(callable=stage, payload=payload, *args, **kwds)
 
-            if not await self._call_check(payload):
+            if await self._call_check(payload):
                 return cast(T_out, payload)
 
         return cast(T_out, payload)

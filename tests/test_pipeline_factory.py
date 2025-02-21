@@ -1,11 +1,8 @@
 import pytest
 
-from thecodecrate_pipeline import (
-    ChainedProcessor,
-    PipelineFactory,
-    Stage,
-    StageCollection,
-)
+from thecodecrate_pipeline import PipelineFactory, Stage
+from thecodecrate_pipeline.processors import ChainedProcessor
+from thecodecrate_pipeline.types import StageCollection
 
 from .stubs.stub_stages_int import (
     AddOneStage,

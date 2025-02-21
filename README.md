@@ -55,7 +55,7 @@ await pipeline.process(10)
 
 ## Class-Based Stages
 
-Class-based stages are also possible. The `StageInterface[InputType, OutputType]` interface can be implemented, which ensures you have the correct method signature for the `__call__` method.
+Class-based stages are also possible. The `StageInterface[T_in, T_out]` interface can be implemented, which ensures you have the correct method signature for the `__call__` method.
 
 ```python
 class TimesTwoStage(StageInterface[int, int]):

@@ -106,20 +106,17 @@ plugins:
       default_handler: python
       handlers:
         python:
-          paths: ["/workspaces/python-pipeline/src"]
+          paths: ["src"]
           options:
-            # docstring_style: google
             show_if_no_docstring: true
-            force_inspection: true
             docstring_options:
               ignore_init_summary: true
               trim_doctest_flags: true
             docstring_section_style: list
             # docstring_section_style: spacy
-            # filters: ["!^_"]
-            filters: false
+            filters:
+              - "!^_"
             heading_level: 1
-            inherited_members: true
             merge_init_into_class: true
             parameter_headings: true
             allow_inspection: true
@@ -128,16 +125,16 @@ plugins:
             scoped_crossrefs: true
             separate_signature: true
             # line_length: 60
-            show_bases: true
+            show_bases: false
             # show_inheritance_diagram: true
             show_root_heading: true
             show_root_full_path: false
             show_signature_annotations: true
-            show_source: true
+            show_source: false
             show_symbol_type_heading: true
             show_symbol_type_toc: true
             signature_crossrefs: true
-            summary: true
+            summary: false
             unwrap_annotated: true
 
 extra:
@@ -146,13 +143,16 @@ extra:
       link: https://github.com/thecodecrate/python-pipeline
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/thecodecrate-pipeline/
+
 validation:
   omitted_files: warn
   absolute_links: warn
   unrecognized_links: warn
   anchors: warn
+
 nav:
   - Home: index.md
   - API Reference:
     - core: api/core.md
+    - types: api/types.md
     - processors: api/processors.md

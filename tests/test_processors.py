@@ -1,13 +1,14 @@
 import pytest
-from thecodecrate_pipeline import (
-    Pipeline,
+
+from thecodecrate_pipeline import Pipeline
+from thecodecrate_pipeline.processors import (
     ChainedPipeline,
     ChainedProcessor,
     InterruptiblePipeline,
     InterruptibleProcessor,
 )
 
-from tests.stubs.stub_processor import StubProcessor
+from .stubs.stub_processor import StubProcessor
 
 
 @pytest.mark.asyncio
@@ -77,7 +78,7 @@ async def test_pipeline_with_chained_processor():
 @pytest.mark.asyncio
 async def test_interruptible_pipeline():
     pipeline = (
-        InterruptiblePipeline[int](lambda payload: payload < 10)
+        InterruptiblePipeline[int](lambda payload: payload >= 10)
         .pipe(lambda payload: payload + 2)
         .pipe(lambda payload: payload * 10)
         .pipe(lambda payload: payload * 10)
@@ -90,7 +91,7 @@ async def test_interruptible_pipeline():
 
 @pytest.mark.asyncio
 async def test_interruptible_processor():
-    processor = InterruptibleProcessor[int](lambda payload: payload < 10)
+    processor = InterruptibleProcessor[int](lambda payload: payload >= 10)
 
     result = await processor.process(
         payload=5,
@@ -111,7 +112,7 @@ async def test_interruptible_processor():
 
 @pytest.mark.asyncio
 async def test_pipeline_with_interruptible_processor():
-    processor = InterruptibleProcessor[int](lambda payload: payload < 20)
+    processor = InterruptibleProcessor[int](lambda payload: payload >= 20)
 
     pipeline = (
         (Pipeline[int](processor=processor))
