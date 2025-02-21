@@ -2,14 +2,17 @@ site_name: "TheCodeCrate's Pipeline"
 site_url: "https://thecodecrate.github.io/python-pipeline"
 repo_url: "https://github.com/thecodecrate/python-pipeline"
 
+watch:
+  - src
+
 extra_css:
   - assets/css/extra.css
   - assets/css/extra-pymdownx.css
 
 theme:
   name: material
-  logo: assets/images/logo.svg
-  favicon: assets/images/favicon.png
+  # logo: assets/images/logo.svg
+  # favicon: assets/images/favicon.png
   font:
     text: Roboto
     code: Roboto Mono
@@ -103,29 +106,34 @@ plugins:
       default_handler: python
       handlers:
         python:
-          paths: [src]
+          paths: ["/workspaces/python-pipeline/src"]
           options:
+            # docstring_style: google
+            show_if_no_docstring: true
+            force_inspection: true
             docstring_options:
               ignore_init_summary: true
+              trim_doctest_flags: true
             docstring_section_style: list
             # docstring_section_style: spacy
-            filters: ["!^_"]
+            # filters: ["!^_"]
+            filters: false
             heading_level: 1
             inherited_members: true
             merge_init_into_class: true
             parameter_headings: true
             allow_inspection: true
-            # preload_modules: [mkdocstrings]
+            preload_modules: ["_api", "thecodecrate_pipeline",]
             relative_crossrefs: true
             scoped_crossrefs: true
             separate_signature: true
             # line_length: 60
-            show_bases: false
+            show_bases: true
             # show_inheritance_diagram: true
             show_root_heading: true
             show_root_full_path: false
             show_signature_annotations: true
-            show_source: false
+            show_source: true
             show_symbol_type_heading: true
             show_symbol_type_toc: true
             signature_crossrefs: true
