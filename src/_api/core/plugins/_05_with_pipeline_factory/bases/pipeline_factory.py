@@ -54,7 +54,7 @@ class PipelineFactory(
         return self._set_items(self.stages + (item,))
 
     # ActAsFactory
-    def _get_model_class(self) -> type[TPipeline]:
+    def _get_target_class(self) -> type[TPipeline]:
         if self.pipeline_class is None:
             raise ValueError("Pipeline class not set in factory.")
 
