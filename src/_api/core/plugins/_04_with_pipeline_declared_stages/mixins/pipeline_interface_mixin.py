@@ -1,10 +1,10 @@
 from typing import Any, Optional, Protocol, Self
 
 # extends: self-bridge
-from ..bridges.pipeline_interface import PipelineInterface
+from .._bridges.pipeline_interface import PipelineInterface
 
 # uses: bridge interface
-from ..bridges.stage_callable import StageCollection
+from .._bridges.stage_callable import StageCollection
 
 
 class PipelineInterfaceMixin(

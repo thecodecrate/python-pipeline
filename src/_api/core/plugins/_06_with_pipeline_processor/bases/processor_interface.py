@@ -6,8 +6,8 @@ from ....support.clonable import ClonableInterface
 from ....support.has_call_async import HasCallAsyncInterface
 
 # uses: bridge interface
-from ..bridges.stage_callable import StageInstance, StageInstanceCollection
-from ..bridges.types import T_in, T_out
+from .._bridges.stage_callable import StageInstance, StageInstanceCollection
+from .._bridges.types import T_in, T_out
 
 
 class ProcessorInterface(

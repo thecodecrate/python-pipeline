@@ -5,8 +5,8 @@ from ....support.act_as_factory import ActAsFactoryInterface
 from ....support.act_as_list import ActAsListInterface
 
 # uses: bridge interface
-from ..bridges.pipeline_interface import TPipeline
-from ..bridges.stage_callable import StageClassOrInstance, StageCollection
+from .._bridges.pipeline_interface import TPipeline
+from .._bridges.stage_callable import StageClassOrInstance, StageCollection
 
 
 class PipelineFactoryInterface(

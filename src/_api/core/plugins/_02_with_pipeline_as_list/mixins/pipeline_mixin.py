@@ -5,7 +5,7 @@ from typing import Any, Optional, Self
 from ....support.act_as_list import ActAsList
 
 # uses: bridge interfaces
-from ..bridges.stage_callable import StageInstance, StageInstanceCollection
+from .._bridges.stage_callable import StageInstance, StageInstanceCollection
 
 # implements: self-interface
 from .pipeline_interface_mixin import PipelineInterfaceMixin as ImplementsInterface

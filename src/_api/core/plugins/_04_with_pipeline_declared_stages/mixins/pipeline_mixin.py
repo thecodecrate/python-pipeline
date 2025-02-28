@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Any, Optional, Self
 
 # uses: bridge interface
-from ..bridges.stage_callable import StageCollection
+from .._bridges.stage_callable import StageCollection
 
 # implements: self-interface
 from .pipeline_interface_mixin import PipelineInterfaceMixin as ImplementsInterface

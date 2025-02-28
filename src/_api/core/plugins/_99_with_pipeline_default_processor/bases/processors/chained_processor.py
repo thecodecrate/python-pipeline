@@ -1,11 +1,11 @@
 from typing import Any, cast
 
 # extends: "3rd-party" concrete
-from ...bridges.processor import Processor
+from ..._bridges.processor import Processor
 
 # uses: bridge interface
-from ...bridges.stage_callable import StageInstanceCollection
-from ...bridges.types import T_in, T_out
+from ..._bridges.stage_callable import StageInstanceCollection
+from ..._bridges.types import T_in, T_out
 
 # implements: self-interface
 from .chained_processor_interface import (

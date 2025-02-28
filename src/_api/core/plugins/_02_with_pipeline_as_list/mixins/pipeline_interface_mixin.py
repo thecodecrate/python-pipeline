@@ -4,10 +4,10 @@ from typing import Any, Optional, Protocol, Self
 from ....support.act_as_list import ActAsListInterface
 
 # extends: self-bridge
-from ..bridges.pipeline_interface import PipelineInterface
+from .._bridges.pipeline_interface import PipelineInterface
 
 # uses: bridge interface
-from ..bridges.stage_callable import (
+from .._bridges.stage_callable import (
     StageInstance,
     StageInstanceCollection,
 )

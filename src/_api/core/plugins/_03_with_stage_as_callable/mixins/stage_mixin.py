@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 # uses: bridge
-from ..bridges.types import T_in, T_out
+from .._bridges.types import T_in, T_out
 
 # implements: self-interface
 from .stage_interface_mixin import StageInterfaceMixin as ImplementsInterface
