@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Any
 
 # uses: bridge interface
-from ..bridges.types import T_in, T_out
+from .._bridges.types import T_in, T_out
 
 # implements: self-interface
 from .pipeline_interface_mixin import PipelineInterfaceMixin as ImplementsInterface

@@ -2,10 +2,10 @@ from abc import abstractmethod
 from typing import Any, Protocol
 
 # extends: self-bridge
-from ..bridges.stage_interface import StageInterface
+from .._bridges.stage_interface import StageInterface
 
 # uses: bridge
-from ..bridges.types import T_in, T_out
+from .._bridges.types import T_in, T_out
 
 
 class StageInterfaceMixin(

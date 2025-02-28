@@ -3,10 +3,10 @@ from typing import Any, Optional, Self
 # extends: 3rd-party concrete
 from ....support.act_as_factory import ActAsFactory
 from ....support.act_as_list import ActAsList
-from ..bridges.pipeline_interface import TPipeline
+from .._bridges.pipeline_interface import TPipeline
 
 # uses: bridge interfaces
-from ..bridges.stage_callable import StageClassOrInstance, StageCollection
+from .._bridges.stage_callable import StageClassOrInstance, StageCollection
 
 # implements: self-interface
 from .pipeline_factory_interface import PipelineFactoryInterface as ImplementsInterface
@@ -54,7 +54,7 @@ class PipelineFactory(
         return self._set_items(self.stages + (item,))
 
     # ActAsFactory
-    def _get_model_class(self) -> type[TPipeline]:
+    def _get_target_class(self) -> type[TPipeline]:
         if self.pipeline_class is None:
             raise ValueError("Pipeline class not set in factory.")
 

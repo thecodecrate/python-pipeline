@@ -1,13 +1,13 @@
 from abc import ABC
 
-# uses: base concrete
-from ..bases.processors.chained_processor import ChainedProcessor
-
 # extends: self-bridge concrete
-from ..bridges.pipeline import Pipeline
+from .._bridges.pipeline import Pipeline
 
 # uses: bridge interface
-from ..bridges.types import T_in, T_out
+from .._bridges.types import T_in, T_out
+
+# uses: base concrete
+from ..bases.processors.chained_processor import ChainedProcessor
 
 # implements: self-interface
 from .pipeline_interface_mixin import PipelineInterfaceMixin as ImplementsInterface

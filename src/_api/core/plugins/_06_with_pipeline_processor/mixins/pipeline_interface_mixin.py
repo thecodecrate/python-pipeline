@@ -1,13 +1,13 @@
 from typing import Any, Optional, Protocol, Self
 
-# uses: local base
-from ..bases.processor_interface import ProcessorInterface
-
 # extends: self-bridge
-from ..bridges.pipeline_interface import PipelineInterface
+from .._bridges.pipeline_interface import PipelineInterface
 
 # uses: bridge interface
-from ..bridges.types import T_in, T_out
+from .._bridges.types import T_in, T_out
+
+# uses: local base
+from ..bases.processor_interface import ProcessorInterface
 
 
 class PipelineInterfaceMixin(

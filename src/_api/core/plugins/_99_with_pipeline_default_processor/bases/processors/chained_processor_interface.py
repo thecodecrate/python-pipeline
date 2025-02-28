@@ -1,11 +1,11 @@
 from typing import Any, Protocol
 
 # extends: "3rd-party" interface
-from ...bridges.processor_interface import ProcessorInterface
+from ..._bridges.processor_interface import ProcessorInterface
 
 # uses: bridge interface
-from ...bridges.stage_callable import StageInstanceCollection
-from ...bridges.types import T_in, T_out
+from ..._bridges.stage_callable import StageInstanceCollection
+from ..._bridges.types import T_in, T_out
 
 
 class ChainedProcessorInterface(

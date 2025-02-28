@@ -1,10 +1,10 @@
 from typing import Any, Generic, Optional, Self
 
+# uses: bridge interface
+from .._bridges.types import T_in, T_out
+
 # uses: local base
 from ..bases.processor_interface import ProcessorInterface
-
-# uses: bridge interface
-from ..bridges.types import T_in, T_out
 
 # implements: self-interface
 from .pipeline_factory_interface_mixin import (

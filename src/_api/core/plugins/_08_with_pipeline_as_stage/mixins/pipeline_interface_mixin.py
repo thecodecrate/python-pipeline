@@ -1,13 +1,13 @@
 from typing import Protocol
 
 # extends: self-bridge
-from ..bridges.pipeline_interface import PipelineInterface
+from .._bridges.pipeline_interface import PipelineInterface
 
 # extends: bridge interface
-from ..bridges.stage_interface import StageInterface
+from .._bridges.stage_interface import StageInterface
 
 # uses: bridge interface
-from ..bridges.types import T_in, T_out
+from .._bridges.types import T_in, T_out
 
 
 class PipelineInterfaceMixin(
