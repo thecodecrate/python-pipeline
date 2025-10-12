@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"name": "jupyter",
+			"path": "jupyter"
+		},
+		{
+			"name": "src",
+			"path": "src"
+		},
+		{
+			"name": "python-pipeline",
+			"path": "."
+		}
+	],
+	"settings": {
+		"python.terminal.activateEnvironment": false,
+		"python.analysis.typeCheckingMode": "strict"
+	}
+}

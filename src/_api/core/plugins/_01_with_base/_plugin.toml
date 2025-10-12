@@ -1,4 +1,0 @@
-id = "_01_with_base"
-name = "Base"
-dependencies = []
-description = "A minimum implementation of the pipeline pattern."

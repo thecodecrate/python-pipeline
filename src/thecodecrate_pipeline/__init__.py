@@ -6,15 +6,14 @@
 __version__ = "1.26.0"
 
 # Re-exporting symbols
-from _api.core import Pipeline as Pipeline
-from _api.core import PipelineFactory as PipelineFactory
-from _api.core import PipelineFactoryInterface as PipelineFactoryInterface
-from _api.core import PipelineInterface as PipelineInterface
-from _api.core import Processor as Processor
-from _api.core import ProcessorInterface as ProcessorInterface
-from _api.core import Stage as Stage
-from _api.core import StageCallable as StageCallable
-from _api.core import StageInterface as StageInterface
+from _lib import Pipeline as Pipeline
+from _lib import PipelineFactory as PipelineFactory
+from _lib import PipelineFactoryInterface as PipelineFactoryInterface
+from _lib import PipelineInterface as PipelineInterface
+from _lib import Processor as Processor
+from _lib import ProcessorInterface as ProcessorInterface
+from _lib import Stage as Stage
+from _lib import StageInterface as StageInterface
 
 # pyright: reportUnsupportedDunderAll=false
 __all__ = (
@@ -25,6 +24,5 @@ __all__ = (
     "Processor",
     "ProcessorInterface",
     "Stage",
-    "StageCallable",
     "StageInterface",
 )

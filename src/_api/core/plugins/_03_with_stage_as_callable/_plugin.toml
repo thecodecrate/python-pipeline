@@ -1,2 +1,0 @@
-name = "_03_with_stage_as_callable"
-dependencies = ["_01_with_base"]
