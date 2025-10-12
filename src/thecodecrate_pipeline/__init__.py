@@ -3,7 +3,7 @@
 # This will be updated by `bumpver` command.
 # - Make sure to commit all changes first before running `bumpver`.
 # - Run `bumpver update --[minor|major|patch]`
-__version__ = "1.26.0"
+__version__ = "1.27.0"
 
 # Re-exporting symbols
 from _lib import Pipeline as Pipeline
