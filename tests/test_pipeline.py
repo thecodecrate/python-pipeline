@@ -1,7 +1,7 @@
 import pytest
 
 from thecodecrate_pipeline import Pipeline
-from thecodecrate_pipeline.types import StageCollection, StageInstanceCollection
+from thecodecrate_pipeline.types import CallableCollection, StageDefinitionCollection
 
 from .stubs.stub_processor import StubProcessor
 from .stubs.stub_stage import StubStage
@@ -144,7 +144,7 @@ async def test_declarative_stages():
 @pytest.mark.asyncio
 async def test_declarative_stages_with_processor():
     class MyPipeline(Pipeline[int]):
-        processor_class = StubProcessor
+        processor = StubProcessor
         stages = (
             TimesTwoStage,
             TimesThreeStage,
@@ -177,7 +177,7 @@ async def test_declarative_stage_instances():
             sub_three_async,  # async function
         )
 
-    stage_instances: StageInstanceCollection = (
+    stage_instances: CallableCollection = (
         add_seven,  # function
         sub_three_async,  # async function
     )
@@ -194,7 +194,7 @@ async def test_declarative_stage_instances__immutability():
     async def sub_three_async(payload: int) -> int:
         return payload - 3
 
-    stage_instances: StageInstanceCollection = (
+    stage_instances: CallableCollection = (
         add_seven,  # function
         sub_three_async,  # async function
     )
@@ -217,12 +217,12 @@ async def test_constructor_override_declared_stages():
             TimesThreeStage(),  # stage instance
         )
 
-    stages: StageCollection = (
+    stages: StageDefinitionCollection = (
         AddOneStage,  # stage class
         TimesTwoStage(),  # stage instance
     )
 
-    stage_instances: StageInstanceCollection = (
+    stage_instances: CallableCollection = (
         AddOneStage(),  # only instances can be added
         TimesTwoStage(),  # only instances can be added
     )
@@ -250,7 +250,7 @@ async def test_custom_args_on_stages():
 async def test_method__with_stages():
     pipeline = Pipeline()
 
-    stages: StageCollection = (
+    stages: StageDefinitionCollection = (
         AddOneStage,  # stage class
         TimesTwoStage(),  # stage instance
     )
@@ -267,7 +267,7 @@ async def test_method__with_stages():
 async def test_method__with_stages__override_current_instances():
     pipeline = Pipeline().pipe(AddOneStage())
 
-    stages: StageCollection = (
+    stages: StageDefinitionCollection = (
         TimesTwoStage,  # stage class
         TimesThreeStage(),  # stage instance
     )

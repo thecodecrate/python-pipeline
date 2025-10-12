@@ -1,2 +1,0 @@
-name = "_05_with_pipeline_factory"
-dependencies = ["_01_with_base"]

@@ -2,13 +2,13 @@ import pytest
 
 from thecodecrate_pipeline import PipelineFactory, Stage
 from thecodecrate_pipeline.processors import ChainedProcessor
-from thecodecrate_pipeline.types import StageCollection
+from thecodecrate_pipeline.types import StageDefinitionCollection
 
 from .stubs.stub_stages_int import (
     AddOneStage,
 )
 
-some_stages: StageCollection = (
+some_stages: StageDefinitionCollection = (
     AddOneStage,
     (lambda x: x + 1),
     (lambda x: f"result is {x}"),
@@ -94,27 +94,6 @@ async def test_with_processor():
         (PipelineFactory[int, str]())
         .with_stages(some_stages)
         .with_processor(MyProcessor())
-    )
-
-    # create and process
-    pipeline = pipeline_factory.make()
-    result = await pipeline.process(10)
-    assert result == "result is 12"
-
-    # check the processor
-    assert pipeline.get_processor_instance().__class__ == MyProcessor
-
-
-@pytest.mark.asyncio
-async def test_with_processor_class():
-    class MyProcessor(ChainedProcessor):
-        pass
-
-    # create factory with a processor
-    pipeline_factory = (
-        (PipelineFactory[int, str]())
-        .with_stages(some_stages)
-        .with_processor_class(MyProcessor)
     )
 
     # create and process

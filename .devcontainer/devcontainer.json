@@ -1,27 +1,71 @@
 {
-  "name": "Library python-pipeline",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "name": "python-pipeline",
+  "build": {
+    "dockerfile": "docker/devcontainer/Dockerfile",
+    "context": ".."
+  },
   "customizations": {
     "vscode": {
       "extensions": [
+        /**
+          * Common extensions
+          **/
         "aaron-bond.better-comments",
-        "charliermarsh.ruff",
-        "DavidAnson.vscode-markdownlint",
-        "github.copilot",
-        "github.copilot-chat",
         "github.vscode-github-actions",
         "mikestead.dotenv",
-        "ms-python.debugpy",
+        /**
+         * Common file types support (highlighting, formatting, lintering, etc.)
+         **/
+        "editorconfig.editorconfig", // .editorconfig
+        "tamasfe.even-better-toml", // .toml
+        "xshrim.txt-syntax", // .txt, .log, .conf, .ini, .properties, etc.
+        "redhat.vscode-yaml", // .yaml, .yml
+        "DavidAnson.vscode-markdownlint", // .md
+        /**
+          * AI extensions
+          **/
+        "github.copilot",
+        "github.copilot-chat",
+        "chrisdias.promptboost",
+        /**
+         * Opinionated extensions (Themes, colors, etc.)
+         **/
+        "pkief.material-icon-theme", // popular icon theme
+        "atomiks.moonlight", // default theme for cursor
+        /**
+          * Bash script extensions - .devcontainer scripts, .sh files, etc.
+          **/
+        "mads-hartmann.bash-ide-vscode",
+        "rogalmic.bash-debug",
+        "jetmartin.bats",
+        "foxundermoon.shell-format",
+        "timonwong.shellcheck",
+        "jeff-hykin.better-shellscript-syntax",
+        /**
+          * Container/Docker extensions
+          **/
+        "ms-azuretools.vscode-containers",
+        "jeff-hykin.better-dockerfile-syntax",
+        "exiasr.hadolint",
+        /**
+          * Python extensions
+          **/
         "ms-python.python",
-        "ms-python.vscode-pylance",
-        "ms-toolsai.jupyter",
-        "pkief.material-icon-theme",
-        "redhat.vscode-yaml",
-        "tamasfe.even-better-toml",
-        "ms-vscode.vscode-websearchforcopilot",
-        "ms-vscode.vscode-commander"
+        // "ms-python.vscode-pylance", // language server (highlighting, intellisense, etc.)
+        "astral-sh.ty", // language server (highlighting, intellisense, etc.)
+        "charliermarsh.ruff", // linter and formatter
+        "njpwerner.autodocstring", // docstring generator
+        "ms-toolsai.jupyter", // Jupyter Notebooks
+        "ms-python.debugpy", // debugger
+        /**
+         * Auto-applied devcontainer feature extensions (docker-outside-of-docker)
+         **/
+        "-ms-azuretools.vscode-docker" // removed, replaced by "vscode-containers"
       ],
       "settings": {
+        /**
+          * Common settings
+          **/
         "editor.linkedEditing": true,
         "editor.formatOnSave": true,
         "editor.rulers": [
@@ -32,34 +76,26 @@
         "editor.guides.highlightActiveIndentation": true,
         "explorer.sortOrderLexicographicOptions": "upper",
         "files.insertFinalNewline": true,
+        "files.eol": "\n",
         "files.trimTrailingWhitespace": true,
-        "ruff.nativeServer": "on",
-        "terminal.integrated.shell.linux": "/bin/zsh",
-        "workbench.iconTheme": "material-icon-theme",
-        // Jupyter Notebook
-        "notebook.formatOnSave.enabled": true,
-        "notebook.codeActionsOnSave": {
-          "notebook.source.fixAll": "explicit",
-          "notebook.source.organizeImports": "explicit"
+        "files.watcherExclude": {
+          "**/.git/*": true,
+          "**/node_modules/*": true,
+          "**/vendor/*": true
         },
-        // Python
-        "python.analysis.autoSearchPaths": true,
-        "python.analysis.diagnosticMode": "workspace",
-        "python.analysis.importFormat": "relative",
-        "python.analysis.autoImportCompletions": true,
-        "python.analysis.extraPaths": [
-          "${containerWorkspaceFolder}/src"
-        ],
-        "python.envFile": "${containerWorkspaceFolder}/.env",
-        "python.terminal.activateEnvironment": true,
-        "python.defaultInterpreterPath": "${containerWorkspaceFolder}/.venv/bin/python",
-        // Test (python)
-        "python.testing.pytestEnabled": true,
-        "python.testing.unittestEnabled": false,
-        "python.testing.cwd": "${containerWorkspaceFolder}/tests",
-        "python.testing.pytestPath": "${containerWorkspaceFolder}/.venv/bin/pytest",
-        "python.testing.autoTestDiscoverOnSaveEnabled": true,
-        // MkDocs schema for the YAML extension
+        "files.associations": {
+          "*.zsh": "shellscript"
+        },
+        "terminal.integrated.shell.linux": "/bin/zsh",
+        /**
+         * Settings for Opinionated Extensions (themes, colors, etc.)
+         **/
+        "workbench.iconTheme": "material-icon-theme",
+        "workbench.colorTheme": "Moonlight",
+        /**
+          * Settings for Extensions
+          **/
+        // MkDocs
         "yaml.schemas": {
           "https://squidfunk.github.io/mkdocs-material/schema.json": "mkdocs.yml"
         },
@@ -72,7 +108,35 @@
           "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format",
           "tag:yaml.org,2002:python/object/apply:pymdownx.slugs.slugify mapping"
         ],
-        // Settings per file type
+        //  shell-format
+        "shellformat.flag": "-ci",
+        // Python
+        "ruff.nativeServer": "on",
+        "python.analysis.autoSearchPaths": true,
+        "python.analysis.diagnosticMode": "workspace",
+        "python.analysis.importFormat": "relative",
+        "python.analysis.autoImportCompletions": true,
+        "python.analysis.extraPaths": [
+          "${containerWorkspaceFolder}/src"
+        ],
+        "python.envFile": "${containerWorkspaceFolder}/.env",
+        "python.terminal.activateEnvironment": false,
+        "python.defaultInterpreterPath": "${containerWorkspaceFolder}/.venv/bin/python",
+        // Test (python)
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "python.testing.cwd": "${containerWorkspaceFolder}/tests",
+        "python.testing.pytestPath": "${containerWorkspaceFolder}/.venv/bin/pytest",
+        "python.testing.autoTestDiscoverOnSaveEnabled": true,
+        // Jupyter Notebook (python)
+        "notebook.formatOnSave.enabled": true,
+        "notebook.codeActionsOnSave": {
+          "notebook.source.fixAll": "explicit",
+          "notebook.source.organizeImports": "explicit"
+        },
+        /**
+         * Per-MIME settings
+         **/
         "[toml]": {
           "editor.defaultFormatter": "tamasfe.even-better-toml",
           "editor.formatOnSave": true
@@ -81,6 +145,9 @@
           "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
           "editor.formatOnSave": true,
           "editor.wordWrap": "on"
+        },
+        "[shellscript]": {
+          "editor.defaultFormatter": "foxundermoon.shell-format"
         },
         "[python]": {
           "editor.formatOnSave": true,
@@ -95,14 +162,26 @@
   },
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
-      "configureZshAsDefaultShell": true
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "upgradePackages": true
     },
-    "ghcr.io/thecodecrate/devcontainer-features/bash-aliases:1": {},
-    "ghcr.io/thecodecrate/devcontainer-features/uv:1": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
   },
   "remoteUser": "vscode",
-  "postCreateCommand": "zsh -i .devcontainer/scripts/post-create.sh",
+  "onCreateCommand": ".devcontainer/lifecycle/_loaders/30-loader-on-container-create.zsh",
+  "postCreateCommand": ".devcontainer/lifecycle/_loaders/40-loader-on-container-created.zsh",
+  "postStartCommand": ".devcontainer/lifecycle/_loaders/60-loader-on-container-start.zsh",
   "containerEnv": {
-    "PYTHONPATH": "${containerWorkspaceFolder}/src"
-  }
+    "INSIDE_DEVCONTAINER": "true",
+    "HOST_DIR": "${localWorkspaceFolder}",
+    "WORKSPACE_DIR": "${containerWorkspaceFolder}",
+    "PYTHONPATH": "${containerWorkspaceFolder}/src",
+    "UV_LINK_MODE": "copy"
+  },
+  "runArgs": [
+    "--add-host=host.docker.internal:host-gateway"
+  ]
 }
