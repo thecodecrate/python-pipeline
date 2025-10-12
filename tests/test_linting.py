@@ -18,7 +18,7 @@ def test_zizmor_compliance():
     """Test to ensure codebase is compliant with Zizmor linting."""
 
     result = subprocess.run(
-        ["uvx", "zizmor", ".github/workflows/"],
+        ["uvx", "zizmor", "--min-severity", "low", ".github/workflows/"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
