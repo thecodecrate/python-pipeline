@@ -1,8 +1,11 @@
 import inspect
 from typing import Any, Awaitable, Callable, cast
 
-from ...pipeline import CallableCollection, Processor, T_in, T_out
+from ...processor import Processor
+from ...types.callable_type import CallableCollection
+from ...types.types import T_in, T_out
 
+# Type for a callable that checks a condition on the payload.
 CheckCallable = Callable[[T_in], bool | Awaitable[bool]]
 
 
@@ -10,7 +13,7 @@ class InterruptibleProcessor(Processor[T_in, T_out]):
     """Processor with conditional interruption."""
 
     check: CheckCallable[T_in]
-    """Callable for processing interruption. Useful for declarative subclassing.
+    """Callable for processing interruption.
 
     Example:
         ```python

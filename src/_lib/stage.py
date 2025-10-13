@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from typing import Any
 
-from .stage_interface import StageInterface as ImplementsInterface
-from .types import T_in, T_out
+from .contracts.stage import Stage as ImplementsInterface
+from .types.types import T_in, T_out
 
 
 class Stage(

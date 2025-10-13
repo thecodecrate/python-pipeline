@@ -1,11 +1,22 @@
 """A collection of processors and their pipelines"""
 
 # Re-exporting symbols
-from _lib.processors import ChainedPipeline as ChainedPipeline
-from _lib.processors import ChainedProcessor as ChainedProcessor
-from _lib.processors import InterruptiblePipeline as InterruptiblePipeline
-from _lib.processors import InterruptibleProcessor as InterruptibleProcessor
-from _lib.processors import __all__ as _processors_all
+from _lib.processors.chained_processor.chained_pipeline import (
+    ChainedPipeline as ChainedPipeline,
+)
+from _lib.processors.chained_processor.chained_processor import (
+    ChainedProcessor as ChainedProcessor,
+)
+from _lib.processors.interruptible_processor.interruptible_pipeline import (
+    InterruptiblePipeline as InterruptiblePipeline,
+)
+from _lib.processors.interruptible_processor.interruptible_processor import (
+    InterruptibleProcessor as InterruptibleProcessor,
+)
 
-# pyright: reportUnsupportedDunderAll=false
-__all__ = (*_processors_all,)
+__all__ = (
+    "ChainedPipeline",
+    "ChainedProcessor",
+    "InterruptiblePipeline",
+    "InterruptibleProcessor",
+)
