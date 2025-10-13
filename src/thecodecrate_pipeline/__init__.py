@@ -3,7 +3,7 @@
 # This will be updated by `bumpver` command.
 # - Make sure to commit all changes first before running `bumpver`.
 # - Run `bumpver update --[minor|major|patch]`
-__version__ = "1.28.0"
+__version__ = "1.29.0"
 
 # Re-exporting symbols
 from _lib.contracts.pipeline import Pipeline as PipelineInterface
