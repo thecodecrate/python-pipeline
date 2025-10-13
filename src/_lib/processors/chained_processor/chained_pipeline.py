@@ -24,6 +24,8 @@ class ChainedPipeline(Pipeline[T_in, T_out]):
             assert await pipeline.process(1) == 5
             ```
         """
-        processor = ChainedProcessor[T_in, T_out]()
-
-        super().__init__(processor=processor, *args, **kwargs)
+        super().__init__(
+            processor=ChainedProcessor[T_in, T_out](),
+            *args,
+            **kwargs,
+        )

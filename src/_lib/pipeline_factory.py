@@ -1,27 +1,27 @@
 from typing import Any, Optional, Self
 
-from .callable_type import StageDefinition, StageDefinitionCollection
+from .contracts.pipeline import Pipeline as PipelineContract
+from .contracts.pipeline_factory import PipelineFactory as ImplementsInterface
+from .contracts.processor import Processor as ProcessorContract
 from .pipeline import Pipeline
-from .pipeline_factory_interface import PipelineFactoryInterface as ImplementsInterface
-from .pipeline_interface import PipelineInterface
-from .processor_interface import ProcessorInterface
-from .traits.act_as_factory.act_as_factory import ActAsFactory
-from .types import T_in, T_out
+from .support.act_as_factory.act_as_factory import ActAsFactory
+from .types.callable_type import StageDefinition, StageDefinitionCollection
+from .types.types import T_in, T_out
 
 
 class PipelineFactory(
-    ActAsFactory[PipelineInterface[T_in, T_out]],
+    ActAsFactory[PipelineContract[T_in, T_out]],
     ImplementsInterface[T_in, T_out],
 ):
     stages: StageDefinitionCollection
-    processor: Optional[type[ProcessorInterface[T_in, T_out]] | ProcessorInterface]
-    pipeline_class: Optional[type[PipelineInterface[T_in, T_out]]]
+    processor: Optional[type[ProcessorContract[T_in, T_out]] | ProcessorContract]
+    pipeline_class: Optional[type[PipelineContract[T_in, T_out]]]
 
     def __init__(
         self,
         stages: Optional[StageDefinitionCollection] = None,
-        processor: Optional[type[ProcessorInterface] | ProcessorInterface] = None,
-        pipeline_class: Optional[type[PipelineInterface[T_in, T_out]]] = None,
+        processor: Optional[type[ProcessorContract] | ProcessorContract] = None,
+        pipeline_class: Optional[type[PipelineContract[T_in, T_out]]] = None,
         *args: Any,
         **kwds: Any,
     ) -> None:
@@ -60,7 +60,7 @@ class PipelineFactory(
         return self
 
     def with_processor(
-        self, processor: type[ProcessorInterface] | ProcessorInterface
+        self, processor: type[ProcessorContract] | ProcessorContract
     ) -> Self:
         """
         Attachs a processor (class or instance) to the pipeline factory.
@@ -71,7 +71,7 @@ class PipelineFactory(
 
     def _get_default_pipeline_class(
         self,
-    ) -> Optional[type[PipelineInterface[T_in, T_out]]]:
+    ) -> Optional[type[PipelineContract[T_in, T_out]]]:
         return Pipeline
 
     # ActAsFactory
@@ -82,7 +82,7 @@ class PipelineFactory(
         }
 
     # ActAsFactory
-    def _get_target_class(self) -> type[PipelineInterface[T_in, T_out]]:
+    def _get_target_class(self) -> type[PipelineContract[T_in, T_out]]:
         if self.pipeline_class is None:
             raise ValueError("Pipeline class not set in factory.")
 

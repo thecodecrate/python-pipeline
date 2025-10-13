@@ -6,14 +6,14 @@
 __version__ = "1.27.0"
 
 # Re-exporting symbols
-from _lib import Pipeline as Pipeline
-from _lib import PipelineFactory as PipelineFactory
-from _lib import PipelineFactoryInterface as PipelineFactoryInterface
-from _lib import PipelineInterface as PipelineInterface
-from _lib import Processor as Processor
-from _lib import ProcessorInterface as ProcessorInterface
-from _lib import Stage as Stage
-from _lib import StageInterface as StageInterface
+from _lib.contracts.pipeline import Pipeline as PipelineInterface
+from _lib.contracts.pipeline_factory import PipelineFactory as PipelineFactoryInterface
+from _lib.contracts.processor import Processor as ProcessorInterface
+from _lib.contracts.stage import Stage as StageInterface
+from _lib.pipeline import Pipeline as Pipeline
+from _lib.pipeline_factory import PipelineFactory as PipelineFactory
+from _lib.processor import Processor as Processor
+from _lib.stage import Stage as Stage
 
 # pyright: reportUnsupportedDunderAll=false
 __all__ = (

@@ -159,7 +159,7 @@ async def test_declarative_stages_with_processor():
 
 
 @pytest.mark.asyncio
-async def test_declarative_stage_instances():
+async def test_declarative_stages_instances():
     pipeline = (Pipeline[int]()).pipe(TimesTwoStage()).pipe(AddOneStage())
 
     def add_seven(payload: int) -> int:
@@ -169,7 +169,7 @@ async def test_declarative_stage_instances():
         return payload - 3
 
     class MyPipeline(Pipeline[int]):
-        stage_instances = (
+        stages_instances = (
             TimesThreeStage(),  # stage instance
             pipeline,  # pipeline
             AddOneStage(),  # another stage instance
@@ -177,34 +177,34 @@ async def test_declarative_stage_instances():
             sub_three_async,  # async function
         )
 
-    stage_instances: CallableCollection = (
+    stages_instances: CallableCollection = (
         add_seven,  # function
         sub_three_async,  # async function
     )
 
     assert await MyPipeline().process(5) == 36
-    assert await MyPipeline(stage_instances=stage_instances).process(5) == 9
+    assert await MyPipeline(stages_instances=stages_instances).process(5) == 9
 
 
 @pytest.mark.asyncio
-async def test_declarative_stage_instances__immutability():
+async def test_declarative_stages_instances__immutability():
     def add_seven(payload: int) -> int:
         return payload + 7
 
     async def sub_three_async(payload: int) -> int:
         return payload - 3
 
-    stage_instances: CallableCollection = (
+    stages_instances: CallableCollection = (
         add_seven,  # function
         sub_three_async,  # async function
     )
 
-    pipeline = Pipeline(stage_instances=stage_instances)
+    pipeline = Pipeline(stages_instances=stages_instances)
 
     assert await pipeline.process(5) == 9
 
     # adding more stages should not affect the original pipeline
-    stage_instances += (TimesTwoStage(),)
+    stages_instances += (TimesTwoStage(),)
 
     assert await pipeline.process(5) == 9
 
@@ -222,15 +222,15 @@ async def test_constructor_override_declared_stages():
         TimesTwoStage(),  # stage instance
     )
 
-    stage_instances: CallableCollection = (
+    stages_instances: CallableCollection = (
         AddOneStage(),  # only instances can be added
         TimesTwoStage(),  # only instances can be added
     )
 
     assert await MyPipeline().process(5) == 30
     assert await MyPipeline(stages=stages).process(5) == 12
-    assert await MyPipeline(stages=stage_instances).process(5) == 12
-    assert await MyPipeline(stage_instances=stage_instances).process(5) == 12
+    assert await MyPipeline(stages=stages_instances).process(5) == 12
+    assert await MyPipeline(stages_instances=stages_instances).process(5) == 12
 
 
 @pytest.mark.asyncio
@@ -274,8 +274,8 @@ async def test_method__with_stages__override_current_instances():
 
     new_pipeline = pipeline.with_stages(stages)
 
-    assert len(pipeline.stage_instances) == 1
-    assert len(new_pipeline.stage_instances) == 2
+    assert len(pipeline.get_stages_instances()) == 1
+    assert len(new_pipeline.get_stages_instances()) == 2
 
     assert await pipeline.process(5) == 6
     assert await new_pipeline.process(5) == 30

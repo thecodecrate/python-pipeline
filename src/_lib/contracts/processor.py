@@ -1,12 +1,12 @@
 from abc import abstractmethod
 from typing import Any, Awaitable, Protocol
 
-from .callable_type import CallableCollection, CallableType
-from .traits.clonable import ClonableInterface
-from .types import T_in, T_out
+from ..support.clonable.clonable_interface import ClonableInterface
+from ..types.callable_type import CallableCollection, CallableType
+from ..types.types import T_in, T_out
 
 
-class ProcessorInterface(
+class Processor(
     ClonableInterface,
     Protocol[T_in, T_out],
 ):

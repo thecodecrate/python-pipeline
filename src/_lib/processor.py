@@ -2,10 +2,10 @@ import inspect
 from abc import abstractmethod
 from typing import Any
 
-from .callable_type import CallableCollection, CallableType
-from .processor_interface import ProcessorInterface as ImplementsInterface
-from .traits.clonable import Clonable
-from .types import T_in, T_out
+from .contracts.processor import Processor as ImplementsInterface
+from .support.clonable import Clonable
+from .types.callable_type import CallableCollection, CallableType
+from .types.types import T_in, T_out
 
 
 class Processor(
@@ -42,7 +42,7 @@ class Processor(
         **kwds: Any,
     ) -> T_out:
         """
-        Process the given payload.
+        Do the actual processing of the payload - the "process" method is just an alias to this method.
         """
         result = callable(payload, *args, **kwds)
 

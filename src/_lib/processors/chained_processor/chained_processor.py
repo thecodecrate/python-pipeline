@@ -1,25 +1,37 @@
-from ...pipeline import ChainedProcessor as ChainedProcessorBase
-from ...pipeline import T_in, T_out
+from typing import Any, cast
+
+from ...processor import Processor
+from ...types.callable_type import CallableCollection
+from ...types.types import T_in, T_out
 
 
-class ChainedProcessor(ChainedProcessorBase[T_in, T_out]):
-    """Default processor. Sequentially processes data through multiple stages.
+class ChainedProcessor(
+    Processor[T_in, T_out],
+):
+    async def process(
+        self,
+        payload: T_in,
+        stages: CallableCollection,
+        *args: Any,
+        **kwds: Any,
+    ) -> T_out:
+        """
+        Process the given payload through the provided stages.
 
-    Example:
-        ```python
-        # Create processor
-        processor = ChainedProcessor[int]()
+        Args:
+            payload (T_in): The input payload to process.
+            stages (CallableCollection): The collection of stages to process the payload through.
+            *args (Any): Additional positional arguments.
+            **kwds (Any): Additional keyword arguments.
 
-        # Stages
-        result = await processor.process(
-            payload=5,
-            stages=(
-                lambda payload: payload + 1,
-                lambda payload: payload * 2,
-            ),
-        )
+        Returns:
+            T_out: The processed output.
+        """
+        payload_out: Any = payload
 
-        # Assert result
-        assert result == 12
-        ```
-    """
+        for stage in stages:
+            payload_out = await self._call(
+                callable=stage, payload=payload_out, *args, **kwds
+            )
+
+        return cast(T_out, payload_out)

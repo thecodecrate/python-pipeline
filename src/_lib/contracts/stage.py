@@ -1,10 +1,10 @@
 from abc import abstractmethod
 from typing import Any, Protocol
 
-from .types import T_in, T_out
+from ..types.types import T_in, T_out
 
 
-class StageInterface(
+class Stage(
     Protocol[T_in, T_out],
 ):
     @abstractmethod

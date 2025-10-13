@@ -1,6 +1,7 @@
 from typing import Any
 
-from ...pipeline import Pipeline, T_in, T_out
+from ...pipeline import Pipeline
+from ...types.types import T_in, T_out
 from .interruptible_processor import CheckCallable, InterruptibleProcessor
 
 
