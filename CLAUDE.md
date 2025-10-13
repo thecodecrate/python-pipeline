@@ -102,11 +102,14 @@ Version is managed by bumpver and automatically updates:
 ### Documentation
 
 ```bash
-# Build documentation locally
+# Serve documentation locally
 mkdocs serve
 
 # Build static site
 mkdocs build
+
+# Deploy to GitHub Pages
+mkdocs gh-deploy
 ```
 
 ## Important Implementation Details
