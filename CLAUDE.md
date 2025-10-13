@@ -4,153 +4,133 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Python implementation of the Pipeline pattern, distributed as `thecodecrate-pipeline`. The package allows composing sequential stages into reusable, immutable pipelines for processing data. It's inspired by the PHP League Pipeline package.
+This is `thecodecrate-pipeline`, a Python package that provides a pipeline pattern implementation for data processing. Pipelines allow chaining multiple stages together, where each stage transforms a payload before passing it to the next stage.
 
-## Development Commands
+**Key Concepts:**
 
-### Environment Setup
-```bash
-# The project uses uv for dependency management
-# Dependencies are managed in pyproject.toml under [dependency-groups]
-uv sync
-```
-
-### Testing
-```bash
-# Run all tests
-pytest
-
-# Run tests with coverage
-pytest --cov
-
-# Run a specific test file
-pytest tests/test_pipeline.py
-
-# Run a specific test function
-pytest tests/test_pipeline.py::test_function_name
-```
-
-### Code Quality
-```bash
-# Format code with ruff
-ruff format .
-
-# Lint with ruff
-ruff check .
-
-# Fix auto-fixable linting issues
-ruff check --fix .
-
-# Format with black (line length: 79)
-black .
-
-# Type checking is configured with strict mode in pyrightconfig.json
-# Type check manually: pyright (if installed)
-```
-
-### Documentation
-```bash
-# Build documentation locally
-mkdocs serve
-
-# Documentation is built with mkdocs-material and auto-generates API docs
-# from docstrings using mkdocstrings-python
-```
-
-### Version Management
-```bash
-# Bump version (uses bumpver)
-bumpver update --patch   # 1.26.0 -> 1.26.1
-bumpver update --minor   # 1.26.0 -> 1.27.0
-bumpver update --major   # 1.26.0 -> 2.0.0
-
-# Note: bumpver automatically commits and tags, but does NOT push
-```
+- **Pipeline**: Orchestrates the execution of multiple stages using a processor
+- **Stage**: A callable unit that transforms a payload (input → output)
+- **Processor**: Defines how stages are executed (e.g., chained, interruptible)
+- **PipelineFactory**: Creates pipeline instances with predefined stages and processors
 
 ## Architecture
 
-### Core Concepts
+### Code Organization
 
-The codebase implements a pipeline pattern with three main abstractions:
-
-1. **Stage**: A callable unit that transforms input to output (`StageInterface[T_in, T_out]`)
-2. **Pipeline**: An immutable chain of stages (`PipelineInterface[T_in, T_out]`)
-3. **Processor**: Controls how stages are executed (`ProcessorInterface[T_in, T_out]`)
-
-### Directory Structure
+The codebase follows a concern-based architecture with clear separation between contracts, concerns, and implementations:
 
 ```
 src/
-├── _lib/                           # Internal implementation
-│   ├── pipeline/                   # Core pipeline implementation
-│   │   ├── pipeline.py            # Main Pipeline class
-│   │   ├── pipeline_factory.py   # Factory for building pipelines
-│   │   ├── processor.py           # Base Processor class
-│   │   ├── stage.py               # Base Stage class
-│   │   ├── processors/            # Built-in processors
-│   │   │   ├── chained_processor.py
-│   │   │   └── ...
-│   │   └── traits/                # Mixins (Clonable, ActAsFactory)
-│   └── processors/                # Additional processor implementations
-│       ├── chained_processor/     # Processor that chains stages
-│       └── interruptible_processor/ # Processor with interruption support
-└── thecodecrate_pipeline/         # Public API package
-    ├── __init__.py                # Re-exports from _lib
-    ├── processors/                # Public processor exports
-    └── types/                     # Public type exports
+├── thecodecrate_pipeline/     # Public API
+│   └── __init__.py            # Re-exports main classes
+└── _lib/                      # Internal implementation
+    ├── contracts/             # Protocol definitions (interfaces)
+    ├── concerns/              # Mixins for shared behavior
+    ├── processors/            # Processor implementations
+    ├── support/               # Utility patterns (Clonable, ActAsFactory)
+    └── types/                 # Type definitions
 ```
 
 ### Key Design Patterns
 
-**Immutability**: Pipelines use copy-on-write semantics. The `pipe()` method creates a new pipeline instance with the added stage, preserving the original pipeline.
+**Concerns Pattern**: The Pipeline class inherits from multiple concern classes (BasePipeline, ProcessablePipeline, StageablePipeline), each providing specific functionality. This follows a composition-over-inheritance approach where each concern is responsible for a single aspect:
 
-**Traits System**: The codebase uses a trait-like pattern with mixins:
-- `Clonable`: Provides shallow cloning capability
-- `ActAsFactory`: Enables objects to act as factories for creating instances
+- `BasePipeline`: Core cloning and factory behavior
+- `ProcessablePipeline`: Handles processor management and execution (src/_lib/concerns/processable_pipeline.py)
+- `StageablePipeline`: Manages stage collection and instantiation (src/_lib/concerns/stageable_pipeline.py)
 
-**Interface Segregation**: Each core concept has an interface (`*Interface`) and implementation, enabling custom implementations while maintaining type safety.
+**Contracts (Protocols)**: All contracts are defined using Python's `Protocol` type for structural subtyping. Implementations explicitly declare they implement these protocols via inheritance.
 
-**Async-First**: All processing is async (`async def process(...)`). The processor handles both sync and async callables transparently using `inspect.isawaitable()`.
+**Clonable Pattern**: Most classes inherit from `Clonable` (src/_lib/support/clonable/clonable.py), which provides immutable-style operations using deep copying. Methods like `pipe()`, `with_stages()`, and `with_processor()` return cloned instances rather than mutating the original.
+
+**ActAsFactory Pattern**: The `PipelineFactory` uses this pattern (src/_lib/support/act_as_factory/) to create pipeline instances with predefined configuration.
 
 ### Type System
 
-The codebase uses generic type variables for type safety:
-- `T_in`: Input type to a stage or pipeline
-- `T_out`: Output type from a stage or pipeline (defaults to `T_in`)
+The codebase is fully typed using generic types `T_in` and `T_out` for input/output payloads. All classes are generic over these types to ensure type safety through the pipeline chain.
 
-Stages can transform types:
-```python
-Pipeline[int, str]  # Takes int, returns str
-StageInterface[int, int]  # Takes int, returns int
+## Development Commands
+
+### Environment Setup
+
+```bash
+# Install uv package manager if not available
+uv python install 3.13
+uv sync --all-extras --dev
 ```
 
-### Processing Flow
+### Testing
 
-1. A Pipeline is created with stages (either via `.pipe()` or declaratively)
-2. When `.process(payload)` is called, the pipeline:
-   - Instantiates stages if needed (converts classes to instances)
-   - Delegates to the processor's `.process()` method
-   - The processor iterates through stages, passing output to next stage
-3. Processors can customize execution (e.g., ChainedProcessor for error handling)
+```bash
+# Run all tests with coverage
+uv run pytest tests --cov
 
-### Stream Processing
+# Run a specific test file
+uv run pytest tests/test_pipeline.py
 
-Pipelines support processing `AsyncIterator` streams, allowing real-time data transformation where each stage can yield results consumed immediately by the next stage.
+# Run a specific test
+uv run pytest tests/test_pipeline.py::test_lambda_stages -v
+```
 
-### PipelineFactory
+### Linting & Formatting
 
-Because pipelines are immutable, `PipelineFactory` provides mutable stage collection during composition. It builds the final immutable pipeline via `.build()`.
+```bash
+# Check linting
+uvx ruff check .
 
-## Testing Notes
+# Fix linting issues automatically
+uvx ruff check --fix .
 
-- Test files use stub classes in `tests/stubs/` for consistent test fixtures
-- Tests are async-aware (configured via `pytest.ini` with `pytest-asyncio`)
-- Mock stages implement `StageInterface` for type safety
+# Format code
+uvx ruff format .
+```
 
-## Python Version
+### Version Bumping
 
-Requires Python 3.13+ (specified in pyproject.toml).
+```bash
+# Bump version (patch/minor/major)
+uv run bumpver update --patch
+uv run bumpver update --minor
+uv run bumpver update --major
+```
 
-## Package Distribution
+Version is managed by bumpver and automatically updates:
 
-Built with `hatchling`. The wheel includes both `thecodecrate_pipeline` (public API) and `_api` packages (internal). The public package re-exports symbols from `_lib`.
+- `pyproject.toml`
+- `src/thecodecrate_pipeline/__init__.py`
+
+### Documentation
+
+```bash
+# Build documentation locally
+mkdocs serve
+
+# Build static site
+mkdocs build
+```
+
+## Important Implementation Details
+
+### Async Processing
+
+All pipeline processing is async. The `Pipeline.process()` method and all stage `__call__` methods are async. The base `Processor._call()` method (src/_lib/processor.py:37-52) handles both sync and async callables automatically using `inspect.isawaitable()`.
+
+### Stage Instantiation
+
+Stages can be provided as either classes or instances. The `StageablePipeline` concern automatically instantiates stage classes when needed (src/_lib/concerns/stageable_pipeline.py:67-72).
+
+### Processor Types
+
+- `ChainedProcessor`: Default processor that executes stages sequentially (src/_lib/processors/chained_processor/)
+- `InterruptibleProcessor`: Allows stages to interrupt the pipeline flow (src/_lib/processors/interruptible_processor/)
+
+### Callable Invocation
+
+The `Pipeline` class is callable and delegates to `process()` (src/_lib/concerns/processable_pipeline.py:52-62). The first parameter is positional-only to match the callable signature.
+
+## Testing Guidelines
+
+- All async tests must be marked with `@pytest.mark.asyncio`
+- Test stubs are located in `tests/stubs/`
+- Tests cover: lambda stages, class-based stages, pipeline-as-stage, custom processors, and factory patterns
+- The pytest configuration sets `asyncio_default_fixture_loop_scope = function`

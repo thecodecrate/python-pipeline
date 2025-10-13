@@ -17,24 +17,24 @@ theme:
     text: Roboto
     code: Roboto Mono
   palette:
-  - media: "(prefers-color-scheme)"
-    toggle:
-      icon: material/theme-light-dark
-      name: Switch to light mode
-  - media: "(prefers-color-scheme: light)"
-    scheme: default
-    primary: deep purple
-    accent: deep purple
-    toggle:
-      icon: material/weather-sunny
-      name: Switch to dark mode
-  - media: "(prefers-color-scheme: dark)"
-    scheme: dracula
-    primary: deep purple
-    accent: deep purple
-    toggle:
-      icon: material/weather-night
-      name: Switch to system preference
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/theme-light-dark
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: dracula
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/weather-night
+        name: Switch to system preference
 
   features:
     - content.code.annotate
@@ -57,24 +57,25 @@ markdown_extensions:
       anchorlink_class: "toclink"
   - pymdownx.blocks.admonition:
       types:
-      - new
-      - settings
-      - note
-      - abstract
-      - info
-      - tip
-      - success
-      - question
-      - warning
-      - failure
-      - danger
-      - bug
-      - example
-      - quote
+        - new
+        - settings
+        - note
+        - abstract
+        - info
+        - tip
+        - success
+        - question
+        - warning
+        - failure
+        - danger
+        - bug
+        - example
+        - quote
   - pymdownx.blocks.tab:
       alternate_style: True
       combine_header_slug: True
-      slugify: !!python/object/apply:pymdownx.slugs.slugify {kwds: {case: lower}}
+      slugify:
+        !!python/object/apply:pymdownx.slugs.slugify { kwds: { case: lower } }
   - pymdownx.blocks.caption:
   - pymdownx.details:
   - pymdownx.snippets:
@@ -120,7 +121,7 @@ plugins:
             merge_init_into_class: true
             parameter_headings: true
             allow_inspection: true
-            preload_modules: ["_api", "thecodecrate_pipeline",]
+            preload_modules: ["_lib", "thecodecrate_pipeline"]
             relative_crossrefs: true
             scoped_crossrefs: true
             separate_signature: true
@@ -153,6 +154,6 @@ validation:
 nav:
   - Home: index.md
   - API Reference:
-    - core: api/core.md
-    - types: api/types.md
-    - processors: api/processors.md
+      - core: api/core.md
+      - types: api/types.md
+      - processors: api/processors.md
