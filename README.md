@@ -49,7 +49,10 @@ Pipelines are implemented as immutable stage chains. When you pipe a new stage, 
 Operations in a pipeline, stages, can be anything that satisfies the `Callable` type hint. So functions and anything that's callable is acceptable.
 
 ```python
-pipeline = Pipeline().pipe(lambda payload: payload * 10)
+pipeline = (
+    Pipeline()
+    .pipe(lambda payload: payload * 10)
+)
 
 # Returns 100
 await pipeline.process(10)
@@ -110,7 +113,10 @@ The `T_out` type variable is optional and defaults to `T_in`. Similarly, `T_in` 
 ```python
 from typing import Any
 
-pipeline = Pipeline[int]().pipe(lambda payload: payload * 2)
+pipeline = (
+    Pipeline[int]()
+    .pipe(lambda payload: payload * 2)
+)
 
 # Returns 20
 await pipeline.process(10)
@@ -119,7 +125,10 @@ await pipeline.process(10)
 You can also handle varying types between stages:
 
 ```python
-pipeline = Pipeline[int, str]().pipe(lambda payload: f"Number: {payload}")
+pipeline = (
+    Pipeline[int, str]()
+    .pipe(lambda payload: f"Number: {payload}")
+)
 
 # Returns "Number: 10"
 await pipeline.process(10)
@@ -149,7 +158,12 @@ class MyCustomProcessor(Processor[T_in, T_out]):
 And use it in your pipeline:
 
 ```python
-pipeline = Pipeline[int, int](processor=MyCustomProcessor()).pipe(lambda x: x * 2)
+pipeline = (
+    Pipeline[int, int](
+        processor=MyCustomProcessor(),
+    )
+    .pipe(lambda x: x * 2)
+)
 ```
 
 ## Declarative Stages
@@ -158,10 +172,10 @@ Instead of using `pipe` to add stages at runtime, you can define stages declarat
 
 ```python
 class MyPipeline(Pipeline[int, int]):
-    stages = [
-        TimesTwoStage(),
-        TimesThreeStage(),
-    ]
+    stages = (
+        TimesTwoStage, # class
+        TimesThreeStage(), # object
+    )
 
 # Process the payload through the pipeline with the declared stages
 result = await MyPipeline().process(5)
@@ -174,11 +188,11 @@ In this example, `MyPipeline` declares its stages directly in the class definiti
 
 ## Declarative Processor
 
-You can also specify the processor in a declarative way by setting the `processor_class` attribute in your pipeline class.
+You can also specify the processor in a declarative way by setting the `processor` attribute in your pipeline class.
 
 ```python
 class MyPipeline(Pipeline[T_in, T_out]):
-    processor_class = MyCustomProcessor
+    processor = MyCustomProcessor
 ```
 
 This allows you to customize the processing behavior of your pipeline while keeping the definition clean and declarative.
@@ -227,13 +241,19 @@ This allows you to process data in a streaming fashion, where each stage can yie
 
 Because pipelines themselves are immutable, pipeline factory is introduced to facilitate distributed composition of a pipeline.
 
-The `PipelineFactory[InputType, OutputType]` collects stages and allows you to create a pipeline at any given time.
+The `PipelineFactory[T_in, T_out]` collects stages and allows you to create a pipeline at any given time.
 
 ```python
-pipeline_factory = PipelineFactory().with_stages([LogicalStage(), AddOneStage()])
+pipeline_factory = (
+    PipelineFactory()
+    .with_stages([
+        LogicalStage, # class
+        AddOneStage(), # object
+    ])
+)
 
 # Additional stages can be added later
-pipeline_factory.add_stage(LastStage()).with_processor(MyCustomProcessor())
+pipeline_factory.add_stage(LastStage())
 
 # Build the pipeline
 pipeline = pipeline_factory.build()
@@ -244,7 +264,10 @@ pipeline = pipeline_factory.build()
 This package is completely transparent when dealing with exceptions. In no case will this package catch an exception or silence an error. Exceptions should be dealt with on a per-case basis, either inside a _stage_ or at the time the pipeline processes a payload.
 
 ```python
-pipeline = Pipeline().pipe(lambda payload: payload / 0)
+pipeline = (
+    Pipeline()
+    .pipe(lambda payload: payload / 0)
+)
 
 try:
     await pipeline.process(10)

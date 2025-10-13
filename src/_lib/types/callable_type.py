@@ -6,7 +6,23 @@ from .types import T_in, T_out
 class CallableType(
     Protocol[T_in, T_out],
 ):
-    """Protocol for callable stages that process data in a pipeline."""
+    """Protocol for callable stages.
+
+    Format:
+        (payload: T_in, /, *args: Any, **kwds: Any) -> T_out | Awaitable[T_out]
+
+    Example (method):
+        async def process_data(payload: str) -> int:
+            return len(payload)
+
+    Example (class):
+        class DataProcessor:
+            def __call__(self, payload: str) -> int:
+                return len(payload)
+
+    Example (lambda):
+        process_data = lambda payload: len(payload)
+    """
 
     def __call__(
         self,

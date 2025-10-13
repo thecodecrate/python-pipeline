@@ -3,3 +3,5 @@
 ::: thecodecrate_pipeline
     options:
         inherited_members: true
+        filters:
+        - "!Interface$"

@@ -45,7 +45,7 @@ class PipelineFactory(
 
     def add_stage(self, stage: StageDefinition) -> Self:
         """
-        Adds a single stage to the pipeline.
+        Add a single stage (class, object or function) to the pipeline.
         """
         self.stages = self.stages + (stage,)
 
@@ -53,7 +53,7 @@ class PipelineFactory(
 
     def with_stages(self, stages: StageDefinitionCollection) -> Self:
         """
-        Adds a collection of stages to the pipeline.
+        Set a collection of stages (class, object or function) to the pipeline.
         """
         self.stages = stages
 
@@ -63,7 +63,7 @@ class PipelineFactory(
         self, processor: type[ProcessorContract] | ProcessorContract
     ) -> Self:
         """
-        Attachs a processor (class or instance) to the pipeline factory.
+        Attach a processor (class or instance) to the pipeline factory.
         """
         self.processor = processor
 
